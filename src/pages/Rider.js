@@ -1169,6 +1169,36 @@ useEffect(()=>{
         data
       );
 
+      const inboxMessages =
+  data.flatMap((order)=>
+
+    (order.messages || [])
+      .filter((msg)=>
+        msg.sender === "customer"
+      )
+      .map((msg)=>({
+
+        orderId:
+          order._id,
+
+        sender:
+          msg.sender,
+
+        text:
+          msg.text,
+
+        time:
+          msg.createdAt
+          ? new Date(msg.createdAt)
+            .toLocaleTimeString()
+          : "New message"
+      }))
+  );
+
+setMessageInbox(
+  inboxMessages.reverse()
+);
+
 
 const active =
   data.filter((o)=>{
