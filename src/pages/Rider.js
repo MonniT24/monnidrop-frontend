@@ -795,6 +795,18 @@ const [previousMessages,
 
     const getGreeting = () => {
 
+      const getRiderDisplayStatus = () => {
+
+  if(
+    activeOrders.length > 0
+  ){
+
+    return "busy";
+  }
+
+  return user?.status || "available";
+};
+
   const hour =
     new Date().getHours();
 
@@ -1001,6 +1013,11 @@ useEffect(()=>{
           "SENDING RIDER LOCATION:",
           locationData
         );
+
+        console.log(
+  "EMITTING RIDER LOCATION:",
+  locationData
+);
 
         socket.emit(
           "riderLocation",
@@ -1557,31 +1574,18 @@ async function acceptOrder(orderId){
 </h3>
 
       <RiderStatus
-        status={user?.status}
-      >
+  status={getRiderDisplayStatus()}
+>
 
-        {
-
-          user?.status ===
-          "busy"
-
-          ?
-
-          "BUSY"
-
-          :
-
-          user?.status ===
-          "offline"
-
-          ?
-
-          "OFF-DUTY"
-
-          :
-
-          "AVAILABLE"
-        }
+       {
+  getRiderDisplayStatus() === "busy"
+  ? "BUSY"
+  : getRiderDisplayStatus() === "offline"
+  ? "OFF-DUTY"
+  : getRiderDisplayStatus() === "suspended"
+  ? "SUSPENDED"
+  : "AVAILABLE"
+}
 
       </RiderStatus>
 
@@ -1793,27 +1797,14 @@ async function acceptOrder(orderId){
     >
 
       {
-
-        user?.status ===
-        "busy"
-
-        ?
-
-        "BUSY"
-
-        :
-
-        user?.status ===
-        "offline"
-
-        ?
-
-        "OFF DUTY"
-
-        :
-
-        "AVAILABLE"
-      }
+  getRiderDisplayStatus() === "busy"
+  ? "BUSY"
+  : getRiderDisplayStatus() === "offline"
+  ? "OFF-DUTY"
+  : getRiderDisplayStatus() === "suspended"
+  ? "SUSPENDED"
+  : "AVAILABLE"
+}
 
     </RiderStatus>
 

@@ -408,6 +408,11 @@ export default function Admin(){
     "riderLocationUpdate",
     (data)=>{
 
+      console.log(
+        "ADMIN RECEIVED RIDER LOCATION:",
+        data
+      );
+
       if(!data.riderId){
         return;
       }
@@ -432,7 +437,7 @@ export default function Admin(){
     );
   };
 
-  },[]);
+},[]);
 
   
   async function fetchUser(){
@@ -1058,23 +1063,37 @@ const chartColors = [
 
             </Row>
 
-            <Badge
-              status={
-                r.status ===
-                "available"
-
-                ? "delivered"
-
-                : r.status ===
-                "busy"
-
-                ? "assigned"
-
-                : "pending"
-              }
-            >
-              {r.status}
-            </Badge>
+           <Badge
+  status={
+    orders.some(
+      (o)=>
+        o.rider?._id === r._id &&
+        [
+          "accepted",
+          "picked",
+          "delivering"
+        ].includes(o.status)
+    )
+    ? "assigned"
+    : r.status === "suspended"
+    ? "pending"
+    : "delivered"
+  }
+>
+  {
+    orders.some(
+      (o)=>
+        o.rider?._id === r._id &&
+        [
+          "accepted",
+          "picked",
+          "delivering"
+        ].includes(o.status)
+    )
+    ? "busy"
+    : r.status
+  }
+</Badge>
 
             <div
   style={{
