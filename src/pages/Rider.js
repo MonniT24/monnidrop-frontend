@@ -722,8 +722,35 @@ export default function Rider(){
  const [user, setUser] =
   useState(null);
 
+  const [riderDOB,setRiderDOB] =
+  useState("");
+
+const [riderEmergency,setRiderEmergency] =
+  useState("");
+
+  const [riderProfileEditing,setRiderProfileEditing] =
+  useState(false);
+
 const [orders, setOrders] =
   useState([]);
+
+  const visibleOrders =
+  orders.filter(
+
+    (o)=>
+
+      o.status === "pending"
+
+      ||
+
+      o.rider?._id ===
+      user?._id
+
+      ||
+
+      o.rider ===
+      user?._id
+  );
 
   const [
   riderAvailability,
@@ -925,6 +952,21 @@ useEffect(()=>{
   }
 
 },[user]);
+
+useEffect(()=>{
+
+  if(user){
+
+    setRiderDOB(
+      user.dob || ""
+    );
+
+    setRiderEmergency(
+      user.emergencyContact || ""
+    );
+  }
+
+},[user]);
   
 
   //SOUND
@@ -1026,62 +1068,6 @@ useEffect(()=>{
       }
 
 
-      if(
-  Object.keys(
-    previousMessages
-  ).length > 0
-){
-
-  data.forEach((order)=>{
-
-    const oldCount =
-      previousMessages[
-        order._id
-      ] || 0;
-
-    const newCount =
-      order.messages?.length || 0;
-
-    if(
-      newCount > oldCount
-    ){
-
-      const lastMessage =
-        order.messages[
-          newCount - 1
-        ];
-
-      if(
-        lastMessage &&
-        lastMessage.sender ===
-        "customer"
-      ){
-
-        playNotification();
-
-        setNotifications(
-          (prev) => [
-
-            {
-              sender:
-                "Customer",
-
-              text:
-                lastMessage.text || "",
-
-              time:
-                new Date()
-                  .toLocaleTimeString()
-            },
-
-            ...prev
-          ]
-        );
-      }
-    }
-  });
-}
-
       const counts = {};
 
       data.forEach((order)=>{
@@ -1148,7 +1134,7 @@ const totalEarned =
 
     (sum,o)=>
 
-      sum + (o.total || 0),
+      sum + Number(o.total || 0),
 
     0
   );
@@ -1178,10 +1164,11 @@ async function acceptOrder(orderId){
 
     await API.put(
       `/orders/${orderId}`,
-      {
-        riderId:user._id,
-        status:"accepted"
-      }
+     {
+  rider:user._id,
+  riderId:user._id,
+  status:"accepted"
+}
     );
 
     setUser({
@@ -1532,12 +1519,22 @@ async function acceptOrder(orderId){
 
   </Sidebar>
 
-  <Main>
+  <Main
+  onClick={()=>
+    setSidebarOpen(false)
+  }
+>
 
     <MobileMenuButton
-  onClick={() =>
-    setSidebarOpen(!sidebarOpen)
-  }
+  onClick={(e)=>{
+
+    e.stopPropagation();
+
+    setSidebarOpen(
+      !sidebarOpen
+    );
+
+  }}
 >
   ☰
 </MobileMenuButton>
@@ -1815,7 +1812,7 @@ async function acceptOrder(orderId){
 
         {
 
-    orders.map((o)=>(
+    visibleOrders.map((o)=>(
 
       <OrderCard
         key={o._id}
@@ -2221,7 +2218,7 @@ async function acceptOrder(orderId){
             </>
   )}
 
-  {activeSection === "deliveries" && (
+  {activeSection === "activeDeliveries" && (
   <>
 
     <Hero>
@@ -2433,13 +2430,72 @@ async function acceptOrder(orderId){
     />
 
     <HeroTitle
-      style={{
-        fontSize:"42px",
-        marginBottom:"10px"
-      }}
-    >
-      Rider Profile 
-    </HeroTitle>
+  style={{
+    fontSize:"42px",
+    marginBottom:"10px"
+  }}
+>
+  Rider Profile
+</HeroTitle>
+
+<Button
+  style={{
+    width:"140px",
+    padding:"10px",
+    fontSize:"14px",
+    borderRadius:"12px",
+    marginBottom:"20px",
+    background:"#2563eb"
+  }}
+
+  onClick={async()=>{
+
+    if(riderProfileEditing){
+
+      try{
+
+        const res =
+          await API.put(
+            "/rider/profile",
+            {
+              dob:riderDOB,
+              emergencyContact:riderEmergency
+            }
+          );
+
+        setUser(
+          res.data.user
+        );
+
+        alert(
+          "Profile saved successfully"
+        );
+
+        setRiderProfileEditing(false);
+
+      }catch(err){
+
+        console.log(err);
+
+        alert(
+          err.response?.data?.message ||
+          "Failed to save profile"
+        );
+      }
+
+    }else{
+
+      setRiderProfileEditing(true);
+    }
+  }}
+>
+  {
+    riderProfileEditing
+    ? "Save Profile"
+    : "Edit Profile"
+  }
+</Button>
+
 
     <HeroText
       style={{
@@ -2486,6 +2542,71 @@ async function acceptOrder(orderId){
           }
         </Row>
 
+        {
+  riderProfileEditing
+
+  ?
+
+  <>
+
+    <input
+      type="date"
+      value={riderDOB}
+      onChange={(e)=>
+        setRiderDOB(
+          e.target.value
+        )
+      }
+
+      style={{
+        width:"100%",
+        padding:"14px",
+        borderRadius:"12px",
+        border:"1px solid #d1d5db",
+        marginBottom:"20px",
+        fontSize:"16px"
+      }}
+    />
+
+    <input
+      type="text"
+      placeholder="Emergency Contact"
+      value={riderEmergency}
+      onChange={(e)=>
+        setRiderEmergency(
+          e.target.value
+        )
+      }
+
+      style={{
+        width:"100%",
+        padding:"14px",
+        borderRadius:"12px",
+        border:"1px solid #d1d5db",
+        marginBottom:"20px",
+        fontSize:"16px"
+      }}
+    />
+
+  </>
+
+  :
+
+  <>
+
+    <Row style={{fontSize:"20px",marginBottom:"24px"}}>
+      <strong>Date of Birth:</strong>{" "}
+      {riderDOB || "Not added"}
+    </Row>
+
+    <Row style={{fontSize:"20px",marginBottom:"24px"}}>
+      <strong>Emergency Contact:</strong>{" "}
+      {riderEmergency || "Not added"}
+    </Row>
+
+  </>
+}
+
         <Button
           style={{
             width:"190px",
@@ -2505,12 +2626,14 @@ async function acceptOrder(orderId){
             );
           }}
         >
+
           {
             riderAvailability === "online"
             ? "Go Offline"
             : "Go Online"
           }
         </Button>
+        
 
       </div>
 

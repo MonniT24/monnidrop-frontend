@@ -517,6 +517,33 @@ export default function Customer(){
   const [user,setUser] =
     useState(null);
 
+    const [profileEditing,setProfileEditing] =
+  useState(false);
+
+const [profileImage,setProfileImage] =
+  useState("");
+
+const [profileName,setProfileName] =
+  useState("");
+
+const [profileEmail,setProfileEmail] =
+  useState("");
+
+const [profilePhone,setProfilePhone] =
+  useState("");
+
+const [profileAddress,setProfileAddress] =
+  useState("");
+
+  const [profileDOB,setProfileDOB] =
+  useState("");
+
+const [profileGender,setProfileGender] =
+  useState("");
+
+const [profileEmergency,setProfileEmergency] =
+  useState("");
+
   const [orders,setOrders] =
     useState([]);
 
@@ -902,6 +929,41 @@ const [
 
   useEffect(()=>{
 
+  if(user){
+
+    setProfileName(
+      user.name || ""
+    );
+
+    setProfileEmail(
+      user.email || ""
+    );
+
+    setProfilePhone(
+      user.phone || ""
+    );
+
+    setProfileAddress(
+      user.address || ""
+    );
+
+    setProfileDOB(
+  user.dob || ""
+);
+
+setProfileGender(
+  user.gender || ""
+);
+
+setProfileEmergency(
+  user.emergencyContact || ""
+);
+  }
+
+},[user]);
+
+  useEffect(()=>{
+
     socket.on(
       "newMessage",
       (data)=>{
@@ -950,6 +1012,45 @@ const [
   };
 
 },[]);
+
+async function saveProfile(){
+
+  try{
+
+    const res =
+      await API.put(
+        "/customer/profile",
+        {
+          name:profileName,
+          email:profileEmail,
+          phone:profilePhone,
+          address:profileAddress,
+          dob:profileDOB,
+          gender:profileGender,
+          emergencyContact:profileEmergency
+        }
+      );
+
+    setUser(
+      res.data.user
+    );
+
+    alert(
+      "Profile saved successfully"
+    );
+
+    setProfileEditing(false);
+
+  }catch(err){
+
+    console.log(err);
+
+    alert(
+      err.response?.data?.message ||
+      "Failed to save profile"
+    );
+  }
+}
 
   async function fetchMe(){
 
@@ -1226,30 +1327,30 @@ async function createOrder(){
 
   try{
 
-    await calculateDistance(
-  pickupLocation,
-  dropoffLocation
-);
 
     if(
-      !pickupLocation ||
-      !dropoffLocation
-    ){
+  !pickupLocation ||
+  !dropoffLocation ||
+  !distance ||
+  !amount
+){
 
-      alert("Please fill all fields");
+  alert(
+    "Please select pickup and dropoff locations first"
+  );
 
-      return;
-    }
+  return;
+}
 
     await API.post(
       "/orders",
       {
         pickupLocation,
-        dropoffLocation,
+dropoffLocation,
 
-       distance,
-       deliveryTime,
-      total:amount,
+distance:distance,
+deliveryTime:deliveryTime,
+total:amount,
         items:[
           {
             name:itemNotes || "Delivery Item",
@@ -1364,9 +1465,18 @@ async function createOrder(){
 
   return(
 
-    <Layout>
+    <Layout
+  onClick={()=>
+    setSidebarOpen(false)
+  }
+>
 
-      <Sidebar open={sidebarOpen}>
+      <Sidebar
+  open={sidebarOpen}
+  onClick={(e)=>
+    e.stopPropagation()
+  }
+>
 
         <div>
 
@@ -1504,13 +1614,23 @@ async function createOrder(){
 
       </Sidebar>
 
-      <Main>
+      <Main
+  onClick={()=>
+    setSidebarOpen(false)
+  }
+>
 
         <MobileMenuButton
-          onClick={()=>
-            setSidebarOpen(!sidebarOpen)
-          }
-        >
+  onClick={(e)=>{
+
+    e.stopPropagation();
+
+    setSidebarOpen(
+      !sidebarOpen
+    );
+
+  }}
+>
           ☰
         </MobileMenuButton>
 
@@ -1714,7 +1834,11 @@ async function createOrder(){
     Estimated Delivery Time:
   </strong>
   {" "}
-  {o.deliveryTime || "Calculating..."}
+ {
+  o.status === "delivered"
+  ? "Delivered"
+  : o.deliveryTime || "Not available"
+}
 </Row>
 
                         <Row>
@@ -2650,6 +2774,297 @@ calculateDistance(
           </>
 
         )}
+
+        {activeSection === "My Profile" && (
+
+  <OrderCard
+    style={{
+      maxWidth:"900px",
+      margin:"0 auto",
+      padding:"30px"
+    }}
+  >
+
+   <HeroTitle
+  style={{
+    marginTop:"190px"
+  }}
+>
+  My Profile 👤
+</HeroTitle>
+    
+
+    <div
+  style={{
+    position:"absolute",
+    top:"20px",
+    left:"20px",
+    display:"flex",
+    flexDirection:"column",
+    alignItems:"center"
+  }}
+>
+
+  <ProfileImage
+    src={
+      profileImage ||
+      customerImage
+    }
+    alt="Customer"
+    style={{
+      width:"140px",
+      height:"140px"
+    }}
+  />
+
+  <div
+    style={{
+      marginTop:"12px"
+    }}
+  >
+
+    <input
+      type="file"
+      accept="image/*"
+
+      onChange={(e)=>{
+
+        const file =
+          e.target.files[0];
+
+        if(file){
+
+          setProfileImage(
+            URL.createObjectURL(file)
+          );
+        }
+
+      }}
+    />
+
+  </div>
+
+</div>
+
+    <HeroText
+      style={{
+        marginBottom:"30px"
+      }}
+    >
+      Manage your customer profile information.
+    </HeroText>
+
+    <div
+  style={{
+    display:"flex",
+    justifyContent:"space-between",
+    alignItems:"flex-start",
+    flexWrap:"wrap",
+    gap:"30px"
+  }}
+>
+
+      <div
+        style={{
+          flex:1
+        }}
+      >
+
+        <Row>
+          <strong>Name:</strong>
+          {" "}
+          {profileName}
+        </Row>
+
+        {
+  profileEditing
+
+  ?
+
+  <>
+
+    <BeautifulInput
+      type="text"
+      placeholder="Full Name"
+      value={profileName}
+      onChange={(e)=>
+        setProfileName(
+          e.target.value
+        )
+      }
+    />
+
+    <BeautifulInput
+      type="email"
+      placeholder="Email"
+      value={profileEmail}
+      onChange={(e)=>
+        setProfileEmail(
+          e.target.value
+        )
+      }
+    />
+
+    <BeautifulInput
+      type="text"
+      placeholder="Phone"
+      value={profilePhone}
+      onChange={(e)=>
+        setProfilePhone(
+          e.target.value
+        )
+      }
+    />
+
+    <BeautifulInput
+      type="text"
+      placeholder="Address"
+      value={profileAddress}
+      onChange={(e)=>
+        setProfileAddress(
+          e.target.value
+        )
+      }
+    />
+
+    <BeautifulInput
+  type="date"
+  value={profileDOB}
+  onChange={(e)=>
+    setProfileDOB(
+      e.target.value
+    )
+  }
+/>
+
+<BeautifulInput
+  type="text"
+  placeholder="Gender"
+  value={profileGender}
+  onChange={(e)=>
+    setProfileGender(
+      e.target.value
+    )
+  }
+/>
+
+<BeautifulInput
+  type="text"
+  placeholder="Emergency Contact"
+  value={profileEmergency}
+  onChange={(e)=>
+    setProfileEmergency(
+      e.target.value
+    )
+  }
+/>
+
+  </>
+
+  :
+
+  <>
+
+    <Row>
+      <strong>Email:</strong>
+      {" "}
+      {profileEmail}
+    </Row>
+
+    <Row>
+      <strong>Phone:</strong>
+      {" "}
+      {profilePhone}
+    </Row>
+
+    <Row>
+      <strong>Address:</strong>
+      {" "}
+      {profileAddress || "Not added"}
+    </Row>
+
+    <Row>
+  <strong>Date of Birth:</strong>
+  {" "}
+  {profileDOB || "Not added"}
+</Row>
+
+<Row>
+  <strong>Gender:</strong>
+  {" "}
+  {profileGender || "Not added"}
+</Row>
+
+<Row>
+  <strong>Emergency Contact:</strong>
+  {" "}
+  {profileEmergency || "Not added"}
+</Row>
+
+  </>
+}
+      </div>
+
+    </div>
+
+    <ButtonRow>
+
+ <Button
+  onClick={()=>{
+
+    if(profileEditing){
+
+      saveProfile();
+
+    }else{
+
+      setProfileEditing(true);
+    }
+
+  }}
+>
+   {
+  profileEditing
+  ? "Save Profile"
+  : "Edit Profile"
+}
+  </Button>
+
+</ButtonRow>
+
+<OrderSection>
+
+  <SectionTitle
+    style={{
+      marginBottom:"18px"
+    }}
+  >
+    Saved Addresses 📍
+  </SectionTitle>
+
+  <Row>
+    <strong>Home:</strong>
+    {" "}
+    {profileAddress || "No address added"}
+  </Row>
+
+  <Row>
+    <strong>Work:</strong>
+    {" "}
+    Not added
+  </Row>
+
+  <Row>
+    <strong>Recent Delivery Area:</strong>
+    {" "}
+    Accra
+  </Row>
+
+</OrderSection>
+
+  </OrderCard>
+
+)}
 
 
 {activeSection === "Settings" && (
