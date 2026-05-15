@@ -781,6 +781,10 @@ const [openChats,
   setNotifications] =
     useState([]);
 
+    const [messageInbox,
+  setMessageInbox] =
+    useState([]);
+
 const [previousOrders,
   setPreviousOrders] =
     useState([]);
@@ -906,23 +910,45 @@ useEffect(() => {
         data
       );
 
+      if(data.type === "message"){
+
+        setMessageInbox(
+          (prev) => [
+            {
+              orderId:data.orderId,
+              text:data.message || data.text,
+              sender:data.sender,
+              time:new Date()
+                .toLocaleTimeString()
+            },
+            ...prev
+          ]
+        );
+
+        playNotification();
+
+        fetchOrders();
+
+        return;
+      }
+
       setNotifications(
-  (prev) => [
-    {
-      text:
-        data.message || data.text,
+        (prev) => [
+          {
+            text:
+              data.message || data.text,
 
-      sender:
-        data.sender,
+            sender:
+              data.sender || "MonniDrop",
 
-      time:
-        new Date()
-          .toLocaleTimeString()
-    },
+            time:
+              new Date()
+                .toLocaleTimeString()
+          },
 
-    ...prev
-  ]
-);
+          ...prev
+        ]
+      );
 
       playNotification();
 
@@ -941,43 +967,68 @@ useEffect(() => {
 
 useEffect(()=>{
 
-  if(!user){
+  if(!user?._id){
     return;
   }
 
-  if(navigator.geolocation){
+  if(!navigator.geolocation){
 
+    console.log(
+      "Geolocation is not supported"
+    );
+
+    return;
+  }
+
+  const watchId =
     navigator.geolocation.watchPosition(
 
       (position)=>{
 
-       socket.emit(
-  "riderLocation",
-  {
+        const locationData = {
 
-    lat:
-      position.coords.latitude,
+          lat:
+            position.coords.latitude,
 
-    lng:
-      position.coords.longitude,
+          lng:
+            position.coords.longitude,
 
-    riderId:
-      user._id
-  }
-);
+          riderId:
+            user._id
+        };
+
+        console.log(
+          "SENDING RIDER LOCATION:",
+          locationData
+        );
+
+        socket.emit(
+          "riderLocation",
+          locationData
+        );
       },
 
       (error)=>{
 
-        console.log(error);
-
+        console.log(
+          "RIDER LOCATION ERROR:",
+          error.message
+        );
       },
 
       {
-        enableHighAccuracy:true
+        enableHighAccuracy:true,
+        maximumAge:0,
+        timeout:10000
       }
     );
-  }
+
+  return ()=>{
+
+    navigator.geolocation.clearWatch(
+      watchId
+    );
+  };
 
 },[user]);
 
@@ -1530,6 +1581,14 @@ async function acceptOrder(orderId){
 >
   <FiPackage />
   Earnings
+</MenuItem>
+
+<MenuItem
+  active={activeSection === "messages"}
+  onClick={() => setActiveSection("messages")}
+>
+  <FiBell />
+  Messages
 </MenuItem>
 
 <MenuItem
@@ -2409,6 +2468,69 @@ async function acceptOrder(orderId){
       </StatCard>
 
     </StatsGrid>
+
+  </>
+)}
+
+{activeSection === "messages" && (
+  <>
+
+    <Hero>
+      <div>
+
+        <HeroTitle>
+          Messages 💬
+        </HeroTitle>
+
+        <HeroText>
+          Customer messages from your deliveries.
+        </HeroText>
+
+      </div>
+    </Hero>
+
+    {messageInbox.length === 0 ? (
+
+      <Empty>
+        No messages yet.
+      </Empty>
+
+    ) : (
+
+      <OrdersGrid>
+
+        {messageInbox.map(
+          (msg,index) => (
+
+            <OrderCard key={index}>
+
+              <Row>
+                <strong>
+                  From:
+                </strong>
+                {" "}
+                {
+                  msg.sender === "customer"
+                  ? "Customer"
+                  : msg.sender
+                }
+              </Row>
+
+              <Row>
+                {msg.text}
+              </Row>
+
+              <StatusBadge>
+                {msg.time}
+              </StatusBadge>
+
+            </OrderCard>
+          )
+        )}
+
+      </OrdersGrid>
+
+    )}
 
   </>
 )}

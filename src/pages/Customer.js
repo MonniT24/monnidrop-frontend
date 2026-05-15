@@ -552,6 +552,9 @@ const [profileEmergency,setProfileEmergency] =
   const [notifications,setNotifications] =
     useState([]);
 
+    const [messageInbox,setMessageInbox] =
+  useState([]);
+
     const [previousOrders,setPreviousOrders] =
   useState([]);
 
@@ -970,32 +973,55 @@ setProfileImage(
 
   useEffect(()=>{
 
-    socket.on(
-      "newMessage",
-      (data)=>{
+  socket.on(
+    "newMessage",
+    (data)=>{
 
-        setNotifications((prev)=>[
-  {
-    type:"message",
-    orderId:data.orderId,
-    sender:data.sender || "Rider",
-    text:data.message || data.text,
-    time:new Date()
-    .toLocaleTimeString()
-  },
-  ...prev
-]);
+      console.log(
+        "Customer received message:",
+        data
+      );
+
+      if(data.type === "message"){
+
+        setMessageInbox((prev)=>[
+          {
+            orderId:data.orderId,
+            sender:data.sender,
+            text:data.message || data.text,
+            time:new Date()
+              .toLocaleTimeString()
+          },
+          ...prev
+        ]);
 
         fetchOrders();
+
+        return;
       }
-    );
 
-    return ()=>{
+      setNotifications((prev)=>[
+        {
+          type:"order",
+          orderId:data.orderId,
+          sender:data.sender || "MonniDrop",
+          text:data.message || data.text,
+          time:new Date()
+            .toLocaleTimeString()
+        },
+        ...prev
+      ]);
 
-      socket.off("newMessage");
-    };
+      fetchOrders();
+    }
+  );
 
-  },[]);
+  return ()=>{
+
+    socket.off("newMessage");
+  };
+
+},[]);
 
   useEffect(()=>{
 
@@ -1004,7 +1030,7 @@ setProfileImage(
     (data)=>{
 
       console.log(
-        "LIVE RIDER LOCATION:",
+        "CUSTOMER RECEIVED RIDER LOCATION:",
         data
       );
 
@@ -1570,6 +1596,18 @@ total:amount,
               <FiTruck />
               My Orders
             </MenuItem>
+
+            <MenuItem
+  active={
+    activeSection === "messages"
+  }
+  onClick={()=>
+    setActiveSection("messages")
+  }
+>
+  <FiBell />
+  Messages
+</MenuItem>
             
 
             <MenuItem
@@ -2045,7 +2083,7 @@ total:amount,
 
         {/* RIDER MARKER */}
 
-      {
+     {
   riderLocation &&
   o.rider?._id &&
   String(riderLocation.riderId) ===
@@ -2064,6 +2102,31 @@ total:amount,
       </Popup>
 
     </Marker>
+  )
+}
+
+{
+  riderLocation &&
+  o.rider?._id &&
+  String(riderLocation.riderId) ===
+  String(o.rider._id) &&
+  locationCoords[o.dropoffLocation] && (
+
+    <Polyline
+      positions={[
+
+        [
+          riderLocation.lat,
+          riderLocation.lng
+        ],
+
+        [
+          locationCoords[o.dropoffLocation].lat,
+          locationCoords[o.dropoffLocation].lng
+        ]
+
+      ]}
+    />
   )
 }
         {/* ROUTE LINE */}
@@ -2730,6 +2793,86 @@ calculateDistance(
     </OrderCard>
   )
 }
+
+  </>
+
+)}
+
+{activeSection === "messages" && (
+
+  <>
+
+    <Hero>
+
+      <div>
+
+        <HeroTitle>
+          Messages 💬
+        </HeroTitle>
+
+        <HeroText>
+          Rider messages from your deliveries.
+        </HeroText>
+
+      </div>
+
+    </Hero>
+
+    {
+
+      messageInbox.length === 0
+
+      ?
+
+      (
+
+        <Empty>
+          No messages yet.
+        </Empty>
+
+      )
+
+      :
+
+      (
+
+        <OrdersGrid>
+
+          {
+
+            messageInbox.map((msg,index)=>(
+
+              <OrderCard key={index}>
+
+                <Row>
+                  <strong>
+                    From:
+                  </strong>
+                  {" "}
+                  {
+                    msg.sender === "rider"
+                    ? "Rider"
+                    : msg.sender
+                  }
+                </Row>
+
+                <Row>
+                  {msg.text}
+                </Row>
+
+                <StatusBadge>
+                  {msg.time}
+                </StatusBadge>
+
+              </OrderCard>
+
+            ))
+          }
+
+        </OrdersGrid>
+
+      )
+    }
 
   </>
 
