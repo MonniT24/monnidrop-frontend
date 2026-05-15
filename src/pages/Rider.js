@@ -491,9 +491,9 @@ const SidebarMenu = styled.div`
 
   flex-direction:column;
 
-  gap:8px;
+  gap:2px;
 
-  margin-top:12px;
+  margin-top:6px;
 
   @media(max-width:760px){
 
@@ -510,7 +510,7 @@ const MenuItem = styled.div`
 
   gap:14px;
 
-  padding:16px 18px;
+  padding:12px 16px;
 
   border-radius:18px;
 
@@ -532,20 +532,20 @@ const MenuItem = styled.div`
       ? "#2563eb"
       : "transparent"};
 
-  margin-bottom:10px;
+  margin-bottom:2px;
 
   &:hover{
 
-  background:${props =>
-    props.active
-      ? "#2563eb"
-      : "#eff6ff"};
+    background:${props =>
+      props.active
+        ? "#2563eb"
+        : "#eff6ff"};
 
-  color:${props =>
-    props.active
-      ? "#fff"
-      : "#2563eb"};
-}
+    color:${props =>
+      props.active
+        ? "#fff"
+        : "#2563eb"};
+  }
 `;
 
 
@@ -789,26 +789,54 @@ const [previousMessages,
   setPreviousMessages] =
     useState({});
 
+    const getGreeting = () => {
 
-  useEffect(()=>{
+  const hour =
+    new Date().getHours();
 
-    fetchMe();
+  if(hour < 12){
 
-    fetchOrders();
+    return "Good morning";
 
-    const interval =
-      setInterval(()=>{
+  }
 
-        fetchOrders();
+  if(hour < 18){
 
-      },3000);
+    return "Good afternoon";
 
-    return ()=>clearInterval(
-      interval
-    );
+  }
 
-  },[]);
+  return "Good evening";
 
+};
+
+useEffect(()=>{
+
+  fetchMe();
+
+},[]);
+
+useEffect(()=>{
+
+  if(!user?._id){
+    return;
+  }
+
+  fetchOrders();
+
+  const interval =
+    setInterval(()=>{
+
+      fetchOrders();
+
+    },3000);
+
+  return ()=>clearInterval(
+    interval
+  );
+
+},[user]);
+ 
   useEffect(() => {
 
   socket.on(
@@ -923,20 +951,20 @@ useEffect(()=>{
 
       (position)=>{
 
-        socket.emit(
-          "riderLocation",
-          {
+       socket.emit(
+  "riderLocation",
+  {
 
-            lat:
-              position.coords.latitude,
+    lat:
+      position.coords.latitude,
 
-            lng:
-              position.coords.longitude,
+    lng:
+      position.coords.longitude,
 
-            riderId:user._id
-          }
-        );
-
+    riderId:
+      user._id
+  }
+);
       },
 
       (error)=>{
@@ -1092,37 +1120,42 @@ useEffect(()=>{
 
 
 const active =
-  data.filter(
+  data.filter((o)=>{
 
-    (o)=>
+    const riderId =
+      o.rider?._id ||
+      o.rider ||
+      o.riderId;
 
-      o.rider?._id ===
-      user?._id
-
+    return (
+      String(riderId) === String(user?._id)
       &&
+      o.status !== "delivered"
+      &&
+      o.status !== "pending"
+    );
 
-      o.status !==
-      "delivered"
-  );
+  });
 
 setActiveOrders(
   active
 );
 
-
 const delivered =
-  data.filter(
+  data.filter((o)=>{
 
-    (o)=>
+    const riderId =
+      o.rider?._id ||
+      o.rider ||
+      o.riderId;
 
-      o.rider?._id ===
-      user?._id
-
+    return (
+      String(riderId) === String(user?._id)
       &&
+      o.status === "delivered"
+    );
 
-      o.status ===
-      "delivered"
-  );
+  });
 
 setCompletedOrders(
   delivered
@@ -1188,12 +1221,35 @@ async function acceptOrder(orderId){
 
   //REJECT
 
-  function rejectOrder(){
+ async function rejectOrder(orderId){
+
+  try{
+
+    await API.put(
+
+      `/orders/${orderId}`,
+
+      {
+        status:"cancelled"
+      }
+    );
 
     alert(
-      "Order rejected"
+      "Order cancelled successfully"
+    );
+
+    fetchOrders();
+
+  }catch(err){
+
+    console.log(err);
+
+    alert(
+      err.response?.data?.message ||
+      "Failed to cancel order"
     );
   }
+}
 
   //PICKUP
 
@@ -1610,14 +1666,21 @@ async function acceptOrder(orderId){
 
     <div>
 
-      <HeroTitle>
-        Good morning,
-        {" "}
-        {
-          user?.name || "Rider"
-        }!
-        👋
-      </HeroTitle>
+     <HeroTitle>
+
+  {getGreeting()},
+
+  {" "}
+
+  {
+    user?.name || "Rider"
+  }
+
+  !
+
+  👋
+
+</HeroTitle>
 
       <HeroText>
         Here's your delivery overview
@@ -2100,17 +2163,19 @@ async function acceptOrder(orderId){
 
               <Button
 
-                color="#dc2626"
+  color="#dc2626"
 
-                onClick={()=>
+  onClick={()=>
 
-                  rejectOrder()
-                }
-              >
+    rejectOrder(
+      o._id
+    )
+  }
+>
 
-                Reject
+  Reject
 
-              </Button>
+</Button>
 
             </ButtonRow>
           )
@@ -2250,23 +2315,43 @@ async function acceptOrder(orderId){
           <OrderCard key={order._id}>
 
             <Row>
-              <strong>Customer:</strong>
-              {" "}
-              {order.customerName}
-            </Row>
+  <strong>Customer:</strong>
+  {" "}
+  {
+    order.customer?.name ||
+    "Unknown Customer"
+  }
+</Row>
 
-            <Row>
-              <strong>Pickup:</strong>
-              {" "}
-              {order.pickupAddress}
-            </Row>
+<Row>
+  <strong>Pickup:</strong>
+  {" "}
+  {
+    order.pickupLocation
+  }
+</Row>
 
-            <Row>
-              <strong>Dropoff:</strong>
-              {" "}
-              {order.deliveryAddress}
-            </Row>
+<Row>
+  <strong>Dropoff:</strong>
+  {" "}
+  {
+    order.dropoffLocation
+  }
+</Row>
 
+<Row>
+  <strong>Distance:</strong>
+  {" "}
+  {
+    order.distance
+  } km
+</Row>
+
+<Row>
+  <strong>Amount:</strong>
+  {" "}
+  ₵{order.total}
+</Row>
             <StatusBadge
               status={order.status}
             >

@@ -29,6 +29,8 @@ import {
   Polyline
 } from "react-leaflet";
 
+import "leaflet/dist/leaflet.css";
+
 import L from "leaflet";
 
 const Layout = styled.div`
@@ -730,9 +732,9 @@ const locationCoords = {
   },
 
   "Tema Community 1":{
-    lat:5.6698,
-    lng:0.0166
-  },
+  lat:5.6480,
+  lng:0.0105
+},
 
   "Tema Community 25":{
     lat:5.7265,
@@ -958,6 +960,10 @@ setProfileGender(
 setProfileEmergency(
   user.emergencyContact || ""
 );
+
+setProfileImage(
+  user.profileImage || ""
+);
   }
 
 },[user]);
@@ -997,7 +1003,13 @@ setProfileEmergency(
     "riderLocationUpdate",
     (data)=>{
 
+      console.log(
+        "LIVE RIDER LOCATION:",
+        data
+      );
+
       setRiderLocation({
+        riderId:data.riderId,
         lat:data.lat,
         lng:data.lng
       });
@@ -1058,6 +1070,15 @@ async function saveProfile(){
 
       const res =
         await API.get("/customer/me");
+
+        console.log(
+  "CUSTOMER ME DATA:",
+  res.data
+);
+
+setUser(
+  res.data.user || res.data
+);
 
       setUser(
         res.data.user || res.data
@@ -1959,23 +1980,26 @@ total:amount,
 
 </Timeline>
 
-                        {
-  riderLocation && (
+  {
+
+  locationCoords[o.pickupLocation] &&
+  locationCoords[o.dropoffLocation] && (
 
     <div
       style={{
         marginTop:"20px",
         borderRadius:"18px",
-        overflow:"hidden"
+        overflow:"hidden",
+        border:"1px solid #e5e7eb"
       }}
     >
 
       <MapContainer
         center={[
-          riderLocation.lat,
-          riderLocation.lng
+          locationCoords[o.pickupLocation].lat,
+          locationCoords[o.pickupLocation].lng
         ]}
-        zoom={13}
+        zoom={12}
         style={{
           height:"300px",
           width:"100%"
@@ -1987,44 +2011,76 @@ total:amount,
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
+        {/* PICKUP MARKER */}
+
         <Marker
           position={[
-            riderLocation.lat,
-            riderLocation.lng
+            locationCoords[o.pickupLocation].lat,
+            locationCoords[o.pickupLocation].lng
           ]}
-          icon={riderIcon}
-        >
-
-          <Popup>
-            Rider Current Location
-          </Popup>
-
-        </Marker>
-
-        <Marker
-         position={[
-           customerLocation.lat,
-            customerLocation.lng
-           ]}
           icon={customerIcon}
         >
 
           <Popup>
-            Delivery Destination
+            Pickup Location
           </Popup>
 
         </Marker>
 
+        {/* DROPOFF MARKER */}
+
+        <Marker
+          position={[
+            locationCoords[o.dropoffLocation].lat,
+            locationCoords[o.dropoffLocation].lng
+          ]}
+          icon={customerIcon}
+        >
+
+          <Popup>
+            Dropoff Location
+          </Popup>
+
+        </Marker>
+
+        {/* RIDER MARKER */}
+
+      {
+  riderLocation &&
+  o.rider?._id &&
+  String(riderLocation.riderId) ===
+  String(o.rider._id) && (
+
+    <Marker
+      position={[
+        riderLocation.lat,
+        riderLocation.lng
+      ]}
+      icon={riderIcon}
+    >
+
+      <Popup>
+        Rider Current Location
+      </Popup>
+
+    </Marker>
+  )
+}
+        {/* ROUTE LINE */}
+
         <Polyline
           positions={[
+
             [
-              riderLocation.lat,
-              riderLocation.lng
+              locationCoords[o.pickupLocation].lat,
+              locationCoords[o.pickupLocation].lng
             ],
+
             [
-               customerLocation.lat,
-               customerLocation.lng
+              locationCoords[o.dropoffLocation].lat,
+              locationCoords[o.dropoffLocation].lng
             ]
+
           ]}
         />
 
@@ -2032,27 +2088,26 @@ total:amount,
 
     </div>
   )
-}
+}    
 
-                        <ButtonRow>
+<ButtonRow>
 
-                          <Button
-                            onClick={()=>{
+<Button
+onClick={()=>{
+ setOpenChats({
 
-                              setOpenChats({
+   ...openChats,
 
-                                ...openChats,
+  [o._id]:
+  !openChats[o._id]
+  });
 
-                                [o._id]:
-                                  !openChats[o._id]
-                              });
+   }}
+    >
+     Chat Rider
+    </Button>
 
-                            }}
-                          >
-                            Chat Rider
-                          </Button>
-
-                          <Button
+    <Button
   onClick={()=>{
 
     if(!o.rider?.phone){
@@ -2806,10 +2861,11 @@ calculateDistance(
 >
 
   <ProfileImage
-    src={
-      profileImage ||
-      customerImage
-    }
+   src={
+  profileImage ||
+  user?.profileImage ||
+  customerImage
+}
     alt="Customer"
     style={{
       width:"140px",
@@ -2823,24 +2879,66 @@ calculateDistance(
     }}
   >
 
-    <input
-      type="file"
-      accept="image/*"
+   <input
+  type="file"
+  accept="image/*"
+  onChange={async(e)=>{
 
-      onChange={(e)=>{
+    const file =
+      e.target.files[0];
 
-        const file =
-          e.target.files[0];
+    if(!file){
+      return;
+    }
 
-        if(file){
+    setProfileImage(
+      URL.createObjectURL(file)
+    );
 
-          setProfileImage(
-            URL.createObjectURL(file)
-          );
-        }
+    const formData =
+      new FormData();
 
-      }}
-    />
+    formData.append(
+      "profileImage",
+      file
+    );
+
+    try{
+
+      const res =
+        await API.put(
+          "/customer/profile-image",
+          formData,
+          {
+            headers:{
+              "Content-Type":"multipart/form-data"
+            }
+          }
+        );
+
+      setUser(
+        res.data.user
+      );
+
+      setProfileImage(
+        res.data.user.profileImage
+      );
+
+      alert(
+        "Profile image uploaded successfully"
+      );
+
+    }catch(err){
+
+      console.log(err);
+
+      alert(
+        err.response?.data?.message ||
+        "Image upload failed"
+      );
+    }
+  }}
+/>
 
   </div>
 
