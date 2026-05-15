@@ -826,6 +826,18 @@ const [previousMessages,
 
 };
 
+const getRiderDisplayStatus = () => {
+
+  if(
+    activeOrders.length > 0
+  ){
+
+    return "busy";
+  }
+
+  return user?.status || "available";
+};
+
 useEffect(()=>{
 
   fetchMe();
