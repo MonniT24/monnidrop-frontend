@@ -1116,7 +1116,7 @@ setUser(
     }
   }
 
-  async function fetchOrders(){
+ async function fetchOrders(){
 
   try{
 
@@ -1135,10 +1135,10 @@ setUser(
           );
 
         if(
-  oldOrder &&
-  oldOrder.status !== newOrder.status &&
-  newOrder.status === "accepted"
-){
+          oldOrder &&
+          oldOrder.status !== newOrder.status &&
+          newOrder.status === "accepted"
+        ){
 
           setNotifications((prev)=>[
             {
@@ -1158,6 +1158,34 @@ setUser(
     });
 
     setOrders(newOrders);
+
+    const inboxMessages =
+      newOrders.flatMap((order)=>
+
+        (order.messages || [])
+
+          .filter((msg)=>
+            msg.sender === "rider"
+          )
+
+          .map((msg)=>({
+
+            orderId:order._id,
+
+            sender:msg.sender,
+
+            text:msg.text,
+
+            time:
+              msg.createdAt
+              ? new Date(msg.createdAt).toLocaleTimeString()
+              : "New message"
+          }))
+      );
+
+    setMessageInbox(
+      inboxMessages.reverse()
+    );
 
   }catch(err){
 
