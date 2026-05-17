@@ -586,9 +586,13 @@ const [showConfirm,
   setShowConfirm] =
     useState(false);
 
-    const [cashOnDelivery,
-  setCashOnDelivery] =
-    useState(false);
+    const [paymentMethod,
+  setPaymentMethod] =
+    useState("");
+
+const [momoNumber,
+  setMomoNumber] =
+    useState("");
 
 const [deliveryTime,
   setDeliveryTime] =
@@ -1073,6 +1077,17 @@ async function saveProfile(){
       res.data.user
     );
 
+setProfileName(res.data.user.name || "");
+setProfileEmail(res.data.user.email || "");
+setProfilePhone(res.data.user.phone || "");
+setProfileAddress(res.data.user.address || "");
+setProfileDOB(res.data.user.dob || "");
+setProfileGender(res.data.user.gender || "");
+setProfileEmergency(res.data.user.emergencyContact || "");
+setProfileImage(res.data.user.profileImage || "");
+
+fetchMe();
+
     alert(
       "Profile saved successfully"
     );
@@ -1102,13 +1117,14 @@ async function saveProfile(){
   res.data
 );
 
-setUser(
-  res.data.user || res.data
-);
+const loggedUser =
+  res.data.user || res.data;
 
-      setUser(
-        res.data.user || res.data
-      );
+setUser(loggedUser);
+
+setProfileImage(
+  loggedUser.profileImage || ""
+);
 
     }catch(err){
 
@@ -1403,7 +1419,7 @@ async function createOrder(){
   try{
 
 
-    if(
+  if(
   !pickupLocation ||
   !dropoffLocation ||
   !distance ||
@@ -1412,6 +1428,27 @@ async function createOrder(){
 
   alert(
     "Please select pickup and dropoff locations first"
+  );
+
+  return;
+}
+
+if(!paymentMethod){
+
+  alert(
+    "Please choose Cash on Delivery or Mobile Money"
+  );
+
+  return;
+}
+
+if(
+  paymentMethod === "momo" &&
+  !momoNumber
+){
+
+  alert(
+    "Please enter your Mobile Money number"
   );
 
   return;
@@ -1426,7 +1463,12 @@ dropoffLocation,
 distance:distance,
 deliveryTime:deliveryTime,
 total:amount,
-        items:[
+paymentMethod,
+momoNumber:
+  paymentMethod === "momo"
+  ? momoNumber
+  : "",
+items:[
           {
             name:itemNotes || "Delivery Item",
             quantity:1
@@ -1442,6 +1484,8 @@ total:amount,
     setDistance("");
     setAmount("");
     setItemNotes("");
+    setPaymentMethod("");
+    setMomoNumber("");
     setShowConfirm(false);
 
     fetchOrders();
@@ -1503,9 +1547,16 @@ total:amount,
   }
 
   const activeOrders =
-    orders.filter(
-      (o)=>o.status !== "delivered"
-    );
+  orders.filter(
+    (o)=>
+      o.status !== "delivered" &&
+      o.status !== "cancelled"
+  );
+
+  const cancelledOrders =
+  orders.filter(
+    (o)=>o.status === "cancelled"
+  );   
 
   const completedOrders =
     orders.filter(
@@ -1565,25 +1616,124 @@ total:amount,
 
           <ProfileCard>
 
-            <ProfileImage
-              src={customerImage}
-              alt="Customer"
-            />
+           <ProfileImage
+ src={
+  user?.profileImage
+    ? `${user.profileImage}?t=${Date.now()}`
+    : customerImage
+}
 
-            <h3
-              style={{
-                display:"flex",
-                alignItems:"center",
-                justifyContent:"center",
-                gap:"8px"
-              }}
-            >
-              <FiUser />
 
-              {
-                user?.name || "Customer"
-              }
-            </h3>
+  alt="Customer"
+  style={{
+  width:"110px",
+  height:"110px",
+  borderRadius:"50%",
+  border:"4px solid #2563eb",
+  boxShadow:"0 8px 24px rgba(37,99,235,0.18)",
+  objectFit:"cover",
+  marginBottom:"14px"
+}}
+/>
+
+<label
+  htmlFor="profileUpload"
+  style={{
+    marginTop:"18px",
+    background:"#2563eb",
+    color:"white",
+    padding:"12px 22px",
+    borderRadius:"14px",
+    cursor:"pointer",
+    fontWeight:"700",
+    fontSize:"15px",
+    display:"inline-block"
+  }}
+>
+  Change Picture
+</label>
+
+<input
+  id="profileUpload"
+  type="file"
+  accept="image/*"
+  style={{
+    display:"none"
+  }}
+  onChange={async(e)=>{
+
+    const file =
+      e.target.files[0];
+
+    if(!file){
+      return;
+    }
+
+
+    const formData =
+      new FormData();
+
+    formData.append(
+      "profileImage",
+      file
+    );
+
+    try{
+
+      const res =
+        await API.put(
+          "/customer/profile-image",
+          formData,
+          {
+            headers:{
+              "Content-Type":"multipart/form-data"
+            }
+          }
+        );
+
+      setUser(
+        res.data.user
+      );
+
+      alert(
+        "Profile image updated successfully"
+      );
+
+    }catch(err){
+
+      console.log(err);
+
+      alert(
+        err.response?.data?.message ||
+        "Image upload failed"
+      );
+    }
+  }}
+/>
+
+           <h3
+  style={{
+    fontSize:"20px",
+    fontWeight:"800",
+    color:"#0f172a",
+    marginTop:"10px",
+    marginBottom:"4px"
+  }}
+>
+  {
+    user?.name || "Customer"
+  }
+</h3>
+
+<p
+  style={{
+    color:"#64748b",
+    fontSize:"14px",
+    marginBottom:"16px"
+  }}
+>
+  MonniDrop Customer
+</p>
 
           </ProfileCard>
 
@@ -2242,7 +2392,7 @@ onClick={()=>{
                           openChats[o._id] && (
 
                             <div
-                              style={{
+                            style={{
                                 marginTop:"15px",
                                 background:"#f8fafc",
                                 padding:"15px",
@@ -2684,38 +2834,60 @@ calculateDistance(
   <div
     style={{
       display:"flex",
-      alignItems:"center",
       gap:"12px",
-      marginTop:"10px"
+      flexWrap:"wrap",
+      marginTop:"12px"
     }}
   >
 
-    <input
-      type="checkbox"
-      checked={cashOnDelivery}
-      onChange={(e)=>
-        setCashOnDelivery(
-          e.target.checked
-        )
+    <Button
+      type="button"
+      onClick={()=>
+        setPaymentMethod("cash")
       }
       style={{
-        width:"20px",
-        height:"20px",
-        cursor:"pointer"
-      }}
-    />
-
-    <span
-      style={{
-        fontSize:"16px",
-        fontWeight:"600",
-        color:"#0f172a"
+        background:
+          paymentMethod === "cash"
+          ? "#16a34a"
+          : "#2563eb"
       }}
     >
       Cash on Delivery
-    </span>
+    </Button>
+
+    <Button
+      type="button"
+      onClick={()=>
+        setPaymentMethod("momo")
+      }
+      style={{
+        background:
+          paymentMethod === "momo"
+          ? "#16a34a"
+          : "#2563eb"
+      }}
+    >
+      Mobile Money
+    </Button>
 
   </div>
+
+  {
+    paymentMethod === "momo" && (
+
+      <BeautifulInput
+        type="tel"
+        placeholder="Enter MoMo number"
+        value={momoNumber}
+        onChange={(e)=>
+          setMomoNumber(
+            e.target.value
+          )
+        }
+      />
+
+    )
+  }
 
 </OrderSection>
 
@@ -2796,6 +2968,33 @@ calculateDistance(
         {" "}
         ₵{amount}
       </Row>
+
+      <Row>
+  <strong>
+    Payment Method:
+  </strong>
+  {" "}
+  {
+    paymentMethod === "cash"
+    ? "Cash on Delivery"
+    : paymentMethod === "momo"
+    ? "Mobile Money"
+    : "Not selected"
+  }
+</Row>
+
+{
+  paymentMethod === "momo" && (
+
+    <Row>
+      <strong>
+        MoMo Number:
+      </strong>
+      {" "}
+      {momoNumber}
+    </Row>
+  )
+}
 
       <ButtonRow>
 
@@ -3011,122 +3210,62 @@ calculateDistance(
     }}
   >
 
-   <HeroTitle
-  style={{
-    marginTop:"190px"
-  }}
->
-  My Profile 👤
-</HeroTitle>
     
 
-    <div
+<div
   style={{
-    position:"absolute",
-    top:"20px",
-    left:"20px",
-    display:"flex",
-    flexDirection:"column",
-    alignItems:"center"
-  }}
+  display:"flex",
+  flexDirection:"column",
+  alignItems:"flex-start",
+  justifyContent:"flex-start",
+  margin:"0",
+  width:"100%"
+}}
 >
 
   <ProfileImage
-   src={
-  profileImage ||
-  user?.profileImage ||
-  customerImage
+ src={
+  user?.profileImage
+    ? `${user.profileImage}?t=${Date.now()}`
+    : customerImage
 }
-    alt="Customer"
     style={{
-      width:"140px",
-      height:"140px"
+      width:"170px",
+      height:"170px",
+      marginLeft:"0",
+      border:"6px solid #2563eb",
+      boxShadow:"0 12px 35px rgba(37,99,235,0.25)",
+      objectFit:"cover"
     }}
   />
 
-  <div
-    style={{
-      marginTop:"12px"
-    }}
-  >
-
-   <input
-  type="file"
-  accept="image/*"
-  onChange={async(e)=>{
-
-    const file =
-      e.target.files[0];
-
-    if(!file){
-      return;
-    }
-
-    setProfileImage(
-      URL.createObjectURL(file)
-    );
-
-    const formData =
-      new FormData();
-
-    formData.append(
-      "profileImage",
-      file
-    );
-
-    try{
-
-      const res =
-        await API.put(
-          "/customer/profile-image",
-          formData,
-          {
-            headers:{
-              "Content-Type":"multipart/form-data"
-            }
-          }
-        );
-
-      setUser(
-        res.data.user
-      );
-
-      setProfileImage(
-        res.data.user.profileImage
-      );
-
-      alert(
-        "Profile image uploaded successfully"
-      );
-
-    }catch(err){
-
-      console.log(err);
-
-      alert(
-        err.response?.data?.message ||
-        "Image upload failed"
-      );
-    }
+  <HeroTitle
+  style={{
+    marginTop:"18px",
+    marginBottom:"8px"
   }}
-/>
-
-  </div>
+>
+  My Profile
+</HeroTitle>
 
 </div>
+    
+<HeroText
+  style={{
+    marginTop:"10px",
+    marginBottom:"45px",
+    textAlign:"left",
+    fontSize:"18px"
+  }}
+>
+  Manage your customer profile information.
+</HeroText>
 
-    <HeroText
-      style={{
-        marginBottom:"30px"
-      }}
-    >
-      Manage your customer profile information.
-    </HeroText>
-
+   
     <div
   style={{
     display:"flex",
-    justifyContent:"space-between",
+    justifyContent:"center",
     alignItems:"flex-start",
     flexWrap:"wrap",
     gap:"30px"
@@ -3135,11 +3274,20 @@ calculateDistance(
 
       <div
         style={{
-          flex:1
+          flex:1,
+          background:"#f8fafc",
+          padding:"35px",
+          borderRadius:"24px",
+          border:"1px solid #e5e7eb"
         }}
       >
 
-        <Row>
+       <Row
+      style={{
+      fontSize:"18px",
+      marginBottom:"18px"
+      }}
+   >
           <strong>Name:</strong>
           {" "}
           {profileName}
@@ -3206,16 +3354,40 @@ calculateDistance(
   }
 />
 
-<BeautifulInput
-  type="text"
-  placeholder="Gender"
+<select
   value={profileGender}
   onChange={(e)=>
     setProfileGender(
       e.target.value
     )
   }
-/>
+  style={{
+    width:"100%",
+    padding:"18px 20px",
+    borderRadius:"18px",
+    border:"1px solid #dbe4ee",
+    background:"white",
+    fontSize:"16px",
+    outline:"none",
+    marginTop:"12px"
+  }}
+>
+  <option value="">
+    Select Gender
+  </option>
+
+  <option value="Female">
+    Female
+  </option>
+
+  <option value="Male">
+    Male
+  </option>
+
+  <option value="Prefer not to say">
+    Prefer not to say
+  </option>
+</select>
 
 <BeautifulInput
   type="text"

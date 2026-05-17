@@ -728,6 +728,9 @@ export default function Rider(){
 const [riderEmergency,setRiderEmergency] =
   useState("");
 
+  const [motorNumber,setMotorNumber] =
+  useState("");
+
   const [riderProfileEditing,setRiderProfileEditing] =
   useState(false);
 
@@ -1072,7 +1075,11 @@ useEffect(()=>{
     setRiderEmergency(
       user.emergencyContact || ""
     );
-  }
+
+    setMotorNumber(
+       user.motorNumber || ""
+    );
+   }
 
 },[user]);
   
@@ -1536,8 +1543,12 @@ async function acceptOrder(orderId){
 
     <ProfileCard>
 
-      <ProfileImage
-  src={riderImage}
+     <ProfileImage
+  src={
+    user?.profileImage ||
+    selectedProfileImage ||
+    riderImage
+  }
   alt="Rider"
 />
 
@@ -2697,10 +2708,11 @@ async function acceptOrder(orderId){
         const res =
           await API.put(
             "/rider/profile",
-            {
-              dob:riderDOB,
-              emergencyContact:riderEmergency
-            }
+           {
+        dob:riderDOB,
+        emergencyContact:riderEmergency,
+        motorNumber:motorNumber
+         }
           );
 
         setUser(
@@ -2843,6 +2855,11 @@ async function acceptOrder(orderId){
       <strong>Emergency Contact:</strong>{" "}
       {riderEmergency || "Not added"}
     </Row>
+
+    <Row style={{fontSize:"20px",marginBottom:"24px"}}>
+  <strong>Motor Number:</strong>{" "}
+  {motorNumber || "Not added"}
+</Row>
 
   </>
 }

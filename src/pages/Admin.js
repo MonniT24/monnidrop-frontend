@@ -597,14 +597,32 @@ async function unsuspendRider(riderId){
         "delivered"
     );
 
-  const pendingOrders =
-    orders.filter(
+    const pendingOrders =
+  orders.filter(
 
-      (o)=>
+    (o)=>
 
-        o.status ===
-        "pending"
-    );
+      o.status ===
+      "pending"
+  );
+
+  const cancelledOrders =
+  orders.filter((o)=>
+
+    o.status === "cancelled" ||
+    o.status === "canceled" ||
+    o.status === "cancelled_by_customer" ||
+    o.status === "cancelled_by_rider"
+  );
+
+const fraudOrders =
+  cancelledOrders.filter((o)=>
+
+    Number(o.cancelCount || 0) >= 2 ||
+    Number(o.customerCancelCount || 0) >= 2 ||
+    Number(o.riderCancelCount || 0) >= 2 ||
+    o.flagged === true
+  );
 
   const totalRevenue =
     deliveredOrders.reduce(
@@ -825,6 +843,18 @@ const chartColors = [
 
           </StatCard>
 
+          <StatCard>
+
+  <StatTitle>
+    Fraud / Cancel Alerts
+  </StatTitle>
+
+  <StatValue>
+    {fraudOrders.length}
+  </StatValue>
+
+</StatCard>
+
         </Stats>
 
        
@@ -1003,6 +1033,82 @@ const chartColors = [
 </MapBox>
 
   <Grid>
+
+    {/* ================= FRAUD / CANCEL MONITORING ================= */}
+
+<Section>
+
+  <SectionTitle>
+
+    <h3>
+      Fraud / Cancel Monitoring
+    </h3>
+
+    <CountBadge>
+      {fraudOrders.length} Alerts
+    </CountBadge>
+
+  </SectionTitle>
+
+  {
+    fraudOrders.length === 0
+    ? (
+
+      <Empty>
+        No suspicious cancellations found
+      </Empty>
+
+    ) : (
+
+      fraudOrders.map((o)=>(
+
+        <OrderCard key={o._id}>
+
+          <Row>
+            <strong>Customer:</strong>{" "}
+            {o.customer?.name || "Unknown"}
+          </Row>
+
+          <Row>
+            <strong>Phone:</strong>{" "}
+            {o.customer?.phone || "N/A"}
+          </Row>
+
+          <Row>
+            <strong>Pickup:</strong>{" "}
+            {o.pickupLocation}
+          </Row>
+
+          <Row>
+            <strong>Dropoff:</strong>{" "}
+            {o.dropoffLocation}
+          </Row>
+
+          <Row>
+            <strong>Cancel Count:</strong>{" "}
+            {
+              o.cancelCount ||
+              o.customerCancelCount ||
+              o.riderCancelCount ||
+              1
+            }
+          </Row>
+
+          <Row>
+            <strong>Reason:</strong>{" "}
+            {o.cancelReason || "No reason provided"}
+          </Row>
+
+          <Badge status="pending">
+            Suspicious Cancel
+          </Badge>
+
+        </OrderCard>
+      ))
+    )
+  }
+
+</Section>
 
   {/* ================= RIDERS ================= */}
 
