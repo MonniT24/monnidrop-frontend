@@ -367,14 +367,7 @@ export default function Register(){
           "Registration successful"
         );
 
-        if(role === "rider"){
-
-          navigate("/rider");
-
-        }else{
-
-          navigate("/customer");
-        }
+        navigate("/customer");
 
       }catch(err){
 
@@ -449,10 +442,6 @@ export default function Register(){
 
             <option value="customer">
               Customer
-            </option>
-
-            <option value="rider">
-              Rider
             </option>
 
           </Select>
