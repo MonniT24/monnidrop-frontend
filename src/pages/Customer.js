@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import styled from "styled-components";
+import styled,{createGlobalStyle} from "styled-components";
 
 import API from "../api/api";
 import socket from "../socket";
@@ -33,6 +33,48 @@ import "leaflet/dist/leaflet.css";
 
 import L from "leaflet";
 
+const GlobalLeafletFix = createGlobalStyle`
+
+  .leaflet-container{
+    position:relative !important;
+    z-index:0 !important;
+  }
+
+  .leaflet-pane,
+  .leaflet-map-pane,
+  .leaflet-tile-pane,
+  .leaflet-overlay-pane,
+  .leaflet-shadow-pane,
+  .leaflet-marker-pane,
+  .leaflet-tooltip-pane,
+  .leaflet-popup-pane{
+    z-index:0 !important;
+  }
+
+  .leaflet-top,
+  .leaflet-bottom,
+  .leaflet-control-container{
+    z-index:1 !important;
+  }
+
+  @media(max-width:768px){
+
+    .leaflet-container{
+      pointer-events:${props =>
+        props.sidebarOpen
+        ? "none"
+        : "auto"} !important;
+
+      opacity:${props =>
+        props.sidebarOpen
+        ? "0"
+        : "1"} !important;
+
+      transition:opacity 0.2s ease;
+    }
+  }
+`;
+
 const Layout = styled.div`
   display:flex;
   min-height:100vh;
@@ -52,12 +94,22 @@ const Sidebar = styled.div`
   top:0;
   height:100vh;
   overflow-y:auto;
-  z-index:100;
+  z-index:99999;
   transition:0.3s ease;
 
   @media(max-width:768px){
-    width:200px;
-    left:${props => props.open ? "0" : "-100%"};
+    width:78vw;
+    max-width:300px;
+    left:${props => props.open ? "0" : "-110%"};
+    box-shadow:${props =>
+      props.open
+      ? "12px 0 30px rgba(15,23,42,0.18)"
+      : "none"};
+  }
+
+  @media(max-width:480px){
+    width:82vw;
+    padding:20px 16px;
   }
 `;
 
@@ -67,10 +119,15 @@ const Main = styled.div`
   padding:32px;
   min-height:100vh;
   background:#f5f7fb;
+  overflow-x:hidden;
 
   @media(max-width:768px){
     margin-left:0;
-    padding:24px 18px;
+    padding:82px 14px 24px;
+  }
+
+  @media(max-width:480px){
+    padding:78px 10px 20px;
   }
 `;
 
@@ -82,17 +139,26 @@ const MobileMenuButton = styled.button`
     align-items:center;
     justify-content:center;
     position:fixed;
-    top:17px;
-    left:17px;
-    width:50px;
-    height:50px;
+    top:14px;
+    left:14px;
+    width:46px;
+    height:46px;
     border:none;
     border-radius:14px;
     background:#2563eb;
     color:white;
-    font-size:26px;
+    font-size:24px;
     cursor:pointer;
-    z-index:1001;
+    z-index:100000;
+    box-shadow:0 8px 20px rgba(37,99,235,0.25);
+  }
+
+  @media(max-width:480px){
+    top:12px;
+    left:12px;
+    width:44px;
+    height:44px;
+    font-size:22px;
   }
 `;
 
@@ -130,6 +196,12 @@ const ProfileImage = styled.img`
   margin:auto;
   margin-bottom:12px;
   border:5px solid #2563eb;
+
+  @media(max-width:480px){
+    width:74px;
+    height:74px;
+    border:4px solid #2563eb;
+  }
 `;
 
 const SidebarMenu = styled.div`
@@ -256,8 +328,14 @@ const StatValue = styled.div`
 const OrdersGrid = styled.div`
   display:grid;
   grid-template-columns:
-    repeat(auto-fit,minmax(320px,1fr));
+    repeat(auto-fit,minmax(280px,1fr));
   gap:18px;
+  width:100%;
+
+  @media(max-width:480px){
+    grid-template-columns:1fr;
+    gap:14px;
+  }
 `;
 
 const CreateOrderWrapper = styled.div`
@@ -372,6 +450,13 @@ const ConfirmButton = styled.button`
   &:hover{
     transform:translateY(-2px);
   }
+
+  @media(max-width:480px){
+    width:100%;
+    padding:15px;
+    font-size:15px;
+    border-radius:16px;
+  }
 `;
 
 const OrderCard = styled.div`
@@ -380,6 +465,14 @@ const OrderCard = styled.div`
   padding:24px;
   box-shadow:
     0 6px 20px rgba(0,0,0,0.05);
+  width:100%;
+  max-width:100%;
+  overflow:hidden;
+
+  @media(max-width:480px){
+    border-radius:18px;
+    padding:16px;
+  }
 `;
 
 const Row = styled.div`
@@ -467,6 +560,11 @@ const ButtonRow = styled.div`
   gap:10px;
   margin-top:18px;
   flex-wrap:wrap;
+
+  @media(max-width:480px){
+    flex-direction:column;
+    gap:12px;
+  }
 `;
 
 const Button = styled.button`
@@ -481,6 +579,12 @@ const Button = styled.button`
 
   &:hover{
     background:#1d4ed8;
+  }
+
+  @media(max-width:480px){
+    width:100%;
+    padding:14px;
+    font-size:15px;
   }
 `;
 
@@ -1661,6 +1765,10 @@ async function sendMessage(
   }
 >
 
+  <GlobalLeafletFix
+  sidebarOpen={sidebarOpen}
+/>
+
       <Sidebar
   open={sidebarOpen}
   onClick={(e)=>
@@ -2292,10 +2400,13 @@ async function sendMessage(
           locationCoords[o.pickupLocation].lng
         ]}
         zoom={12}
-        style={{
-          height:"300px",
-          width:"100%"
-        }}
+       style={{
+  height:
+    window.innerWidth <= 480
+    ? "220px"
+    : "300px",
+  width:"100%"
+}}
       >
 
         <TileLayer
