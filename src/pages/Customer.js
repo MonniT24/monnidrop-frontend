@@ -2380,8 +2380,9 @@ async function sendMessage(
 
 </Timeline>
 
-  {
-
+  { 
+  
+  !sidebarOpen &&
   locationCoords[o.pickupLocation] &&
   locationCoords[o.dropoffLocation] && (
 
