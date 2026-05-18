@@ -596,6 +596,427 @@ const Empty = styled.div`
   color:#64748b;
 `;
 
+const DashboardHero = styled.div`
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(250,204,21,0.48),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #1d4ed8
+    );
+  color:white;
+  border-radius:28px;
+  padding:24px 28px;
+  margin-bottom:22px;
+  box-shadow:
+    0 14px 34px rgba(15,23,42,0.16);
+
+  @media(max-width:768px){
+    padding:22px 18px;
+    border-radius:22px;
+  }
+
+  &::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,0.75) 0 2px, transparent 3px),
+      radial-gradient(circle, rgba(250,204,21,0.75) 0 2px, transparent 3px),
+      radial-gradient(circle, rgba(255,255,255,0.55) 0 1.5px, transparent 3px);
+
+    background-size:
+      120px 120px,
+      170px 170px,
+      90px 90px;
+
+    background-position:
+      20px 30px,
+      80px 70px,
+      140px 20px;
+
+    opacity:0.42;
+    animation:sparkleMove 5s linear infinite;
+  }
+
+  @keyframes sparkleMove{
+    0%{
+      background-position:
+        20px 30px,
+        80px 70px,
+        140px 20px;
+      opacity:0.30;
+    }
+
+    50%{
+      background-position:
+        40px 45px,
+        100px 55px,
+        160px 35px;
+      opacity:0.65;
+    }
+
+    100%{
+      background-position:
+        20px 30px,
+        80px 70px,
+        140px 20px;
+      opacity:0.30;
+    }
+  }
+`;
+
+const HeroLogo = styled.img`
+  position:absolute;
+  top:-12px;
+  left:42%;
+
+  width:92px;
+  height:92px;
+  object-fit:contain;
+
+  background:transparent;
+  padding:0;
+  border:none;
+  border-radius:50%;
+  box-shadow:none;
+
+  z-index:10;
+
+  animation:logoRotatePause 5s ease-in-out infinite;
+
+  @keyframes logoRotatePause{
+    0%{
+      transform:rotate(0deg);
+    }
+
+    45%{
+      transform:rotate(360deg);
+    }
+
+    70%{
+      transform:rotate(360deg);
+    }
+
+    100%{
+      transform:rotate(360deg);
+    }
+  }
+
+  @media(max-width:768px){
+    top:-8px;
+    left:60%;
+
+    width:62px;
+    height:62px;
+    object-fit:contain;
+
+    background:transparent;
+    padding:0;
+    border:none;
+    border-radius:50%;
+    box-shadow:none;
+  }
+`;
+
+const DashboardHeroContent = styled.div`
+  position:relative;
+  z-index:2;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:24px;
+  flex-wrap:wrap;
+`;
+
+const DashboardHeroTitle = styled.h1`
+  font-size:32px;
+  font-weight:900;
+  margin:0 0 8px;
+  letter-spacing:-0.6px;
+  line-height:1.1;
+
+  @media(max-width:768px){
+    font-size:25px;
+  }
+`;
+
+const DashboardHeroText = styled.p`
+  max-width:520px;
+  color:#dbeafe;
+  font-size:14px;
+  line-height:1.55;
+  margin:0;
+
+  @media(max-width:768px){
+    font-size:13px;
+  }
+`;
+
+const HeroBadge = styled.div`
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(255,255,255,0.15);
+  border:1px solid rgba(255,255,255,0.25);
+  color:white;
+  padding:10px 14px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:800;
+  margin-bottom:16px;
+  backdrop-filter:blur(10px);
+`;
+
+const DashboardActions = styled.div`
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:24px;
+`;
+
+const DashboardActionButton = styled.button`
+  border:none;
+  border-radius:14px;
+  padding:12px 16px;
+  background:${props =>
+    props.primary
+    ? "#facc15"
+    : "rgba(255,255,255,0.14)"};
+  color:${props =>
+    props.primary
+    ? "#111827"
+    : "white"};
+  font-weight:900;
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,0.22);
+  transition:0.25s ease;
+  font-size:14px;
+
+  &:hover{
+    transform:translateY(-2px);
+  }
+
+  @media(max-width:480px){
+    width:100%;
+  }
+`;
+
+const DashboardHeroCard = styled.div`
+  min-width:250px;
+  background:rgba(255,255,255,0.13);
+  border:1px solid rgba(255,255,255,0.22);
+  border-radius:22px;
+  padding:18px;
+  backdrop-filter:blur(12px);
+
+  @media(max-width:768px){
+    width:100%;
+  }
+`;
+
+const HeroCardLabel = styled.div`
+  color:#bfdbfe;
+  font-size:13px;
+  font-weight:800;
+  margin-bottom:8px;
+`;
+
+const HeroCardValue = styled.div`
+  font-weight:900;
+line-height:1.15;
+margin-bottom:12px;
+  font-weight:900;
+`;
+
+const HeroCardTime = styled.div`
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:8px 14px;
+  margin-bottom:12px;
+
+  border-radius:14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #facc15,
+      #f59e0b
+    );
+
+  color:#0f172a;
+
+  font-size:21px;
+  font-weight:900;
+  letter-spacing:0.8px;
+
+  box-shadow:
+    0 10px 22px rgba(250,204,21,0.28);
+
+  border:1px solid rgba(255,255,255,0.35);
+
+  @media(max-width:768px){
+    font-size:18px;
+    padding:8px 12px;
+  }
+`;
+
+const HeroCardSmall = styled.div`
+  color:#dbeafe;
+  font-size:13px;
+  margin-top:8px;
+`;
+
+const PremiumStatsGrid = styled.div`
+  display:grid;
+  grid-template-columns:
+    repeat(auto-fit,minmax(190px,1fr));
+  gap:12px;
+  margin-bottom:20px;
+
+  @media(max-width:480px){
+    grid-template-columns:1fr;
+  }
+`;
+
+const PremiumStatCard = styled.div`
+  background:white;
+  border-radius:20px;
+  padding:14px;
+  box-shadow:
+    0 7px 18px rgba(15,23,42,0.05);
+  border:1px solid #eef2f7;
+  position:relative;
+  overflow:hidden;
+  min-height:150px;
+
+  &:before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:3px;
+    background:${props => props.line || "#2563eb"};
+  }
+
+  @media(max-width:480px){
+    padding:14px;
+    border-radius:18px;
+    min-height:145px;
+  }
+`;
+
+const PremiumStatIcon = styled.div`
+  width:34px;
+  height:34px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:${props => props.bg || "#eff6ff"};
+  color:${props => props.color || "#2563eb"};
+  font-size:17px;
+  margin-bottom:10px;
+`;
+
+const PremiumStatLabel = styled.div`
+  color:#64748b;
+  font-size:13px;
+  font-weight:900;
+  margin-bottom:6px;
+`;
+
+const PremiumStatValue = styled.div`
+  font-size:26px;
+  font-weight:900;
+  color:#0f172a;
+  line-height:1;
+`;
+
+const PremiumStatNote = styled.div`
+  color:#94a3b8;
+  font-size:11px;
+  line-height:1.3;
+  margin-top:8px;
+`;
+
+const DashboardGrid = styled.div`
+  display:grid;
+  grid-template-columns:1.4fr 0.9fr;
+  gap:22px;
+
+  @media(max-width:900px){
+    grid-template-columns:1fr;
+  }
+`;
+
+const DashboardPanel = styled.div`
+  background:white;
+  border-radius:28px;
+  padding:24px;
+  box-shadow:
+    0 10px 30px rgba(15,23,42,0.06);
+  border:1px solid #eef2f7;
+
+  @media(max-width:480px){
+    padding:18px;
+    border-radius:22px;
+  }
+`;
+
+const DashboardPanelTitle = styled.h3`
+  font-size:20px;
+  font-weight:900;
+  color:#0f172a;
+  margin:0 0 16px;
+`;
+
+const RecentOrderItem = styled.div`
+  padding:16px;
+  border-radius:18px;
+  background:#f8fafc;
+  border:1px solid #e5e7eb;
+  margin-bottom:12px;
+`;
+
+const MiniStatus = styled.span`
+  display:inline-flex;
+  padding:7px 12px;
+  border-radius:999px;
+  background:${props =>
+    props.paid
+    ? "#dcfce7"
+    : "#fef3c7"};
+  color:${props =>
+    props.paid
+    ? "#166534"
+    : "#92400e"};
+  font-size:12px;
+  font-weight:900;
+`;
+
+const DashboardTip = styled.div`
+  background:#fefce8;
+  border:1px solid #fde68a;
+  border-radius:20px;
+  padding:18px;
+  color:#713f12;
+  line-height:1.6;
+  font-weight:700;
+`;
+
 const riderIcon = new L.Icon({
 
   iconUrl:
@@ -619,6 +1040,10 @@ export default function Customer(){
 
   const [sidebarOpen,setSidebarOpen] =
     useState(false);
+
+
+    const [currentTime, setCurrentTime] =
+  useState(new Date());
 
   const [user,setUser] =
     useState(null);
@@ -1027,6 +1452,7 @@ const [
 
     fetchMe();
 
+
     fetchOrders();
 
     const interval =
@@ -1039,6 +1465,40 @@ const [
     return ()=>clearInterval(interval);
 
   },[]);
+
+  useEffect(()=>{
+
+  const timer =
+    setInterval(()=>{
+
+      setCurrentTime(
+        new Date()
+      );
+
+    },1000);
+
+  return ()=>clearInterval(
+    timer
+  );
+
+},[]);
+
+  useEffect(()=>{
+
+  const timer =
+    setInterval(()=>{
+
+      setCurrentTime(
+        new Date()
+      );
+
+    },1000);
+
+  return ()=>clearInterval(
+    timer
+  );
+
+},[]);
 
   useEffect(()=>{
 
@@ -2045,115 +2505,626 @@ async function sendMessage(
 
         {activeSection === "dashboard" && (
 
-          <>
+  <>
 
-            <div
-              style={{
-                background:"white",
-                padding:"10px",
-                borderRadius:"20px",
-                marginBottom:"25px",
-                display:"flex",
-                justifyContent:"center"
-              }}
+    <DashboardHero>
+
+      <DashboardHeroContent>
+
+        <HeroLogo
+  src="/logo.png"
+  alt="MonniDrop Logo"
+/>
+
+        <div>
+
+          <HeroBadge>
+            ⚡ MonniDrop Customer Dashboard
+          </HeroBadge>
+
+          <DashboardHeroTitle>
+            Welcome back,
+            {" "}
+            {
+              user?.name || "Customer"
+            }
+            👋
+          </DashboardHeroTitle>
+
+          <DashboardHeroText>
+            Book deliveries, track riders, monitor payments,
+            and manage every package from one clean dashboard.
+          </DashboardHeroText>
+
+          <DashboardActions>
+
+            <DashboardActionButton
+              primary
+              onClick={()=>
+                setActiveSection("createOrder")
+              }
             >
+              Create New Delivery
+            </DashboardActionButton>
 
-              <img
-                src={logo}
-                alt="Logo"
-                style={{
-                  width:"230px",
-                  objectFit:"contain"
-                }}
-              />
+            <DashboardActionButton
+              onClick={()=>
+                setActiveSection("orders")
+              }
+            >
+              Track My Orders
+            </DashboardActionButton>
 
-            </div>
+          </DashboardActions>
 
-            <Hero>
+        </div>
 
-              <div>
+        <DashboardHeroCard>
 
-                <HeroTitle>
-                  Welcome back,
-                  {" "}
-                  {
-                    user?.name || "Customer"
-                  }
-                  👋
-                </HeroTitle>
+  <HeroCardLabel>
+    Today
+  </HeroCardLabel>
 
-                <HeroText>
-                  Track your orders,
-                  rider updates,
-                  and delivery progress.
-                </HeroText>
+  <HeroCardValue>
+    {
+      currentTime
+      .toLocaleDateString(
+        "en-US",
+        {
+          weekday:"short",
+          month:"long",
+          day:"numeric",
+          year:"numeric"
+        }
+      )
+    }
+  </HeroCardValue>
 
-              </div>
+  <HeroCardTime>
+    {
+      currentTime
+      .toLocaleTimeString(
+        "en-US",
+        {
+          hour:"2-digit",
+          minute:"2-digit",
+          second:"2-digit"
+        }
+      )
+    }
+  </HeroCardTime>
 
-              <DateCard>
+  <HeroCardSmall>
+    Ready to move your next package.
+  </HeroCardSmall>
 
-                📅
-                {" "}
+</DashboardHeroCard>
 
-                {
-                  new Date()
-                  .toLocaleDateString(
-                    "en-US",
+      </DashboardHeroContent>
+
+    </DashboardHero>
+
+    <PremiumStatsGrid>
+
+  <PremiumStatCard
+    style={{
+      background:
+        "linear-gradient(135deg, #0f172a, #1d4ed8)",
+      color:"white",
+      border:"1px solid rgba(255,255,255,0.16)",
+      boxShadow:
+        "0 18px 38px rgba(29,78,216,0.26)"
+    }}
+  >
+
+    <PremiumStatIcon
+      style={{
+        background:"rgba(250,204,21,0.18)",
+        color:"#facc15",
+        border:"1px solid rgba(250,204,21,0.35)"
+      }}
+    >
+      <FiTruck />
+    </PremiumStatIcon>
+
+    <PremiumStatLabel
+      style={{
+        color:"rgba(255,255,255,0.86)"
+      }}
+    >
+      Active Orders
+    </PremiumStatLabel>
+
+    <PremiumStatValue
+      style={{
+        color:"#facc15"
+      }}
+    >
+      {activeOrders.length}
+    </PremiumStatValue>
+
+    <PremiumStatNote
+      style={{
+        color:"rgba(255,255,255,0.72)"
+      }}
+    >
+      Orders currently moving or waiting for a rider.
+    </PremiumStatNote>
+
+  </PremiumStatCard>
+
+  <PremiumStatCard
+    style={{
+      background:
+        "linear-gradient(135deg, #facc15, #f59e0b)",
+      color:"#0f172a",
+      border:"1px solid rgba(15,23,42,0.12)",
+      boxShadow:
+        "0 18px 38px rgba(250,204,21,0.30)"
+    }}
+  >
+
+    <PremiumStatIcon
+      style={{
+        background:"rgba(15,23,42,0.12)",
+        color:"#0f172a",
+        border:"1px solid rgba(15,23,42,0.18)"
+      }}
+    >
+      <FiPackage />
+    </PremiumStatIcon>
+
+    <PremiumStatLabel
+      style={{
+        color:"#0f172a"
+      }}
+    >
+      Completed Orders
+    </PremiumStatLabel>
+
+    <PremiumStatValue
+      style={{
+        color:"#132d68"
+      }}
+    >
+      {completedOrders.length}
+    </PremiumStatValue>
+
+    <PremiumStatNote
+      style={{
+        color:"rgba(15,23,42,0.72)"
+      }}
+    >
+      Successful deliveries completed on MonniDrop.
+    </PremiumStatNote>
+
+  </PremiumStatCard>
+
+  <PremiumStatCard
+    style={{
+      background:
+        "linear-gradient(135deg, #1d4ed8, #2563eb)",
+      color:"white",
+      border:"1px solid rgba(255,255,255,0.16)",
+      boxShadow:
+        "0 18px 38px rgba(37,99,235,0.26)"
+    }}
+  >
+
+    <PremiumStatIcon
+      style={{
+        background:"rgba(255,255,255,0.16)",
+        color:"#ffffff",
+        border:"1px solid rgba(255,255,255,0.28)"
+      }}
+    >
+      <FiBell />
+    </PremiumStatIcon>
+
+    <PremiumStatLabel
+      style={{
+        color:"rgba(255,255,255,0.86)"
+      }}
+    >
+      Notifications
+    </PremiumStatLabel>
+
+    <PremiumStatValue
+      style={{
+        color:"#ffffff"
+      }}
+    >
+      {notifications.length}
+    </PremiumStatValue>
+
+    <PremiumStatNote
+      style={{
+        color:"rgba(255,255,255,0.72)"
+      }}
+    >
+      Rider updates, messages, and delivery alerts.
+    </PremiumStatNote>
+
+  </PremiumStatCard>
+
+  <PremiumStatCard
+    style={{
+      background:
+        "linear-gradient(135deg, #0f172a, #111827)",
+      color:"white",
+      border:"1px solid rgba(250,204,21,0.35)",
+      boxShadow:
+        "0 18px 38px rgba(15,23,42,0.30)"
+    }}
+  >
+
+    <PremiumStatIcon
+      style={{
+        background:"rgba(250,204,21,0.16)",
+        color:"#facc15",
+        border:"1px solid rgba(250,204,21,0.35)"
+      }}
+    >
+      <FiClock />
+    </PremiumStatIcon>
+
+    <PremiumStatLabel
+      style={{
+        color:"#facc15"
+      }}
+    >
+      Pending Orders
+    </PremiumStatLabel>
+
+    <PremiumStatValue
+      style={{
+        color:"#facc15"
+      }}
+    >
+      {
+        orders.filter(
+          (o)=>o.status === "pending"
+        ).length
+      }
+    </PremiumStatValue>
+
+    <PremiumStatNote
+      style={{
+        color:"rgba(255,255,255,0.72)"
+      }}
+    >
+      Orders waiting for rider acceptance.
+    </PremiumStatNote>
+
+  </PremiumStatCard>
+
+</PremiumStatsGrid>
+
+    <DashboardGrid>
+
+      <DashboardPanel>
+
+       <DashboardPanelTitle
+  style={{
+    display:"flex",
+    alignItems:"center",
+    gap:"10px",
+    color:"#0f172a"
+  }}
+>
+  <span
+    style={{
+      width:"38px",
+      height:"38px",
+      borderRadius:"14px",
+      display:"inline-flex",
+      alignItems:"center",
+      justifyContent:"center",
+      background:
+        "linear-gradient(135deg, #0f172a, #1d4ed8)",
+      color:"#facc15",
+      boxShadow:
+        "0 10px 22px rgba(29,78,216,0.22)"
+    }}
+  >
+    <FiTruck />
+  </span>
+
+  Recent Delivery Activity
+
+</DashboardPanelTitle>
+
+        {
+          orders.length === 0
+
+          ?
+
+          (
+
+            <Empty>
+              No recent delivery yet. Create your first order.
+            </Empty>
+          )
+
+          :
+
+          (
+
+            orders.slice(0,3).map((o)=>(
+
+              <RecentOrderItem
+  key={o._id}
+  style={{
+    background:
+      "linear-gradient(135deg, #ffffff, #f8fafc)",
+    border:"1px solid rgba(29,78,216,0.12)",
+    boxShadow:
+      "0 12px 28px rgba(15,23,42,0.07)"
+  }}
+>
+
+                <Row
+  style={{
+    background:"#eff6ff",
+    border:"1px solid #dbeafe",
+    borderRadius:"14px",
+    padding:"12px",
+    color:"#0f172a",
+    fontWeight:"700"
+  }}
+>
+  <strong
+    style={{
+      color:"#1d4ed8"
+    }}
+  >
+    Route:
+  </strong>
+  {" "}
+  {o.pickupLocation}
+  {" "}
+  →
+  {" "}
+  {o.dropoffLocation}
+</Row>
+
+                <Row
+  style={{
+    color:"#0f172a",
+    fontWeight:"700"
+  }}
+>
+  <strong
+    style={{
+      color:"#ca8a04"
+    }}
+  >
+    Amount:
+  </strong>
+  {" "}
+
+  <span
+    style={{
+      background:"#fef3c7",
+      color:"#0f172a",
+      padding:"6px 12px",
+      borderRadius:"999px",
+      fontWeight:"900"
+    }}
+  >
+    ₵{o.total}
+  </span>
+</Row>
+
+               <Row>
+  <strong>
+    Rider:
+  </strong>
+  {" "}
+  {
+    o.rider?.name ||
+    "Searching for Rider"
+  }
+</Row>
+
+                <div
+                  style={{
+                    display:"flex",
+                    gap:"10px",
+                    flexWrap:"wrap",
+                    marginTop:"12px"
+                  }}
+                >
+
+                  <StatusBadge
+                    status={o.status}
+                    style={{
+                      marginTop:0
+                    }}
+                  >
+                    {o.status}
+                  </StatusBadge>
+
+                  <MiniStatus
+                    paid={o.isPaid}
+                  >
                     {
-                      month:"long",
-                      day:"numeric",
-                      year:"numeric"
+                      o.isPaid
+                      ? "Paid"
+                      : "Not Paid"
                     }
-                  )
-                }
+                  </MiniStatus>
 
-              </DateCard>
+                </div>
 
-            </Hero>
+              </RecentOrderItem>
 
-            <StatsGrid>
+            ))
+          )
+        }
 
-              <StatCard>
+        <Button
+          onClick={()=>
+            setActiveSection("orders")
+          }
+          style={{
+            marginTop:"8px"
+          }}
+        >
+          View All Orders
+        </Button>
 
-                <StatTitle>
-                  Active Orders
-                </StatTitle>
+      </DashboardPanel>
 
-                <StatValue>
-                  {activeOrders.length}
-                </StatValue>
+     <DashboardPanel
+  style={{
+    background:
+      "linear-gradient(135deg, #0f172a, #1d4ed8)",
+    color:"white",
+    border:"1px solid rgba(250,204,21,0.22)",
+    boxShadow:
+      "0 10px 24px rgba(29,78,216,0.16)",
+    padding:"14px",
+    borderRadius:"18px",
+    alignSelf:"start"
+  }}
+>
 
-              </StatCard>
 
-              <StatCard>
+       <DashboardPanelTitle
+  style={{
+    display:"flex",
+    alignItems:"center",
+    gap:"7px",
+    color:"white",
+    fontSize:"15px",
+    marginBottom:"10px"
+  }}
+>
+  <span
+    style={{
+      width:"26px",
+      height:"26px",
+      borderRadius:"9px",
+      display:"inline-flex",
+      alignItems:"center",
+      justifyContent:"center",
+      background:"#facc15",
+      color:"#0f172a",
+      fontSize:"14px",
+      boxShadow:
+        "0 6px 14px rgba(250,204,21,0.18)"
+    }}
+  >
+    <FiPackage />
+  </span>
 
-                <StatTitle>
-                  Completed Orders
-                </StatTitle>
+  Smart Delivery Summary
+</DashboardPanelTitle>
 
-                <StatValue>
-                  {completedOrders.length}
-                </StatValue>
+      <Row
+  style={{
+    background:"rgba(255,255,255,0.10)",
+    border:"1px solid rgba(255,255,255,0.16)",
+    borderRadius:"10px",
+    padding:"6px 8px",
+    color:"rgba(255,255,255,0.90)",
+    fontWeight:"700",
+    fontSize:"12px",
+    marginBottom:"6px",
+    lineHeight:"1.25"
+  }}
+>
+  <strong
+    style={{
+      color:"#facc15"
+    }}
+  >
+    Payment Ready:
+  </strong>
+  {" "}
+  Mobile Money enabled
+</Row>
 
-              </StatCard>
+<Row
+  style={{
+    background:"rgba(255,255,255,0.12)",
+    border:"1px solid rgba(255,255,255,0.18)",
+    borderRadius:"16px",
+    padding:"14px",
+    color:"rgba(255,255,255,0.92)",
+    fontWeight:"700"
+  }}
+>
+  <strong
+    style={{
+      color:"#facc15"
+    }}
+  >
+    Test MoMo:
+  </strong>
+  {" "}
+  0551234987
+</Row>
 
-              <StatCard>
+<Row
+  style={{
+    background:"rgba(255,255,255,0.12)",
+    border:"1px solid rgba(255,255,255,0.18)",
+    borderRadius:"16px",
+    padding:"14px",
+    color:"rgba(255,255,255,0.92)",
+    fontWeight:"700"
+  }}
+>
+  <strong
+    style={{
+      color:"#facc15"
+    }}
+  >
+    Default Area:
+  </strong>
+  {" "}
+  Accra
+</Row>
 
-                <StatTitle>
-                  Notifications
-                </StatTitle>
+        <DashboardTip
+  style={{
+    background:"rgba(250,204,21,0.16)",
+    border:"1px solid rgba(250,204,21,0.35)",
+    color:"#fef3c7",
+    boxShadow:
+      "0 10px 24px rgba(15,23,42,0.18)"
+  }}
+>
+  Tip: Use Mobile Money for faster checkout.
+  Once Paystack confirms payment, your order
+  is automatically marked as paid.
+</DashboardTip>
 
-                <StatValue>
-                  {notifications.length}
-                </StatValue>
+        <Button
+  onClick={()=>
+    setActiveSection("createOrder")
+  }
+  style={{
+    marginTop:"18px",
+    background:"#facc15",
+    color:"#0f172a",
+    fontWeight:"900",
+    boxShadow:
+      "0 12px 24px rgba(250,204,21,0.26)"
+  }}
+>
+  Send a Package Now
+</Button>
 
-              </StatCard>
+      </DashboardPanel>
 
-            </StatsGrid>
+    </DashboardGrid>
 
-          </>
+  </>
 
-        )}
+)}
 
         {activeSection === "orders" && (
 
@@ -2381,7 +3352,7 @@ async function sendMessage(
 </Timeline>
 
   { 
-  
+
   !sidebarOpen &&
   locationCoords[o.pickupLocation] &&
   locationCoords[o.dropoffLocation] && (

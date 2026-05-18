@@ -123,6 +123,307 @@ const RiderStatus = styled.span`
   flex-wrap:wrap;
 `;
 
+const DashboardHero = styled.div`
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(250,204,21,0.55),
+      transparent 32%
+    ),
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #1d4ed8
+    );
+  color:white;
+  border-radius:32px;
+  padding:28px 34px;
+  margin-bottom:26px;
+  box-shadow:
+    0 18px 45px rgba(15,23,42,0.18);
+
+    @media(max-width:768px){
+    padding:24px 20px;
+    border-radius:24px;
+  }
+
+  &::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,0.9) 0 2px, transparent 3px),
+      radial-gradient(circle, rgba(250,204,21,0.9) 0 2px, transparent 3px),
+      radial-gradient(circle, rgba(255,255,255,0.7) 0 1.5px, transparent 3px);
+
+    background-size:
+      120px 120px,
+      170px 170px,
+      90px 90px;
+
+    background-position:
+      20px 30px,
+      80px 70px,
+      140px 20px;
+
+    opacity:0.55;
+    animation:sparkleMove 5s linear infinite;
+  }
+
+  @keyframes sparkleMove{
+    0%{
+      background-position:
+        20px 30px,
+        80px 70px,
+        140px 20px;
+      opacity:0.35;
+    }
+
+    50%{
+      background-position:
+        40px 45px,
+        100px 55px,
+        160px 35px;
+      opacity:0.85;
+    }
+
+    100%{
+      background-position:
+        20px 30px,
+        80px 70px,
+        140px 20px;
+      opacity:0.35;
+    }
+  }
+`;
+
+const DashboardHeroContent = styled.div`
+  position:relative;
+  z-index:2;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:30px;
+
+  min-height:255px;
+
+  @media(max-width:768px){
+    flex-direction:column;
+    align-items:flex-start;
+    min-height:300px;
+  }
+`;
+
+const HeroLogo = styled.img`
+  position:absolute;
+  top:6px;
+  left:42%;
+
+  width:92px;
+  height:92px;
+  object-fit:contain;
+
+  background:transparent;
+  padding:0;
+  border:none;
+  border-radius:50%;
+  box-shadow:none;
+
+  z-index:10;
+
+  animation:logoRotatePause 5s ease-in-out infinite;
+
+  @keyframes logoRotatePause{
+    0%{
+      transform:rotate(0deg);
+    }
+
+    45%{
+      transform:rotate(360deg);
+    }
+
+    70%{
+      transform:rotate(360deg);
+    }
+
+    100%{
+      transform:rotate(360deg);
+    }
+  }
+
+  @media(max-width:768px){
+    top:8px;
+    left:60%;
+
+    width:62px;
+    height:62px;
+    object-fit:contain;
+
+    background:transparent;
+    padding:0;
+    border:none;
+    border-radius:50%;
+    box-shadow:none;
+  }
+`;
+
+const HeroBadge = styled.div`
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+
+  padding:12px 24px;
+  border-radius:999px;
+
+  background:rgba(255,255,255,0.14);
+  border:1px solid rgba(255,255,255,0.22);
+
+  color:white;
+  font-size:16px;
+  font-weight:800;
+
+  margin-bottom:28px;
+`;
+
+const DashboardHeroTitle = styled.h1`
+  font-size:38px;
+  font-weight:900;
+  color:white;
+  margin:0 0 18px;
+  line-height:1.08;
+  letter-spacing:-1px;
+
+  @media(max-width:768px){
+    font-size:28px;
+    padding-top:40px;
+  }
+`;
+
+const DashboardHeroText = styled.p`
+  max-width:650px;
+  color:rgba(255,255,255,0.88);
+  font-size:21px;
+  line-height:1.55;
+  margin:0;
+`;
+
+const DashboardDateCard = styled.div`
+  min-width:330px;
+
+  padding:28px 34px;
+  border-radius:30px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.25),
+      rgba(255,255,255,0.08)
+    );
+
+  border:1px solid rgba(255,255,255,0.34);
+
+  color:white;
+
+  box-shadow:
+    0 20px 45px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.28);
+
+  backdrop-filter:blur(14px);
+
+  div{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:8px 16px;
+    border-radius:999px;
+
+    background:#facc15;
+    color:#0f172a;
+
+    font-size:14px;
+    font-weight:900;
+    letter-spacing:0.8px;
+    text-transform:uppercase;
+
+    margin-bottom:16px;
+  }
+
+  strong{
+    display:block;
+
+    font-size:46px;
+    font-weight:900;
+    line-height:1;
+
+    color:white;
+
+    margin-bottom:12px;
+
+    text-shadow:
+      0 8px 22px rgba(0,0,0,0.28);
+  }
+
+  span{
+    display:block;
+
+    font-size:16px;
+    font-weight:700;
+
+    color:rgba(255,255,255,0.88);
+  }
+
+  @media(max-width:768px){
+    min-width:100%;
+    padding:24px;
+    border-radius:24px;
+
+    strong{
+      font-size:36px;
+    }
+  }
+`;
+
+const DashboardTime = styled.div`
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:12px 20px;
+  margin-bottom:16px;
+
+  border-radius:18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #facc15,
+      #f59e0b
+    );
+
+  color:#0f172a;
+
+  font-size:30px;
+  font-weight:900;
+  letter-spacing:1px;
+
+  box-shadow:
+    0 12px 26px rgba(250,204,21,0.35);
+
+  border:1px solid rgba(255,255,255,0.35);
+
+  @media(max-width:768px){
+    font-size:23px;
+    padding:10px 16px;
+  }
+`;
+
 const HeroTitle = styled.h1`
   font-size:34px;
 
@@ -718,6 +1019,9 @@ export default function Rider(){
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const [currentTime, setCurrentTime] =
+  useState(new Date());
+
 
  const [user, setUser] =
   useState(null);
@@ -844,6 +1148,23 @@ const getRiderDisplayStatus = () => {
 useEffect(()=>{
 
   fetchMe();
+
+},[]);
+
+useEffect(()=>{
+
+  const timer =
+    setInterval(()=>{
+
+      setCurrentTime(
+        new Date()
+      );
+
+    },1000);
+
+  return ()=>clearInterval(
+    timer
+  );
 
 },[]);
 
@@ -1714,172 +2035,117 @@ async function acceptOrder(orderId){
     {activeSection === "dashboard" && (
   <>
 
-  <div
-  style={{
-    width:"100%",
-    marginBottom:"20px",
-    borderRadius:"20px",
-    overflow:"hidden",
-    background:"white",
-    padding:"8px 16px",
-    display:"flex",
-    justifyContent:"center",
-    alignItems:"center",
-    boxShadow:
-      "0 6px 18px rgba(0,0,0,0.08)"
-  }}
->
+    <DashboardHero>
 
-  <img
-    src={logo}
-    alt="Logo Banner"
-    style={{
-      width:"250px",
-      maxWidth:"100%",
-      objectFit:"contain",
-      display:"block"
-    }}
-  />
-
-</div>
-
-  <div
-  style={{
-    display:"flex",
-    justifyContent:"center",
-    marginBottom:"28px"
-  }}
->
-
-
-
-</div>
-
-  <Hero>
-
-  <div
-    style={{
-      display:"flex",
-      alignItems:"center",
-      gap:"18px"
-    }}
-  >
-
-    <img
+    <HeroLogo
       src={logo}
-      alt="Logo"
-      style={{
-        width:"70px",
-        height:"70px",
-        objectFit:"contain",
-        borderRadius:"18px",
-        background:"white",
-        padding:"8px",
-        boxShadow:
-          "0 4px 12px rgba(0,0,0,0.08)"
-      }}
+      alt="MonniDrop Logo"
     />
 
-    <div>
+    <DashboardHeroContent>
 
-     <HeroTitle>
+      <div>
 
-  {getGreeting()},
+        <HeroBadge>
+          ⚡ MonniDrop Rider Dashboard
+        </HeroBadge>
 
-  {" "}
+        <DashboardHeroTitle>
+          Welcome back,
+          {" "}
+          {
+            user?.name || "Rider"
+          }
+          👋
+        </DashboardHeroTitle>
 
-  {
-    user?.name || "Rider"
-  }
+        <DashboardHeroText>
+          View assigned deliveries, update package status,
+          track earnings, and manage your rider activity from one clean dashboard.
+        </DashboardHeroText>
 
-  !
+      </div>
 
-  👋
+      <DashboardDateCard>
 
-</HeroTitle>
-
-      <HeroText>
-        Here's your delivery overview
-      </HeroText>
-
-    </div>
-
+  <div>
+    Today
   </div>
 
-  <div
-    style={{
-      display:"flex",
-      alignItems:"center",
-      gap:"16px",
-      flexWrap:"wrap"
-    }}
-  >
-
-    <RiderStatus
-      status={user?.status}
-    >
-
-      {
-  getRiderDisplayStatus() === "busy"
-  ? "BUSY"
-  : getRiderDisplayStatus() === "offline"
-  ? "OFF-DUTY"
-  : getRiderDisplayStatus() === "suspended"
-  ? "SUSPENDED"
-  : "AVAILABLE"
+  <strong>
+   {
+  currentTime
+  .toLocaleDateString(
+    "en-US",
+    {
+      weekday:"short",
+      month:"long",
+      day:"numeric",
+      year:"numeric"
+    }
+  )
 }
 
-    </RiderStatus>
+  </strong>
 
-    <DateCard>
+  <DashboardTime>
+    {
+      currentTime
+      .toLocaleTimeString(
+        "en-US",
+        {
+          hour:"2-digit",
+          minute:"2-digit",
+          second:"2-digit"
+        }
+      )
+    }
+  </DashboardTime>
 
-      📅
+  <span>
+    Ready for your next delivery.
+  </span>
 
-      {
-        new Date()
-        .toLocaleDateString(
-          "en-US",
-          {
-            month:"long",
-            day:"numeric",
-            year:"numeric"
-          }
-        )
-      }
+</DashboardDateCard>
 
-    </DateCard>
+    </DashboardHeroContent>
 
-  </div>
+  </DashboardHero>
 
-</Hero>
   <StatsGrid>
 
   <div
     style={{
-      background:"white",
-      padding:"20px",
-      borderRadius:"16px",
-      textAlign:"center"
+      background:
+        "linear-gradient(135deg, #0f172a, #1d4ed8)",
+      padding:"24px",
+      borderRadius:"24px",
+      textAlign:"center",
+      color:"white",
+      border:"1px solid rgba(255,255,255,0.18)",
+      boxShadow:
+        "0 16px 35px rgba(29,78,216,0.25)"
     }}
   >
 
     <div
       style={{
         fontSize:"14px",
-        color:"#64748b"
+        color:"rgba(255,255,255,0.85)",
+        fontWeight:"900",
+        letterSpacing:"0.5px",
+        textTransform:"uppercase"
       }}
     >
       Active Deliveries
-      
-      </div>
-  
+    </div>
 
     <div
       style={{
-        fontSize:"32px",
-        fontWeight:"800",
-        marginTop:"8px",
-        color:"#2563eb"
+        fontSize:"42px",
+        fontWeight:"900",
+        marginTop:"10px",
+        color:"#facc15"
       }}
     >
       {
@@ -1891,17 +2157,25 @@ async function acceptOrder(orderId){
 
   <div
     style={{
-      background:"white",
-      padding:"20px",
-      borderRadius:"16px",
-      textAlign:"center"
+      background:
+        "linear-gradient(135deg, #facc15, #f59e0b)",
+      padding:"24px",
+      borderRadius:"24px",
+      textAlign:"center",
+      color:"#0f172a",
+      border:"1px solid rgba(15,23,42,0.12)",
+      boxShadow:
+        "0 16px 35px rgba(250,204,21,0.28)"
     }}
   >
 
     <div
       style={{
         fontSize:"14px",
-        color:"#64748b"
+        color:"#0f172a",
+        fontWeight:"900",
+        letterSpacing:"0.5px",
+        textTransform:"uppercase"
       }}
     >
       Completed Deliveries
@@ -1909,9 +2183,10 @@ async function acceptOrder(orderId){
 
     <div
       style={{
-        fontSize:"32px",
-        fontWeight:"800",
-        marginTop:"8px"
+        fontSize:"42px",
+        fontWeight:"900",
+        marginTop:"10px",
+        color:"#0f172a"
       }}
     >
       {
@@ -1923,17 +2198,25 @@ async function acceptOrder(orderId){
 
   <div
     style={{
-      background:"white",
-      padding:"20px",
-      borderRadius:"16px",
-      textAlign:"center"
+      background:
+        "linear-gradient(135deg, #0f172a, #111827)",
+      padding:"24px",
+      borderRadius:"24px",
+      textAlign:"center",
+      color:"white",
+      border:"1px solid rgba(250,204,21,0.35)",
+      boxShadow:
+        "0 16px 35px rgba(15,23,42,0.28)"
     }}
   >
 
     <div
       style={{
         fontSize:"14px",
-        color:"#64748b"
+        color:"#facc15",
+        fontWeight:"900",
+        letterSpacing:"0.5px",
+        textTransform:"uppercase"
       }}
     >
       Total Earnings
@@ -1941,17 +2224,16 @@ async function acceptOrder(orderId){
 
     <div
       style={{
-        fontSize:"32px",
-        fontWeight:"800",
-        marginTop:"8px",
-        color:"#16a34a"
+        fontSize:"42px",
+        fontWeight:"900",
+        marginTop:"10px",
+        color:"#facc15"
       }}
     >
-     ₵{earnings}
+      ₵{earnings}
     </div>
 
   </div>
-
 
 </StatsGrid>
 
