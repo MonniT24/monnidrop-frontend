@@ -1418,66 +1418,130 @@ async function createOrder(){
 
   try{
 
+    if(
+      !pickupLocation ||
+      !dropoffLocation ||
+      !distance ||
+      !amount
+    ){
 
-  if(
-  !pickupLocation ||
-  !dropoffLocation ||
-  !distance ||
-  !amount
-){
+      alert(
+        "Please select pickup and dropoff locations first"
+      );
 
-  alert(
-    "Please select pickup and dropoff locations first"
-  );
+      return;
+    }
 
-  return;
-}
+    if(!paymentMethod){
 
-if(!paymentMethod){
+      alert(
+        "Please choose Cash on Delivery or Mobile Money"
+      );
 
-  alert(
-    "Please choose Cash on Delivery or Mobile Money"
-  );
+      return;
+    }
 
-  return;
-}
+    if(
+      paymentMethod === "momo" &&
+      !momoNumber
+    ){
 
-if(
-  paymentMethod === "momo" &&
-  !momoNumber
-){
+      alert(
+        "Please enter your Mobile Money number"
+      );
 
-  alert(
-    "Please enter your Mobile Money number"
-  );
+      return;
+    }
 
-  return;
-}
+    const orderRes =
+      await API.post(
+        "/orders",
+        {
+          pickupLocation,
+          dropoffLocation,
 
-    await API.post(
-      "/orders",
-      {
-        pickupLocation,
-dropoffLocation,
+          distance:distance,
+          deliveryTime:deliveryTime,
+          total:amount,
+          paymentMethod,
 
-distance:distance,
-deliveryTime:deliveryTime,
-total:amount,
-paymentMethod,
-momoNumber:
-  paymentMethod === "momo"
-  ? momoNumber
-  : "",
-items:[
-          {
-            name:itemNotes || "Delivery Item",
-            quantity:1
-          }
-        ]
-      }
+          momoNumber:
+            paymentMethod === "momo"
+            ? momoNumber
+            : "",
+
+          items:[
+            {
+              name:itemNotes || "Delivery Item",
+              quantity:1
+            }
+          ]
+        }
+      );
+
+    const createdOrder =
+      orderRes.data;
+
+    console.log(
+      "CREATED ORDER:",
+      createdOrder
     );
 
-    alert("Order created successfully");
+    if(paymentMethod === "momo"){
+
+      const momoRes =
+        await API.post(
+          "/payments/momo/charge",
+          {
+            email:user?.email || "customer@example.com",
+            amount:Number(amount),
+            phone:momoNumber,
+            provider:"mtn",
+            orderId:createdOrder._id
+          }
+        );
+
+      console.log(
+        "MOMO PAYMENT RESPONSE:",
+        momoRes.data
+      );
+
+      const paymentData =
+        momoRes.data.data;
+
+      if(
+        paymentData &&
+        paymentData.status === "success"
+      ){
+
+        await API.put(
+          `/orders/${createdOrder._id}/pay`,
+          {
+            reference:paymentData.reference,
+            status:paymentData.status,
+            channel:paymentData.channel,
+            amount:paymentData.amount,
+            currency:paymentData.currency
+          }
+        );
+
+        alert(
+          "MoMo payment successful. Order created and marked as paid."
+        );
+
+      }else{
+
+        alert(
+          "Order created, but MoMo payment was not successful."
+        );
+      }
+
+    }else{
+
+      alert(
+        "Order created successfully"
+      );
+    }
 
     setPickupLocation("");
     setDropoffLocation("");
@@ -1495,48 +1559,48 @@ items:[
   }catch(err){
 
     console.log(
-      "CREATE ORDER ERROR:",
+      "CREATE ORDER / PAYMENT ERROR:",
       err.response?.data || err
     );
 
     alert(
       err.response?.data?.message ||
-      "Failed to create order"
+      "Failed to create order or payment"
     );
   }
 }
 
-  async function sendMessage(
-    orderId,
-    text
-  ){
+async function sendMessage(
+  orderId,
+  text
+){
 
-    try{
+  try{
 
-      if(!text || text.trim() === ""){
-        return;
-      }
-
-      await API.post(
-        `/orders/${orderId}/message`,
-        {
-          sender:"customer",
-          text:text.trim()
-        }
-      );
-
-      setChatText({
-        ...chatText,
-        [orderId]:""
-      });
-
-      fetchOrders();
-
-    }catch(err){
-
-      console.log(err);
+    if(!text || text.trim() === ""){
+      return;
     }
+
+    await API.post(
+      `/orders/${orderId}/message`,
+      {
+        sender:"customer",
+        text:text.trim()
+      }
+    );
+
+    setChatText({
+      ...chatText,
+      [orderId]:""
+    });
+
+    fetchOrders();
+
+  }catch(err){
+
+    console.log(err);
   }
+}
 
   function logout(){
 
@@ -2078,21 +2142,33 @@ items:[
 }
 </Row>
 
-                        <Row>
-                          <strong>
-                            Amount:
-                          </strong>
-                          {" "}
-                          ₵{o.total}
-                        </Row>
+<Row>
+ <strong>
+ Amount:
+ </strong>
+  {" "}
+ ₵{o.total}
+ </Row>
 
-                        <StatusBadge
-                          status={o.status}
-                        >
-                          {o.status}
-                        </StatusBadge>
+ <Row>
+  <strong>
+    Payment:
+  </strong>
+  {" "}
+  {
+    o.isPaid
+    ? "Paid"
+    : "Not Paid"
+  }
+</Row>
 
-                        <Timeline>
+<StatusBadge
+ status={o.status}
+ >
+ {o.status}
+</StatusBadge>
+
+ <Timeline>
 
   <TimelineItem>
 
