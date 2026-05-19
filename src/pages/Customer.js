@@ -339,32 +339,86 @@ const OrdersGrid = styled.div`
 `;
 
 const CreateOrderWrapper = styled.div`
-  background:white;
-  border-radius:32px;
-  padding:28px;
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff,
+      #f8fafc
+    );
+
+  border-radius:28px;
+  padding:26px;
+
+  border:1px solid rgba(29,78,216,0.10);
+
   box-shadow:
-    0 8px 30px rgba(0,0,0,0.05);
+    0 16px 38px rgba(15,23,42,0.08);
+
+  position:relative;
+  overflow:hidden;
+
+  &::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:6px;
+    background:
+      linear-gradient(
+        90deg,
+        #0f172a,
+        #1d4ed8,
+        #facc15
+      );
+  }
+
+  @media(max-width:480px){
+    padding:20px;
+    border-radius:22px;
+  }
 `;
 
 const CreateOrderTitle = styled.h2`
-  font-size:34px;
-  font-weight:800;
+  font-size:32px;
+  font-weight:900;
   color:#0f172a;
   margin-bottom:8px;
+  letter-spacing:-0.5px;
+
+  @media(max-width:480px){
+    font-size:26px;
+  }
 `;
 
 const CreateOrderSubtext = styled.p`
   color:#64748b;
   font-size:15px;
-  margin-bottom:28px;
+  font-weight:600;
+  margin-bottom:24px;
+  line-height:1.5;
+
+  @media(max-width:480px){
+    font-size:14px;
+    margin-bottom:20px;
+  }
 `;
 
 const OrderSection = styled.div`
   background:#f8fafc;
-  border-radius:24px;
-  padding:24px;
-  margin-bottom:22px;
-  border:1px solid #e5e7eb;
+  border-radius:22px;
+  padding:22px;
+  margin-bottom:20px;
+  border:1px solid rgba(29,78,216,0.10);
+
+  box-shadow:
+    0 8px 22px rgba(15,23,42,0.04);
+
+  @media(max-width:480px){
+    padding:18px;
+    border-radius:18px;
+    margin-bottom:16px;
+  }
 `;
 
 const SectionHeader = styled.div`
@@ -1483,22 +1537,6 @@ const [
 
 },[]);
 
-  useEffect(()=>{
-
-  const timer =
-    setInterval(()=>{
-
-      setCurrentTime(
-        new Date()
-      );
-
-    },1000);
-
-  return ()=>clearInterval(
-    timer
-  );
-
-},[]);
 
   useEffect(()=>{
 
