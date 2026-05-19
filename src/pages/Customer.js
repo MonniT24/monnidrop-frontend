@@ -325,6 +325,788 @@ const StatValue = styled.div`
   color:#0f172a;
 `;
 
+const SettingsHero = styled.div`
+  position:relative;
+  overflow:hidden;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(250,204,21,0.40),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #1d4ed8
+    );
+
+  color:white;
+
+  border-radius:26px;
+  padding:26px;
+  margin-bottom:24px;
+
+  border:1px solid rgba(250,204,21,0.30);
+
+  box-shadow:
+    0 16px 34px rgba(29,78,216,0.20);
+
+  &::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,0.75) 0 2px, transparent 3px),
+      radial-gradient(circle, rgba(250,204,21,0.75) 0 2px, transparent 3px);
+
+    background-size:
+      110px 110px,
+      150px 150px;
+
+    opacity:0.35;
+    animation:settingsSparkle 5s linear infinite;
+  }
+
+  @keyframes settingsSparkle{
+    0%{
+      background-position:
+        20px 20px,
+        80px 60px;
+    }
+
+    50%{
+      background-position:
+        40px 35px,
+        100px 45px;
+    }
+
+    100%{
+      background-position:
+        20px 20px,
+        80px 60px;
+    }
+  }
+
+  @media(max-width:480px){
+    padding:22px;
+    border-radius:22px;
+  }
+`;
+
+const SettingsHeroContent = styled.div`
+  position:relative;
+  z-index:2;
+  max-width:650px;
+`;
+
+const SettingsBadge = styled.div`
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:8px 14px;
+  border-radius:999px;
+
+  background:rgba(250,204,21,0.18);
+  color:#facc15;
+
+  border:1px solid rgba(250,204,21,0.35);
+
+  font-size:13px;
+  font-weight:900;
+
+  margin-bottom:14px;
+`;
+
+const SettingsTitle = styled.h1`
+  font-size:32px;
+  font-weight:900;
+  line-height:1.1;
+
+  margin:0 0 10px;
+
+  color:white;
+  letter-spacing:-0.6px;
+
+  @media(max-width:480px){
+    font-size:25px;
+  }
+`;
+
+const SettingsText = styled.p`
+  max-width:620px;
+
+  color:rgba(255,255,255,0.86);
+
+  font-size:15px;
+  font-weight:600;
+  line-height:1.55;
+
+  margin:0;
+
+  @media(max-width:480px){
+    font-size:14px;
+  }
+`;
+
+const SettingsHeroIcon = styled.div`
+  position:relative;
+  z-index:2;
+
+  width:86px;
+  height:86px;
+
+  border-radius:26px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:rgba(255,255,255,0.14);
+  border:1px solid rgba(255,255,255,0.24);
+
+  font-size:42px;
+
+  box-shadow:
+    0 14px 30px rgba(15,23,42,0.22);
+
+  animation:settingsSpinPause 4s ease-in-out infinite;
+
+  @keyframes settingsSpinPause{
+    0%{
+      transform:rotate(0deg);
+    }
+
+    45%{
+      transform:rotate(360deg);
+    }
+
+    70%{
+      transform:rotate(360deg);
+    }
+
+    100%{
+      transform:rotate(360deg);
+    }
+  }
+
+  @media(max-width:768px){
+    display:none;
+  }
+`;
+
+const ProfileDetailRow = styled.div`
+  display:grid;
+  grid-template-columns:130px 1fr;
+  align-items:center;
+  column-gap:16px;
+
+  background:#ffffff;
+
+  border:1px solid rgba(29,78,216,0.10);
+  border-radius:13px;
+
+  padding:10px 14px;
+  margin-bottom:9px;
+
+  color:#334155;
+  font-size:14px;
+  font-weight:700;
+
+  box-shadow:
+    0 6px 14px rgba(15,23,42,0.035);
+
+  strong{
+    color:#1d4ed8;
+    font-weight:900;
+    white-space:nowrap;
+  }
+
+  span{
+    color:#0f172a;
+    font-weight:900;
+    text-align:left;
+    justify-self:start;
+  }
+
+  @media(max-width:480px){
+    grid-template-columns:1fr;
+    row-gap:6px;
+
+    span{
+      text-align:left;
+    }
+  }
+`;
+
+
+const ProfileHero = styled.div`
+  position:relative;
+  overflow:hidden;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(250,204,21,0.38),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #1d4ed8
+    );
+
+  color:white;
+
+  border-radius:26px;
+  padding:18px;
+  margin-bottom:16px;
+
+  border:1px solid rgba(250,204,21,0.28);
+
+  box-shadow:
+    0 16px 34px rgba(29,78,216,0.20);
+
+  @media(max-width:480px){
+    padding:22px;
+    border-radius:22px;
+  }
+`;
+
+const ProfileHeroContent = styled.div`
+  position:relative;
+  z-index:2;
+  max-width:650px;
+`;
+
+const ProfileBadge = styled.div`
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:8px 14px;
+  border-radius:999px;
+
+  background:rgba(250,204,21,0.18);
+  color:#facc15;
+
+  border:1px solid rgba(250,204,21,0.35);
+
+  font-size:13px;
+  font-weight:900;
+
+  margin-bottom:14px;
+`;
+
+const ProfileHeroTitle = styled.h1`
+  font-size:32px;
+  font-weight:900;
+  line-height:1.1;
+
+  margin:0 0 10px;
+
+  color:white;
+  letter-spacing:-0.6px;
+
+  @media(max-width:480px){
+    font-size:25px;
+  }
+`;
+
+const ProfileHeroText = styled.p`
+  max-width:620px;
+
+  color:rgba(255,255,255,0.86);
+
+  font-size:15px;
+  font-weight:600;
+  line-height:1.55;
+
+  margin:0;
+
+  @media(max-width:480px){
+    font-size:14px;
+  }
+`;
+
+const ProfileHeroPhoto = styled.img`
+  position:relative;
+  z-index:2;
+
+  width:68px;
+  height:68px;
+
+  border-radius:50%;
+  object-fit:cover;
+
+  border:4px solid #facc15;
+  background:white;
+
+  flex-shrink:0;
+
+  box-shadow:
+    0 14px 30px rgba(15,23,42,0.24);
+
+  @media(max-width:768px){
+    width:58px;
+    height:58px;
+    border:3px solid #facc15;
+  }
+`;
+
+const NotificationsHero = styled.div`
+  position:relative;
+  overflow:hidden;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(250,204,21,0.40),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #1d4ed8
+    );
+
+  color:white;
+
+  border-radius:26px;
+  padding:26px;
+  margin-bottom:24px;
+
+  border:1px solid rgba(250,204,21,0.30);
+
+  box-shadow:
+    0 16px 34px rgba(29,78,216,0.20);
+
+  &::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,0.75) 0 2px, transparent 3px),
+      radial-gradient(circle, rgba(250,204,21,0.75) 0 2px, transparent 3px);
+
+    background-size:
+      110px 110px,
+      150px 150px;
+
+    opacity:0.35;
+    animation:notificationSparkle 5s linear infinite;
+  }
+
+  @keyframes notificationSparkle{
+    0%{
+      background-position:
+        20px 20px,
+        80px 60px;
+    }
+
+    50%{
+      background-position:
+        40px 35px,
+        100px 45px;
+    }
+
+    100%{
+      background-position:
+        20px 20px,
+        80px 60px;
+    }
+  }
+
+  @media(max-width:480px){
+    padding:22px;
+    border-radius:22px;
+  }
+`;
+
+const NotificationsHeroContent = styled.div`
+  position:relative;
+  z-index:2;
+  max-width:650px;
+`;
+
+const NotificationsBadge = styled.div`
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:8px 14px;
+  border-radius:999px;
+
+  background:rgba(250,204,21,0.18);
+  color:#facc15;
+
+  border:1px solid rgba(250,204,21,0.35);
+
+  font-size:13px;
+  font-weight:900;
+
+  margin-bottom:14px;
+`;
+
+const NotificationsTitle = styled.h1`
+  font-size:32px;
+  font-weight:900;
+  line-height:1.1;
+
+  margin:0 0 10px;
+
+  color:white;
+  letter-spacing:-0.6px;
+
+  @media(max-width:480px){
+    font-size:25px;
+  }
+`;
+
+const NotificationsText = styled.p`
+  max-width:620px;
+
+  color:rgba(255,255,255,0.86);
+
+  font-size:15px;
+  font-weight:600;
+  line-height:1.55;
+
+  margin:0;
+
+  @media(max-width:480px){
+    font-size:14px;
+  }
+`;
+
+const NotificationsHeroIcon = styled.div`
+  position:relative;
+  z-index:2;
+
+  width:86px;
+  height:86px;
+
+  border-radius:26px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:rgba(255,255,255,0.14);
+  border:1px solid rgba(255,255,255,0.24);
+
+  font-size:42px;
+
+  box-shadow:
+    0 14px 30px rgba(15,23,42,0.22);
+
+  animation:notificationBell 2.4s ease-in-out infinite;
+
+  @keyframes notificationBell{
+    0%{
+      transform:rotate(0deg);
+    }
+
+    20%{
+      transform:rotate(10deg);
+    }
+
+    40%{
+      transform:rotate(-10deg);
+    }
+
+    60%{
+      transform:rotate(6deg);
+    }
+
+    80%{
+      transform:rotate(-6deg);
+    }
+
+    100%{
+      transform:rotate(0deg);
+    }
+  }
+
+  @media(max-width:768px){
+    display:none;
+  }
+`;
+
+const MessagesHero = styled.div`
+  position:relative;
+  overflow:hidden;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(250,204,21,0.38),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #1d4ed8
+    );
+
+  color:white;
+
+  border-radius:26px;
+  padding:26px;
+  margin-bottom:24px;
+
+  border:1px solid rgba(250,204,21,0.28);
+
+  box-shadow:
+    0 16px 34px rgba(29,78,216,0.20);
+
+  &::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,0.75) 0 2px, transparent 3px),
+      radial-gradient(circle, rgba(250,204,21,0.75) 0 2px, transparent 3px);
+
+    background-size:
+      110px 110px,
+      150px 150px;
+
+    opacity:0.35;
+    animation:messageSparkle 5s linear infinite;
+  }
+
+  @keyframes messageSparkle{
+    0%{
+      background-position:
+        20px 20px,
+        80px 60px;
+    }
+
+    50%{
+      background-position:
+        40px 35px,
+        100px 45px;
+    }
+
+    100%{
+      background-position:
+        20px 20px,
+        80px 60px;
+    }
+  }
+
+  @media(max-width:480px){
+    padding:22px;
+    border-radius:22px;
+  }
+`;
+
+const MessagesHeroContent = styled.div`
+  position:relative;
+  z-index:2;
+  max-width:650px;
+`;
+
+const MessagesBadge = styled.div`
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:8px 14px;
+  border-radius:999px;
+
+  background:rgba(250,204,21,0.18);
+  color:#facc15;
+
+  border:1px solid rgba(250,204,21,0.35);
+
+  font-size:13px;
+  font-weight:900;
+
+  margin-bottom:14px;
+`;
+
+const MessagesTitle = styled.h1`
+  font-size:32px;
+  font-weight:900;
+  line-height:1.1;
+
+  margin:0 0 10px;
+
+  color:white;
+  letter-spacing:-0.6px;
+
+  @media(max-width:480px){
+    font-size:25px;
+  }
+`;
+
+const MessagesText = styled.p`
+  max-width:620px;
+
+  color:rgba(255,255,255,0.86);
+
+  font-size:15px;
+  font-weight:600;
+  line-height:1.55;
+
+  margin:0;
+
+  @media(max-width:480px){
+    font-size:14px;
+  }
+`;
+
+const MessagesHeroIcon = styled.div`
+  position:relative;
+  z-index:2;
+
+  width:86px;
+  height:86px;
+
+  border-radius:26px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:rgba(255,255,255,0.14);
+  border:1px solid rgba(255,255,255,0.24);
+
+  font-size:42px;
+
+  box-shadow:
+    0 14px 30px rgba(15,23,42,0.22);
+
+  animation:messageFloat 3s ease-in-out infinite;
+
+  @keyframes messageFloat{
+    0%{
+      transform:translateY(0);
+    }
+
+    50%{
+      transform:translateY(-8px);
+    }
+
+    100%{
+      transform:translateY(0);
+    }
+  }
+
+  @media(max-width:768px){
+    display:none;
+  }
+`;
+
+const OrdersPageHero = styled.div`
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(250,204,21,0.35),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #1d4ed8
+    );
+
+  color:white;
+
+  border-radius:26px;
+  padding:24px;
+  margin-bottom:24px;
+
+  border:1px solid rgba(250,204,21,0.25);
+
+  box-shadow:
+    0 16px 34px rgba(29,78,216,0.18);
+
+  @media(max-width:480px){
+    padding:20px;
+    border-radius:22px;
+  }
+`;
+
+const OrdersPageBadge = styled.div`
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:8px 14px;
+  border-radius:999px;
+
+  background:rgba(250,204,21,0.18);
+  color:#facc15;
+
+  border:1px solid rgba(250,204,21,0.35);
+
+  font-size:13px;
+  font-weight:900;
+
+  margin-bottom:14px;
+`;
+
+const OrdersPageTitle = styled.h1`
+  font-size:32px;
+  font-weight:900;
+  line-height:1.1;
+
+  margin:0 0 10px;
+
+  color:white;
+  letter-spacing:-0.6px;
+
+  @media(max-width:480px){
+    font-size:25px;
+  }
+`;
+
+const OrdersPageText = styled.p`
+  max-width:680px;
+
+  color:rgba(255,255,255,0.86);
+
+  font-size:15px;
+  font-weight:600;
+  line-height:1.55;
+
+  margin:0;
+
+  @media(max-width:480px){
+    font-size:14px;
+  }
+`;
+
 const OrdersGrid = styled.div`
   display:grid;
   grid-template-columns:
@@ -404,20 +1186,119 @@ const CreateOrderSubtext = styled.p`
   }
 `;
 
+const CreateOrderAdvert = styled.div`
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(250,204,21,0.35),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #1d4ed8
+    );
+
+  border-radius:24px;
+  padding:24px;
+  margin-bottom:24px;
+
+  color:white;
+
+  border:1px solid rgba(250,204,21,0.28);
+
+  box-shadow:
+    0 16px 34px rgba(29,78,216,0.20);
+
+  position:relative;
+  overflow:hidden;
+
+  @media(max-width:480px){
+    padding:20px;
+    border-radius:20px;
+    margin-bottom:20px;
+  }
+`;
+
+const AdvertBadge = styled.div`
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:8px 14px;
+  border-radius:999px;
+
+  background:rgba(250,204,21,0.18);
+  color:#facc15;
+
+  border:1px solid rgba(250,204,21,0.35);
+
+  font-size:13px;
+  font-weight:900;
+
+  margin-bottom:14px;
+`;
+
+const AdvertTitle = styled.h2`
+  font-size:30px;
+  font-weight:900;
+  line-height:1.1;
+
+  margin:0 0 10px;
+
+  color:white;
+  letter-spacing:-0.6px;
+
+  @media(max-width:480px){
+    font-size:24px;
+  }
+`;
+
+const AdvertText = styled.p`
+  max-width:620px;
+
+  color:rgba(255,255,255,0.86);
+
+  font-size:15px;
+  font-weight:600;
+  line-height:1.55;
+
+  margin:0;
+
+  @media(max-width:480px){
+    font-size:14px;
+  }
+`;
+
 const OrderSection = styled.div`
-  background:#f8fafc;
-  border-radius:22px;
-  padding:22px;
-  margin-bottom:20px;
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff,
+      #f8fafc
+    );
+
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:16px;
+
   border:1px solid rgba(29,78,216,0.10);
 
   box-shadow:
-    0 8px 22px rgba(15,23,42,0.04);
+    0 8px 20px rgba(15,23,42,0.04);
+
+  transition:0.25s ease;
+
+  &:hover{
+    border-color:rgba(250,204,21,0.45);
+    box-shadow:
+      0 12px 26px rgba(15,23,42,0.07);
+  }
 
   @media(max-width:480px){
-    padding:18px;
-    border-radius:18px;
-    margin-bottom:16px;
+    padding:15px;
+    border-radius:16px;
+    margin-bottom:14px;
   }
 `;
 
@@ -429,99 +1310,200 @@ const SectionHeader = styled.div`
 `;
 
 const StepCircle = styled.div`
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  background:#facc15;
-  color:#111827;
+  width:34px;
+  height:34px;
+  border-radius:12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #1d4ed8
+    );
+
+  color:#facc15;
+
   display:flex;
   align-items:center;
   justify-content:center;
-  font-weight:800;
-  font-size:18px;
+
+  font-weight:900;
+  font-size:15px;
+
+  box-shadow:
+    0 8px 18px rgba(29,78,216,0.20);
 `;
 
 const SectionTitle = styled.h3`
-  font-size:24px;
-  font-weight:700;
+  font-size:19px;
+  font-weight:900;
   color:#0f172a;
+  margin:0;
+
+  @media(max-width:480px){
+    font-size:17px;
+  }
 `;
 
 const BeautifulInput = styled.input`
   width:100%;
-  padding:18px 20px;
-  border-radius:18px;
+  padding:15px 16px;
+  border-radius:15px;
+
   border:1px solid #dbe4ee;
   background:white;
-  font-size:16px;
+
+  font-size:15px;
+  font-weight:600;
+
   outline:none;
   transition:0.25s ease;
-  margin-top:12px;
+  margin-top:10px;
+
+  color:#0f172a;
+
+  &::placeholder{
+    color:#94a3b8;
+    font-weight:500;
+  }
 
   &:focus{
     border-color:#facc15;
     box-shadow:
-      0 0 0 4px rgba(250,204,21,0.2);
+      0 0 0 4px rgba(250,204,21,0.18);
+  }
+
+  @media(max-width:480px){
+    padding:14px;
+    border-radius:14px;
+    font-size:14px;
   }
 `;
 
 const FareBox = styled.div`
-  background:#fefce8;
-  border:1px solid #fde68a;
-  border-radius:22px;
-  padding:22px;
+  background:
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #1d4ed8
+    );
+
+  border:1px solid rgba(250,204,21,0.30);
+  border-radius:20px;
+
+  padding:18px;
+
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-top:20px;
+
+  margin-top:18px;
   flex-wrap:wrap;
-  gap:12px;
+  gap:14px;
+
+  box-shadow:
+    0 12px 28px rgba(29,78,216,0.16);
+
+  div{
+    color:white;
+  }
+
+  @media(max-width:480px){
+    padding:16px;
+    border-radius:18px;
+  }
 `;
 
 const FareAmount = styled.div`
-  font-size:34px;
-  font-weight:800;
-  color:#111827;
+  font-size:30px;
+  font-weight:900;
+  color:#facc15 !important;
+  margin-top:4px;
+
+  @media(max-width:480px){
+    font-size:25px;
+  }
 `;
 
 const ConfirmButton = styled.button`
   width:220px;
+
   border:none;
-  border-radius:18px;
-  padding:16px;
-  margin-top:28px;
-  background:linear-gradient(
-    90deg,
-    #111827,
-    #facc15
-  );
-  color:white;
-  font-size:16px;
-  font-weight:800;
+  border-radius:16px;
+
+  padding:14px 18px;
+  margin-top:24px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #1d4ed8
+    );
+
+  color:#facc15;
+
+  font-size:15px;
+  font-weight:900;
+
   cursor:pointer;
-  transition:0.3s ease;
+
+  box-shadow:
+    0 12px 26px rgba(29,78,216,0.22);
+
+  border:1px solid rgba(250,204,21,0.35);
+
+  transition:0.25s ease;
 
   &:hover{
     transform:translateY(-2px);
+    background:
+      linear-gradient(
+        135deg,
+        #facc15,
+        #f59e0b
+      );
+    color:#0f172a;
+    box-shadow:
+      0 14px 30px rgba(250,204,21,0.30);
   }
 
   @media(max-width:480px){
     width:100%;
-    padding:15px;
-    font-size:15px;
-    border-radius:16px;
+    padding:14px;
+    font-size:14px;
+    border-radius:15px;
   }
 `;
 
 const OrderCard = styled.div`
-  background:white;
-  border-radius:24px;
-  padding:24px;
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff,
+      #f8fafc
+    );
+
+  border-radius:22px;
+  padding:22px;
+
   box-shadow:
-    0 6px 20px rgba(0,0,0,0.05);
+    0 12px 28px rgba(15,23,42,0.07);
+
+  border:1px solid rgba(29,78,216,0.10);
+
   width:100%;
   max-width:100%;
   overflow:hidden;
+
+  transition:0.25s ease;
+
+  &:hover{
+    transform:translateY(-3px);
+    box-shadow:
+      0 16px 34px rgba(15,23,42,0.10);
+    border-color:rgba(250,204,21,0.38);
+  }
 
   @media(max-width:480px){
     border-radius:18px;
@@ -535,78 +1517,242 @@ const Row = styled.div`
   font-size:15px;
 `;
 
+const SearchingRiderBadge = styled.span`
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+
+  margin-left:6px;
+  padding:7px 12px;
+
+  border-radius:999px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #1d4ed8
+    );
+
+  color:#facc15;
+
+  font-size:13px;
+  font-weight:900;
+
+  border:1px solid rgba(250,204,21,0.35);
+
+  box-shadow:
+    0 8px 18px rgba(29,78,216,0.18);
+
+  white-space:nowrap;
+
+  @media(max-width:480px){
+    margin-left:0;
+    margin-top:8px;
+    display:flex;
+    width:fit-content;
+    font-size:12px;
+    padding:7px 10px;
+  }
+`;
+
+const SearchingPulse = styled.span`
+  width:9px;
+  height:9px;
+
+  border-radius:50%;
+
+  background:#22c55e;
+
+  box-shadow:
+    0 0 0 rgba(34,197,94,0.7);
+
+  animation:riderPulse 1.4s infinite;
+
+  @keyframes riderPulse{
+    0%{
+      box-shadow:0 0 0 0 rgba(34,197,94,0.7);
+    }
+
+    70%{
+      box-shadow:0 0 0 9px rgba(34,197,94,0);
+    }
+
+    100%{
+      box-shadow:0 0 0 0 rgba(34,197,94,0);
+    }
+  }
+`;
+
+const SearchingDots = styled.span`
+  display:inline-flex;
+  align-items:center;
+  gap:3px;
+
+  i{
+    width:4px;
+    height:4px;
+    border-radius:50%;
+    background:#facc15;
+    display:block;
+    animation:searchingDots 1s infinite ease-in-out;
+  }
+
+  i:nth-child(2){
+    animation-delay:0.15s;
+  }
+
+  i:nth-child(3){
+    animation-delay:0.3s;
+  }
+
+  @keyframes searchingDots{
+    0%, 80%, 100%{
+      opacity:0.3;
+      transform:translateY(0);
+    }
+
+    40%{
+      opacity:1;
+      transform:translateY(-3px);
+    }
+  }
+`;
+
 const StatusBadge = styled.div`
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  padding:10px 18px;
+
+  padding:9px 16px;
   border-radius:999px;
-  font-size:13px;
-  font-weight:700;
-  margin-top:15px;
+
+  font-size:12px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:0.4px;
+
+  margin-top:14px;
+
+  border:1px solid transparent;
 
   background:${props => {
 
     if(props.status === "pending"){
-      return "#fef3c7";
+      return "linear-gradient(135deg, #facc15, #f59e0b)";
     }
 
     if(props.status === "accepted"){
-      return "#dbeafe";
+      return "linear-gradient(135deg, #dbeafe, #bfdbfe)";
     }
 
     if(props.status === "picked"){
-      return "#ede9fe";
+      return "linear-gradient(135deg, #ede9fe, #ddd6fe)";
     }
 
     if(props.status === "delivering"){
-      return "#dcfce7";
+      return "linear-gradient(135deg, #dcfce7, #bbf7d0)";
     }
 
     if(props.status === "delivered"){
-      return "#bbf7d0";
+      return "linear-gradient(135deg, #0f172a, #1d4ed8)";
     }
 
     return "#e5e7eb";
   }};
 
-  color:#111827;
+  color:${props => {
+
+    if(props.status === "delivered"){
+      return "#facc15";
+    }
+
+    return "#111827";
+  }};
+
+  border-color:${props => {
+
+    if(props.status === "delivered"){
+      return "rgba(250,204,21,0.35)";
+    }
+
+    return "rgba(15,23,42,0.08)";
+  }};
+
+  box-shadow:
+    0 8px 18px rgba(15,23,42,0.08);
 `;
 
 const Timeline = styled.div`
   margin-top:20px;
-  border-left:3px solid #facc15;
-  padding-left:18px;
+  padding:18px;
+
+  border-radius:18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f8fafc,
+      #ffffff
+    );
+
+  border:1px solid rgba(29,78,216,0.10);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.7);
 `;
 
 const TimelineItem = styled.div`
   position:relative;
-  margin-bottom:22px;
+
+  padding:0 0 18px 34px;
+
+  border-left:3px solid #dbeafe;
+
+  &:last-child{
+    padding-bottom:0;
+  }
+
+  &:last-child{
+    border-left-color:transparent;
+  }
 `;
 
 const TimelineDot = styled.div`
-  width:16px;
-  height:16px;
+  width:18px;
+  height:18px;
+
   border-radius:50%;
+
+  position:absolute;
+  left:-10.5px;
+  top:0;
+
   background:${props =>
     props.active
-      ? "#22c55e"
-      : "#d1d5db"};
-  position:absolute;
-  left:-27px;
-  top:2px;
+      ? "linear-gradient(135deg, #facc15, #f59e0b)"
+      : "#cbd5e1"};
+
+  border:3px solid #ffffff;
+
+  box-shadow:${props =>
+    props.active
+      ? "0 0 0 5px rgba(250,204,21,0.22)"
+      : "0 0 0 4px rgba(148,163,184,0.14)"};
 `;
 
 const TimelineText = styled.div`
   font-size:14px;
-  font-weight:600;
+  font-weight:900;
   color:#0f172a;
+  line-height:1.2;
 `;
 
 const TimelineTime = styled.div`
   font-size:12px;
   color:#64748b;
-  margin-top:4px;
+  margin-top:5px;
+  font-weight:700;
 `;
 
 const ButtonRow = styled.div`
@@ -1501,6 +2647,56 @@ const [
   }
 
 ]);
+
+useEffect(()=>{
+
+  const savedSettings =
+    JSON.parse(
+      localStorage.getItem(
+        "monnidropCustomerSettings"
+      )
+    );
+
+  if(savedSettings){
+
+    setPhoneNumber(
+      savedSettings.phoneNumber || ""
+    );
+
+    setEmail(
+      savedSettings.email || ""
+    );
+
+    setCountry(
+      savedSettings.country || "Ghana"
+    );
+
+    setLanguage(
+      savedSettings.language || "English"
+    );
+
+    setCurrency(
+      savedSettings.currency || "GHS"
+    );
+
+    setPaymentMethod(
+      savedSettings.paymentMethod || ""
+    );
+
+    setTwoFactorEnabled(
+      savedSettings.twoFactorEnabled || false
+    );
+
+    setGoogleConnected(
+      savedSettings.googleConnected || false
+    );
+
+    setFacebookConnected(
+      savedSettings.facebookConnected || false
+    );
+  }
+
+},[]);
 
   useEffect(()=>{
 
@@ -3168,21 +4364,26 @@ async function sendMessage(
 
           <>
 
-            <Hero>
+           <OrdersPageHero>
 
-              <div>
+  <div>
 
-                <HeroTitle>
-                  My Orders 📦
-                </HeroTitle>
+    <OrdersPageBadge>
+      📦 Customer Orders
+    </OrdersPageBadge>
 
-                <HeroText>
-                  View and track all your orders.
-                </HeroText>
+    <OrdersPageTitle>
+      Track Every Package
+    </OrdersPageTitle>
 
-              </div>
+    <OrdersPageText>
+      View your deliveries, payment status, rider details,
+      live route tracking, and order progress in one clean place.
+    </OrdersPageText>
 
-            </Hero>
+  </div>
+
+</OrdersPageHero>
 
             {
 
@@ -3212,16 +4413,58 @@ async function sendMessage(
                         key={o._id}
                       >
 
-                        <Row>
-                          <strong>
-                            Delivery Rider:
-                          </strong>
-                          {" "}
-                          {
-                            o.rider?.name ||
-                            "Searching for Rider"
-                          }
-                        </Row>
+                        <Row
+  style={{
+    background:"#eff6ff",
+    border:"1px solid #dbeafe",
+    borderRadius:"14px",
+    padding:"12px",
+    color:"#0f172a",
+    fontWeight:"800"
+  }}
+>
+  <strong
+    style={{
+      color:"#1d4ed8"
+    }}
+  >
+    Delivery Rider:
+  </strong>
+  {" "}
+
+ {
+  o.rider?.name
+
+  ?
+
+  o.rider.name
+
+  :
+
+  o.status === "pending"
+
+  ?
+
+  <SearchingRiderBadge>
+    <SearchingPulse />
+
+    <span>
+      Searching for rider online
+    </span>
+
+    <SearchingDots>
+      <i></i>
+      <i></i>
+      <i></i>
+    </SearchingDots>
+  </SearchingRiderBadge>
+
+  :
+
+  "No rider assigned"
+}
+
+</Row>
 
                         <Row>
                           <strong>
@@ -3396,13 +4639,52 @@ async function sendMessage(
   locationCoords[o.dropoffLocation] && (
 
     <div
-      style={{
-        marginTop:"20px",
-        borderRadius:"18px",
-        overflow:"hidden",
-        border:"1px solid #e5e7eb"
-      }}
-    >
+  style={{
+    marginTop:"20px",
+    borderRadius:"22px",
+    overflow:"hidden",
+    border:"1px solid rgba(29,78,216,0.16)",
+    background:"#ffffff",
+    boxShadow:
+      "0 14px 30px rgba(15,23,42,0.08)"
+  }}
+>
+
+  <div
+  style={{
+    display:"flex",
+    alignItems:"center",
+    justifyContent:"space-between",
+    gap:"12px",
+    padding:"12px 14px",
+    background:
+      "linear-gradient(135deg, #0f172a, #1d4ed8)",
+    color:"white"
+  }}
+>
+  <div
+    style={{
+      fontWeight:"900",
+      fontSize:"14px"
+    }}
+  >
+    Live Delivery Map
+  </div>
+
+  <div
+    style={{
+      background:"#facc15",
+      color:"#0f172a",
+      padding:"6px 10px",
+      borderRadius:"999px",
+      fontSize:"12px",
+      fontWeight:"900"
+    }}
+  >
+    Tracking Active
+  </div>
+
+</div>
 
       <MapContainer
         center={[
@@ -3528,22 +4810,37 @@ async function sendMessage(
   )
 }    
 
-<ButtonRow>
+<ButtonRow
+  style={{
+    marginTop:"18px",
+    gap:"10px"
+  }}
+>
 
 <Button
-onClick={()=>{
- setOpenChats({
+  onClick={()=>{
 
-   ...openChats,
+    setOpenChats({
 
-  [o._id]:
-  !openChats[o._id]
-  });
+      ...openChats,
 
-   }}
-    >
-     Chat Rider
-    </Button>
+      [o._id]:
+      !openChats[o._id]
+    });
+
+  }}
+  style={{
+    background:
+      "linear-gradient(135deg, #0f172a, #1d4ed8)",
+    color:"#facc15",
+    fontWeight:"900",
+    border:"1px solid rgba(250,204,21,0.35)",
+    boxShadow:
+      "0 10px 22px rgba(29,78,216,0.18)"
+  }}
+>
+  💬 Chat Rider
+</Button>
 
     <Button
   onClick={()=>{
@@ -3559,25 +4856,38 @@ onClick={()=>{
       `tel:${o.rider.phone}`;
 
   }}
+  style={{
+    background:
+      "linear-gradient(135deg, #facc15, #f59e0b)",
+    color:"#0f172a",
+    fontWeight:"900",
+    border:"1px solid rgba(15,23,42,0.12)",
+    boxShadow:
+      "0 10px 22px rgba(250,204,21,0.22)"
+  }}
 >
-  Call Rider
+  📞 Call Rider
 </Button>
 
-                          {
+ {
 
-                            o.status === "pending"
+ o.status === "pending" && (
 
-                            &&
-
-                            (
-
-                              <Button
-                                onClick={()=>
-                                  cancelOrder(o._id)
-                                }
-                              >
-                                Cancel Order
-                              </Button>
+<Button
+  onClick={()=>
+    cancelOrder(o._id)
+  }
+  style={{
+    background:"#dc2626",
+    color:"white",
+    fontWeight:"900",
+    border:"1px solid rgba(220,38,38,0.25)",
+    boxShadow:
+      "0 10px 22px rgba(220,38,38,0.16)"
+  }}
+>
+  Cancel Order
+</Button>
 
                             )
                           }
@@ -3616,23 +4926,26 @@ onClick={()=>{
 
                                           <div
                                             key={index}
-                                            style={{
-                                              background:
-                                                msg.sender ===
-                                                "customer"
+                                           style={{
 
-                                                ?
+  background:
+    msg.sender === "customer"
+    ? "linear-gradient(135deg, #0f172a, #1d4ed8)"
+    : "linear-gradient(135deg, #facc15, #f59e0b)",
 
-                                                "#dbeafe"
+  color:
+    msg.sender === "customer"
+    ? "#ffffff"
+    : "#0f172a",
 
-                                                :
-
-                                                "#dcfce7",
-
-                                              padding:"10px",
-                                              borderRadius:"10px",
-                                              marginBottom:"8px"
-                                            }}
+  padding:"11px 13px",
+  borderRadius:"14px",
+  marginBottom:"9px",
+  fontSize:"14px",
+  fontWeight:"700",
+  boxShadow:
+    "0 8px 18px rgba(15,23,42,0.08)"
+}}
                                           >
 
                                             <strong>
@@ -3670,12 +4983,52 @@ onClick={()=>{
                                 )
                               }
 
-                              <div
-                                style={{
-                                  display:"flex",
-                                  gap:"10px"
-                                }}
-                              >
+<div
+  style={{
+    marginTop:"16px",
+    background:
+      "linear-gradient(135deg, #ffffff, #f8fafc)",
+    padding:"16px",
+    borderRadius:"18px",
+    border:"1px solid rgba(29,78,216,0.12)",
+    boxShadow:
+      "0 12px 28px rgba(15,23,42,0.07)"
+  }}
+>
+
+  <div
+  style={{
+    display:"flex",
+    alignItems:"center",
+    justifyContent:"space-between",
+    gap:"10px",
+    marginBottom:"14px"
+  }}
+>
+  <div
+    style={{
+      fontSize:"14px",
+      fontWeight:"900",
+      color:"#0f172a"
+    }}
+  >
+    💬 Rider Chat
+  </div>
+
+  <div
+    style={{
+      fontSize:"12px",
+      fontWeight:"900",
+      color:"#1d4ed8",
+      background:"#eff6ff",
+      border:"1px solid #dbeafe",
+      padding:"6px 10px",
+      borderRadius:"999px"
+    }}
+  >
+    Live conversation
+  </div>
+</div>
 
                                 <input
                                   type="text"
@@ -3694,25 +5047,39 @@ onClick={()=>{
                                     })
                                   }
 
-                                  style={{
-                                    flex:1,
-                                    padding:"12px",
-                                    borderRadius:"10px",
-                                    border:"1px solid #d1d5db"
-                                  }}
+                                 style={{
+  flex:1,
+  padding:"13px 14px",
+  borderRadius:"14px",
+  border:"1px solid rgba(29,78,216,0.18)",
+  outline:"none",
+  background:"#ffffff",
+  color:"#0f172a",
+  fontWeight:"700",
+  boxShadow:
+    "inset 0 1px 0 rgba(255,255,255,0.7)"
+}}
                                 />
 
                                 <Button
-                                  onClick={()=>
+  onClick={()=>
 
-                                    sendMessage(
-                                      o._id,
-                                      chatText[o._id]
-                                    )
-                                  }
-                                >
-                                  Send
-                                </Button>
+    sendMessage(
+      o._id,
+      chatText[o._id]
+    )
+  }
+  style={{
+    background:
+      "linear-gradient(135deg, #facc15, #f59e0b)",
+    color:"#0f172a",
+    fontWeight:"900",
+    boxShadow:
+      "0 10px 22px rgba(250,204,21,0.22)"
+  }}
+>
+  Send
+</Button>
 
                               </div>
 
@@ -3741,13 +5108,23 @@ onClick={()=>{
 
   <CreateOrderWrapper>
 
-  <CreateOrderTitle>
-    Send Package 📦
-  </CreateOrderTitle>
+  <CreateOrderAdvert>
 
-  <CreateOrderSubtext>
-    Fast, safe and reliable delivery across Accra.
-  </CreateOrderSubtext>
+  <AdvertBadge>
+    🚀 Fast Delivery Across Accra
+  </AdvertBadge>
+
+  <AdvertTitle>
+    Send Packages Faster,
+    Safer & Smarter 📦
+  </AdvertTitle>
+
+  <AdvertText>
+    Book a rider, track your delivery, and pay with ease —
+    all from your MonniDrop dashboard.
+  </AdvertText>
+
+</CreateOrderAdvert>
 
   <OrderSection>
 
@@ -3782,27 +5159,35 @@ onClick={()=>{
 
   <div
   style={{
-    marginTop:"8px",
-    fontSize:"13px",
-    color:"#64748b"
+    display:"inline-flex",
+    alignItems:"center",
+    gap:"6px",
+    marginTop:"10px",
+    padding:"7px 10px",
+    borderRadius:"999px",
+    background:"#eff6ff",
+    border:"1px solid #dbeafe",
+    color:"#1d4ed8",
+    fontSize:"12px",
+    fontWeight:"800"
   }}
 >
-  House / Building, Street, Area, City
+  📍 House / Building, Street, Area, City
 </div>
 
 {
   pickupSuggestions.length > 0 && (
 
     <div
-      style={{
-        background:"white",
-        border:"1px solid #e5e7eb",
-        borderRadius:"16px",
-        marginTop:"10px",
-        overflow:"hidden",
-        boxShadow:
-          "0 4px 12px rgba(0,0,0,0.08)"
-      }}
+     style={{
+  background:"#ffffff",
+  border:"1px solid rgba(29,78,216,0.14)",
+  borderRadius:"18px",
+  marginTop:"10px",
+  overflow:"hidden",
+  boxShadow:
+    "0 12px 26px rgba(15,23,42,0.08)"
+}}
     >
 
       {
@@ -3826,12 +5211,14 @@ calculateDistance(
 }}
 
    style={{
-  padding:"14px",
-   cursor:"pointer",
-    borderBottom:
-  "1px solid #f1f5f9",
- fontSize:"14px"
-  }}
+  padding:"13px 15px",
+  cursor:"pointer",
+  borderBottom:"1px solid #eef2ff",
+  fontSize:"14px",
+  fontWeight:"700",
+  color:"#0f172a",
+  background:"#ffffff"
+}}
              
 >
 
@@ -3881,12 +5268,20 @@ calculateDistance(
 
   <div
   style={{
-    marginTop:"8px",
-    fontSize:"13px",
-    color:"#64748b"
+    display:"inline-flex",
+    alignItems:"center",
+    gap:"6px",
+    marginTop:"10px",
+    padding:"7px 10px",
+    borderRadius:"999px",
+    background:"#eff6ff",
+    border:"1px solid #dbeafe",
+    color:"#1d4ed8",
+    fontSize:"12px",
+    fontWeight:"800"
   }}
 >
-  House / Building, Street, Area, City
+  📍 House / Building, Street, Area, City
 </div>
 
 {
@@ -3894,14 +5289,14 @@ calculateDistance(
 
     <div
       style={{
-        background:"white",
-        border:"1px solid #e5e7eb",
-        borderRadius:"16px",
-        marginTop:"10px",
-        overflow:"hidden",
-        boxShadow:
-          "0 4px 12px rgba(0,0,0,0.08)"
-      }}
+  background:"#ffffff",
+  border:"1px solid rgba(29,78,216,0.14)",
+  borderRadius:"18px",
+  marginTop:"10px",
+  overflow:"hidden",
+  boxShadow:
+    "0 12px 26px rgba(15,23,42,0.08)"
+}}
     >
 
       {
@@ -3925,13 +5320,15 @@ calculateDistance(
 
 }}
 
-    style={{
-    padding:"14px",
-    cursor:"pointer",
-    borderBottom:
-    "1px solid #f1f5f9",
-    fontSize:"14px"
-    }}
+   style={{
+  padding:"13px 15px",
+  cursor:"pointer",
+  borderBottom:"1px solid #eef2ff",
+  fontSize:"14px",
+  fontWeight:"700",
+  color:"#0f172a",
+  background:"#ffffff"
+}}
  >
 
   {place}
@@ -3979,14 +5376,17 @@ calculateDistance(
   <div>
 
     <div
-      style={{
-        color:"#64748b",
-        fontSize:"14px",
-        marginBottom:"6px"
-      }}
-    >
-      Estimated Distance
-    </div>
+  style={{
+    color:"rgba(255,255,255,0.92)",
+    fontSize:"14px",
+    fontWeight:"900",
+    letterSpacing:"0.4px",
+    textTransform:"uppercase",
+    marginBottom:"6px"
+  }}
+>
+  Estimated Distance
+</div>
 
     <FareAmount>
       {distance || 0} KM
@@ -3997,14 +5397,17 @@ calculateDistance(
   <div>
 
     <div
-      style={{
-        color:"#64748b",
-        fontSize:"14px",
-        marginBottom:"6px"
-      }}
-    >
-      Delivery Fee
-    </div>
+  style={{
+    color:"rgba(255,255,255,0.92)",
+    fontSize:"14px",
+    fontWeight:"900",
+    letterSpacing:"0.4px",
+    textTransform:"uppercase",
+    marginBottom:"6px"
+  }}
+>
+  Delivery Fee
+</div>
 
     <FareAmount>
       ₵{amount || 0}
@@ -4038,50 +5441,115 @@ calculateDistance(
   >
 
     <Button
-      type="button"
-      onClick={()=>
-        setPaymentMethod("cash")
-      }
-      style={{
-        background:
-          paymentMethod === "cash"
-          ? "#16a34a"
-          : "#2563eb"
-      }}
-    >
-      Cash on Delivery
-    </Button>
+  type="button"
+  onClick={()=>
+    setPaymentMethod("cash")
+  }
+  style={{
+    background:
+      paymentMethod === "cash"
+      ? "linear-gradient(135deg, #facc15, #f59e0b)"
+      : "linear-gradient(135deg, #0f172a, #1d4ed8)",
+    color:
+      paymentMethod === "cash"
+      ? "#0f172a"
+      : "white",
+    border:
+      paymentMethod === "cash"
+      ? "2px solid #0f172a"
+      : "1px solid rgba(29,78,216,0.25)",
+    boxShadow:
+      paymentMethod === "cash"
+      ? "0 12px 24px rgba(250,204,21,0.28)"
+      : "0 10px 22px rgba(29,78,216,0.18)",
+    fontWeight:"900"
+  }}
+>
+  Cash on Delivery
+</Button>
 
     <Button
-      type="button"
-      onClick={()=>
-        setPaymentMethod("momo")
-      }
-      style={{
-        background:
-          paymentMethod === "momo"
-          ? "#16a34a"
-          : "#2563eb"
-      }}
-    >
-      Mobile Money
-    </Button>
+  type="button"
+  onClick={()=>
+    setPaymentMethod("momo")
+  }
+  style={{
+    background:
+      paymentMethod === "momo"
+      ? "linear-gradient(135deg, #facc15, #f59e0b)"
+      : "linear-gradient(135deg, #0f172a, #1d4ed8)",
+    color:
+      paymentMethod === "momo"
+      ? "#0f172a"
+      : "white",
+    border:
+      paymentMethod === "momo"
+      ? "2px solid #0f172a"
+      : "1px solid rgba(29,78,216,0.25)",
+    boxShadow:
+      paymentMethod === "momo"
+      ? "0 12px 24px rgba(250,204,21,0.28)"
+      : "0 10px 22px rgba(29,78,216,0.18)",
+    fontWeight:"900"
+  }}
+>
+  Mobile Money
+</Button>
 
   </div>
 
   {
     paymentMethod === "momo" && (
 
-      <BeautifulInput
-        type="tel"
-        placeholder="Enter MoMo number"
-        value={momoNumber}
-        onChange={(e)=>
-          setMomoNumber(
-            e.target.value
-          )
-        }
-      />
+     <div
+  style={{
+    marginTop:"14px",
+    padding:"14px",
+    borderRadius:"18px",
+    background:"#eff6ff",
+    border:"1px solid #dbeafe",
+    boxShadow:
+      "0 8px 18px rgba(29,78,216,0.08)"
+  }}
+>
+
+  <div
+    style={{
+      fontSize:"13px",
+      fontWeight:"900",
+      color:"#1d4ed8",
+      marginBottom:"8px"
+    }}
+  >
+    Mobile Money Number
+  </div>
+
+  <BeautifulInput
+    type="tel"
+    placeholder="Enter MoMo number"
+    value={momoNumber}
+    onChange={(e)=>
+      setMomoNumber(
+        e.target.value
+      )
+    }
+    style={{
+      marginTop:"0"
+    }}
+  />
+
+  <div
+    style={{
+      marginTop:"8px",
+      fontSize:"12px",
+      fontWeight:"700",
+      color:"#64748b"
+    }}
+  >
+    Use your active MTN MoMo number for payment confirmation.
+  </div>
+
+</div>
 
     )
   }
@@ -4109,48 +5577,114 @@ calculateDistance(
       }}
     >
 
-      <HeroTitle
-        style={{
-          fontSize:"28px",
-          marginBottom:"18px"
-        }}
-      >
-        Confirm Your Order
-      </HeroTitle>
+     <HeroTitle
+  style={{
+    fontSize:"24px",
+    marginBottom:"16px",
+    color:"#0f172a",
+    display:"flex",
+    alignItems:"center",
+    gap:"10px"
+  }}
+>
+  <span
+    style={{
+      width:"34px",
+      height:"34px",
+      borderRadius:"12px",
+      display:"inline-flex",
+      alignItems:"center",
+      justifyContent:"center",
+      background:
+        "linear-gradient(135deg, #0f172a, #1d4ed8)",
+      color:"#facc15",
+      fontSize:"18px"
+    }}
+  >
+    <FiPackage />
+  </span>
 
-      <Row>
-        <strong>
-          Pickup:
-        </strong>
-        {" "}
-        {pickupLocation}
-      </Row>
+  Confirm Your Order
+</HeroTitle>
 
-      <Row>
-        <strong>
-          Dropoff:
-        </strong>
-        {" "}
-        {dropoffLocation}
-      </Row>
+      <Row
+  style={{
+    background:"#f8fafc",
+    border:"1px solid #e5e7eb",
+    borderRadius:"13px",
+    padding:"10px 12px",
+    color:"#334155",
+    fontWeight:"700"
+  }}
+>
+  <strong>
+    Pickup:
+  </strong>
+  {" "}
+  {pickupLocation}
+</Row>
 
-      <Row>
-        <strong>
-          Item Notes:
-        </strong>
-        {" "}
-        {itemNotes || "None"}
-      </Row>
+      <Row
+  style={{
+    background:"#f8fafc",
+    border:"1px solid #e5e7eb",
+    borderRadius:"13px",
+    padding:"10px 12px",
+    color:"#334155",
+    fontWeight:"700"
+  }}
+>
+  <strong>
+    Dropoff:
+  </strong>
+  {" "}
+  {dropoffLocation}
+</Row>
 
-      <Row>
-        <strong>
-          Distance:
-        </strong>
-        {" "}
-        {distance} KM
-      </Row>
+      <Row
+  style={{
+    background:"#f8fafc",
+    border:"1px solid #e5e7eb",
+    borderRadius:"13px",
+    padding:"10px 12px",
+    color:"#334155",
+    fontWeight:"700"
+  }}
+>
+  <strong>
+    Item Notes:
+  </strong>
+  {" "}
+  {itemNotes || "None"}
+</Row>
 
-      <Row>
+    <Row
+  style={{
+    background:"#f8fafc",
+    border:"1px solid #e5e7eb",
+    borderRadius:"13px",
+    padding:"10px 12px",
+    color:"#334155",
+    fontWeight:"700"
+  }}
+>
+  <strong>
+    Distance:
+  </strong>
+  {" "}
+  {distance} KM
+</Row>
+
+     <Row
+  style={{
+    background:"#f8fafc",
+    border:"1px solid #e5e7eb",
+    borderRadius:"13px",
+    padding:"10px 12px",
+    color:"#334155",
+    fontWeight:"700"
+  }}
+>
   <strong>
     Estimated Delivery Time:
   </strong>
@@ -4158,15 +5692,33 @@ calculateDistance(
   {deliveryTime}
 </Row>
 
-      <Row>
-        <strong>
-          Delivery Fee:
-        </strong>
-        {" "}
-        ₵{amount}
-      </Row>
+      <Row
+  style={{
+    background:"#f8fafc",
+    border:"1px solid #e5e7eb",
+    borderRadius:"13px",
+    padding:"10px 12px",
+    color:"#334155",
+    fontWeight:"700"
+  }}
+>
+  <strong>
+    Delivery Fee:
+  </strong>
+  {" "}
+  ₵{amount}
+</Row>
 
-      <Row>
+     <Row
+  style={{
+    background:"#f8fafc",
+    border:"1px solid #e5e7eb",
+    borderRadius:"13px",
+    padding:"10px 12px",
+    color:"#334155",
+    fontWeight:"700"
+  }}
+>
   <strong>
     Payment Method:
   </strong>
@@ -4183,13 +5735,22 @@ calculateDistance(
 {
   paymentMethod === "momo" && (
 
-    <Row>
-      <strong>
-        MoMo Number:
-      </strong>
-      {" "}
-      {momoNumber}
-    </Row>
+   <Row
+  style={{
+    background:"#f8fafc",
+    border:"1px solid #e5e7eb",
+    borderRadius:"13px",
+    padding:"10px 12px",
+    color:"#334155",
+    fontWeight:"700"
+  }}
+>
+  <strong>
+    MoMo Number:
+  </strong>
+  {" "}
+  {momoNumber}
+</Row>
   )
 }
 
@@ -4226,21 +5787,30 @@ calculateDistance(
 
   <>
 
-    <Hero>
+    <MessagesHero>
 
-      <div>
+  <MessagesHeroContent>
 
-        <HeroTitle>
-          Messages 💬
-        </HeroTitle>
+    <MessagesBadge>
+      💬 Rider Communication
+    </MessagesBadge>
 
-        <HeroText>
-          Rider messages from your deliveries.
-        </HeroText>
+    <MessagesTitle>
+      Stay Connected With Your Rider
+    </MessagesTitle>
 
-      </div>
+    <MessagesText>
+      View rider updates, delivery conversations, and important
+      package messages in one clean inbox.
+    </MessagesText>
 
-    </Hero>
+  </MessagesHeroContent>
+
+  <MessagesHeroIcon>
+    💬
+  </MessagesHeroIcon>
+
+</MessagesHero>
 
     {
 
@@ -4250,9 +5820,19 @@ calculateDistance(
 
       (
 
-        <Empty>
-          No messages yet.
-        </Empty>
+       <Empty
+  style={{
+    background:
+      "linear-gradient(135deg, #ffffff, #f8fafc)",
+    border:"1px solid rgba(29,78,216,0.12)",
+    boxShadow:
+      "0 12px 28px rgba(15,23,42,0.07)",
+    color:"#0f172a",
+    fontWeight:"800"
+  }}
+>
+  💬 No messages yet. Chat with your rider when an order is active.
+</Empty>
 
       )
 
@@ -4266,29 +5846,103 @@ calculateDistance(
 
             messageInbox.map((msg,index)=>(
 
-              <OrderCard key={index}>
+             <OrderCard
+  key={index}
+  style={{
+    background:
+      "linear-gradient(135deg, #ffffff, #f8fafc)",
+    border:"1px solid rgba(29,78,216,0.12)",
+    boxShadow:
+      "0 14px 30px rgba(15,23,42,0.08)",
+    borderRadius:"22px"
+  }}
+>
 
-                <Row>
-                  <strong>
-                    From:
-                  </strong>
-                  {" "}
-                  {
-                    msg.sender === "rider"
-                    ? "Rider"
-                    : msg.sender
-                  }
-                </Row>
+  <Row
+    style={{
+      display:"flex",
+      alignItems:"center",
+      gap:"10px",
+      marginBottom:"14px"
+    }}
+  >
+    <span
+      style={{
+        width:"38px",
+        height:"38px",
+        borderRadius:"14px",
+        display:"inline-flex",
+        alignItems:"center",
+        justifyContent:"center",
+        background:
+          "linear-gradient(135deg, #0f172a, #1d4ed8)",
+        color:"#facc15",
+        fontSize:"18px",
+        boxShadow:
+          "0 10px 22px rgba(29,78,216,0.18)"
+      }}
+    >
+      💬
+    </span>
 
-                <Row>
-                  {msg.text}
-                </Row>
+    <div>
+      <div
+        style={{
+          fontSize:"12px",
+          fontWeight:"900",
+          color:"#64748b",
+          textTransform:"uppercase",
+          letterSpacing:"0.5px"
+        }}
+      >
+        Message From
+      </div>
 
-                <StatusBadge>
-                  {msg.time}
-                </StatusBadge>
+      <div
+        style={{
+          fontSize:"16px",
+          fontWeight:"900",
+          color:"#0f172a"
+        }}
+      >
+        {
+          msg.sender === "rider"
+          ? "Rider"
+          : msg.sender
+        }
+      </div>
+    </div>
+  </Row>
 
-              </OrderCard>
+  <Row
+    style={{
+      background:"#eff6ff",
+      border:"1px solid #dbeafe",
+      borderRadius:"16px",
+      padding:"14px",
+      color:"#0f172a",
+      fontWeight:"700",
+      lineHeight:"1.5",
+      marginBottom:"14px"
+    }}
+  >
+    {msg.text}
+  </Row>
+
+  <StatusBadge
+    style={{
+      background:
+        "linear-gradient(135deg, #facc15, #f59e0b)",
+      color:"#0f172a",
+      border:"1px solid rgba(15,23,42,0.10)",
+      boxShadow:
+        "0 8px 18px rgba(250,204,21,0.22)"
+    }}
+  >
+    {msg.time}
+  </StatusBadge>
+
+</OrderCard>
 
             ))
           }
@@ -4306,21 +5960,30 @@ calculateDistance(
 
           <>
 
-            <Hero>
+            <NotificationsHero>
 
-              <div>
+  <NotificationsHeroContent>
 
-                <HeroTitle>
-                  Notifications 🔔
-                </HeroTitle>
+    <NotificationsBadge>
+      🔔 Delivery Alerts
+    </NotificationsBadge>
 
-                <HeroText>
-                  Rider updates and order alerts.
-                </HeroText>
+    <NotificationsTitle>
+      Stay Updated Instantly
+    </NotificationsTitle>
 
-              </div>
+    <NotificationsText>
+      Track rider updates, order progress, messages,
+      and important delivery alerts in one clean notification center.
+    </NotificationsText>
 
-            </Hero>
+  </NotificationsHeroContent>
+
+  <NotificationsHeroIcon>
+    🔔
+  </NotificationsHeroIcon>
+
+</NotificationsHero>
 
             {
 
@@ -4329,10 +5992,49 @@ calculateDistance(
               ?
 
               (
+<Empty
+  style={{
+    background:
+      "linear-gradient(135deg, #ffffff, #f8fafc)",
+    border:"1px solid rgba(250,204,21,0.25)",
+    boxShadow:
+      "0 14px 30px rgba(15,23,42,0.08)",
+    color:"#0f172a",
+    fontWeight:"800",
+    borderRadius:"22px",
+    padding:"32px"
+  }}
+>
+  <div
+    style={{
+      fontSize:"42px",
+      marginBottom:"12px"
+    }}
+  >
+    🔔
+  </div>
 
-                <Empty>
-                  No notifications yet.
-                </Empty>
+  <div
+    style={{
+      fontSize:"20px",
+      fontWeight:"900",
+      marginBottom:"8px"
+    }}
+  >
+    No notifications yet
+  </div>
+
+  <div
+    style={{
+      fontSize:"14px",
+      color:"#64748b",
+      fontWeight:"700",
+      lineHeight:"1.5"
+    }}
+  >
+    Delivery alerts, rider updates, and order messages will appear here.
+  </div>
+</Empty>
 
               )
 
@@ -4368,19 +6070,99 @@ calculateDistance(
   }}
 >
 
-                          <Row>
-                            <strong>
-                              {note.sender}
-                            </strong>
-                          </Row>
+                         <OrderCard
+  key={index}
+  style={{
+    background:
+      "linear-gradient(135deg, #ffffff, #f8fafc)",
+    border:"1px solid rgba(250,204,21,0.25)",
+    boxShadow:
+      "0 14px 30px rgba(15,23,42,0.08)",
+    borderRadius:"22px"
+  }}
+>
 
-                          <Row>
-                            {note.text}
-                          </Row>
+  <Row
+    style={{
+      display:"flex",
+      alignItems:"center",
+      gap:"10px",
+      marginBottom:"14px"
+    }}
+  >
+    <span
+      style={{
+        width:"38px",
+        height:"38px",
+        borderRadius:"14px",
+        display:"inline-flex",
+        alignItems:"center",
+        justifyContent:"center",
+        background:
+          "linear-gradient(135deg, #0f172a, #1d4ed8)",
+        color:"#facc15",
+        fontSize:"18px",
+        boxShadow:
+          "0 10px 22px rgba(29,78,216,0.18)"
+      }}
+    >
+      🔔
+    </span>
 
-                          <StatusBadge>
-                            {note.time}
-                          </StatusBadge>
+    <div>
+      <div
+        style={{
+          fontSize:"12px",
+          fontWeight:"900",
+          color:"#64748b",
+          textTransform:"uppercase",
+          letterSpacing:"0.5px"
+        }}
+      >
+        Alert From
+      </div>
+
+      <div
+        style={{
+          fontSize:"16px",
+          fontWeight:"900",
+          color:"#0f172a"
+        }}
+      >
+        {note.sender}
+      </div>
+    </div>
+  </Row>
+
+  <Row
+    style={{
+      background:"#fefce8",
+      border:"1px solid #fde68a",
+      borderRadius:"16px",
+      padding:"14px",
+      color:"#0f172a",
+      fontWeight:"800",
+      lineHeight:"1.5",
+      marginBottom:"14px"
+    }}
+  >
+    {note.text}
+  </Row>
+
+  <StatusBadge
+    style={{
+      background:
+        "linear-gradient(135deg, #facc15, #f59e0b)",
+      color:"#0f172a",
+      border:"1px solid rgba(15,23,42,0.10)",
+      boxShadow:
+        "0 8px 18px rgba(250,204,21,0.22)"
+    }}
+  >
+    {note.time}
+  </StatusBadge>
+
+</OrderCard>
 
                         </OrderCard>
 
@@ -4399,13 +6181,19 @@ calculateDistance(
 
         {activeSection === "My Profile" && (
 
-  <OrderCard
-    style={{
-      maxWidth:"900px",
-      margin:"0 auto",
-      padding:"30px"
-    }}
-  >
+ <OrderCard
+  style={{
+    maxWidth:"640px",
+    margin:"0 auto",
+    padding:"18px",
+    borderRadius:"22px",
+    background:
+      "linear-gradient(135deg, #ffffff, #f8fafc)",
+    border:"1px solid rgba(29,78,216,0.12)",
+    boxShadow:
+      "0 12px 28px rgba(15,23,42,0.07)"
+  }}
+>
 
     
 
@@ -4420,75 +6208,83 @@ calculateDistance(
 }}
 >
 
-  <ProfileImage
- src={
-  user?.profileImage
-    ? `${user.profileImage}?t=${Date.now()}`
-    : customerImage
-}
-    style={{
-      width:"170px",
-      height:"170px",
-      marginLeft:"0",
-      border:"6px solid #2563eb",
-      boxShadow:"0 12px 35px rgba(37,99,235,0.25)",
-      objectFit:"cover"
-    }}
+
+ <ProfileHero>
+
+  <ProfileHeroPhoto
+    src={
+      user?.profileImage
+        ? `${user.profileImage}?t=${Date.now()}`
+        : customerImage
+    }
+    alt="Customer Profile"
   />
 
-  <HeroTitle
-  style={{
-    marginTop:"18px",
-    marginBottom:"8px"
-  }}
->
-  My Profile
-</HeroTitle>
+  <ProfileHeroContent>
+
+    <ProfileBadge>
+      👤 Customer Profile
+    </ProfileBadge>
+
+    <ProfileHeroTitle>
+      Manage Your Account
+    </ProfileHeroTitle>
+
+    <ProfileHeroText>
+      Keep your personal details, contact information,
+      and emergency contact updated for smooth deliveries.
+    </ProfileHeroText>
+
+  </ProfileHeroContent>
+
+</ProfileHero>
 
 </div>
     
 <HeroText
   style={{
-    marginTop:"10px",
-    marginBottom:"45px",
-    textAlign:"left",
-    fontSize:"18px"
+    marginTop:"8px",
+    marginBottom:"18px",
+    textAlign:"center",
+    fontSize:"14px",
+    fontWeight:"700",
+    color:"#64748b"
   }}
 >
   Manage your customer profile information.
 </HeroText>
 
    
-    <div
+   <div
   style={{
-    display:"flex",
-    justifyContent:"center",
-    alignItems:"flex-start",
-    flexWrap:"wrap",
-    gap:"30px"
+    display:"block",
+    width:"100%",
+    maxWidth:"540px",
+    margin:"0 auto"
   }}
 >
 
       <div
-        style={{
-          flex:1,
-          background:"#f8fafc",
-          padding:"35px",
-          borderRadius:"24px",
-          border:"1px solid #e5e7eb"
-        }}
-      >
+  style={{
+    width:"100%",
+    background:"#f8fafc",
+    padding:"18px",
+    borderRadius:"18px",
+    border:"1px solid rgba(29,78,216,0.10)"
+  }}
+>
 
-       <Row
-      style={{
-      fontSize:"18px",
-      marginBottom:"18px"
-      }}
-   >
-          <strong>Name:</strong>
-          {" "}
-          {profileName}
-        </Row>
+     <ProfileDetailRow>
+  <strong>
+    Name:
+  </strong>
+
+  <span>
+    {
+      profileName || user?.name || "Not added"
+    }
+  </span>
+</ProfileDetailRow>
 
         {
   profileEditing
@@ -4603,41 +6399,77 @@ calculateDistance(
 
   <>
 
-    <Row>
-      <strong>Email:</strong>
-      {" "}
-      {profileEmail}
-    </Row>
+   <ProfileDetailRow>
+  <strong>
+    Email:
+  </strong>
 
-    <Row>
-      <strong>Phone:</strong>
-      {" "}
-      {profilePhone}
-    </Row>
+  <span>
+    {
+      profileEmail || "Not added"
+    }
+  </span>
+</ProfileDetailRow>
 
-    <Row>
-      <strong>Address:</strong>
-      {" "}
-      {profileAddress || "Not added"}
-    </Row>
+<ProfileDetailRow>
+  <strong>
+    Phone:
+  </strong>
 
-    <Row>
-  <strong>Date of Birth:</strong>
-  {" "}
-  {profileDOB || "Not added"}
-</Row>
+  <span>
+    {
+      profilePhone || "Not added"
+    }
+  </span>
+</ProfileDetailRow>
 
-<Row>
-  <strong>Gender:</strong>
-  {" "}
-  {profileGender || "Not added"}
-</Row>
+<ProfileDetailRow>
+  <strong>
+    Address:
+  </strong>
 
-<Row>
-  <strong>Emergency Contact:</strong>
-  {" "}
-  {profileEmergency || "Not added"}
-</Row>
+  <span>
+    {
+      profileAddress || "Not added"
+    }
+  </span>
+</ProfileDetailRow>
+
+<ProfileDetailRow>
+  <strong>
+    Date of Birth:
+  </strong>
+
+  <span>
+    {
+      profileDOB || "Not added"
+    }
+  </span>
+</ProfileDetailRow>
+
+<ProfileDetailRow>
+  <strong>
+    Gender:
+  </strong>
+
+  <span>
+    {
+      profileGender || "Not added"
+    }
+  </span>
+</ProfileDetailRow>
+
+<ProfileDetailRow>
+  <strong>
+    Emergency Contact:
+  </strong>
+
+  <span>
+    {
+      profileEmergency || "Not added"
+    }
+  </span>
+</ProfileDetailRow>
 
   </>
 }
@@ -4645,58 +6477,159 @@ calculateDistance(
 
     </div>
 
-    <ButtonRow>
-
- <Button
-  onClick={()=>{
-
-    if(profileEditing){
-
-      saveProfile();
-
-    }else{
-
-      setProfileEditing(true);
-    }
-
+    <ButtonRow
+  style={{
+    marginTop:"18px",
+    justifyContent:"center"
   }}
 >
-   {
-  profileEditing
-  ? "Save Profile"
-  : "Edit Profile"
-}
+
+  <Button
+    onClick={()=>{
+
+      if(profileEditing){
+
+        saveProfile();
+
+      }else{
+
+        setProfileEditing(true);
+      }
+
+    }}
+    style={{
+      maxWidth:"180px",
+      background:
+        profileEditing
+        ? "linear-gradient(135deg, #facc15, #f59e0b)"
+        : "linear-gradient(135deg, #0f172a, #1d4ed8)",
+      color:
+        profileEditing
+        ? "#0f172a"
+        : "#facc15",
+      fontWeight:"900",
+      border:
+        profileEditing
+        ? "1px solid rgba(15,23,42,0.15)"
+        : "1px solid rgba(250,204,21,0.35)",
+      boxShadow:
+        profileEditing
+        ? "0 10px 22px rgba(250,204,21,0.24)"
+        : "0 10px 22px rgba(29,78,216,0.20)"
+    }}
+  >
+    {
+      profileEditing
+      ? "Save Profile"
+      : "Edit Profile"
+    }
   </Button>
+
+  {
+    profileEditing && (
+
+      <Button
+        onClick={()=>{
+
+          setProfileEditing(false);
+
+          setProfileName(
+            user?.name || ""
+          );
+
+          setProfileEmail(
+            user?.email || ""
+          );
+
+          setProfilePhone(
+            user?.phone || ""
+          );
+
+          setProfileAddress(
+            user?.address || ""
+          );
+
+          setProfileDOB(
+            user?.dob || ""
+          );
+
+          setProfileGender(
+            user?.gender || ""
+          );
+
+          setProfileEmergency(
+            user?.emergencyContact || ""
+          );
+
+        }}
+        style={{
+          maxWidth:"140px",
+          background:"#dc2626",
+          color:"white",
+          fontWeight:"900",
+          border:"1px solid rgba(220,38,38,0.25)",
+          boxShadow:
+            "0 10px 22px rgba(220,38,38,0.16)"
+        }}
+      >
+        Cancel
+      </Button>
+    )
+  }
 
 </ButtonRow>
 
-<OrderSection>
+<OrderSection
+  style={{
+    marginTop:"18px",
+    background:
+      "linear-gradient(135deg, #ffffff, #f8fafc)",
+    border:"1px solid rgba(29,78,216,0.10)",
+    borderRadius:"18px",
+    padding:"16px"
+  }}
+>
 
   <SectionTitle
     style={{
-      marginBottom:"18px"
+      marginBottom:"14px",
+      fontSize:"18px"
     }}
   >
     Saved Addresses 📍
   </SectionTitle>
 
-  <Row>
-    <strong>Home:</strong>
-    {" "}
-    {profileAddress || "No address added"}
-  </Row>
+  <ProfileDetailRow>
+    <strong>
+      Home:
+    </strong>
 
-  <Row>
-    <strong>Work:</strong>
-    {" "}
-    Not added
-  </Row>
+    <span>
+      {
+        profileAddress || "No address added"
+      }
+    </span>
+  </ProfileDetailRow>
 
-  <Row>
-    <strong>Recent Delivery Area:</strong>
-    {" "}
-    Accra
-  </Row>
+  <ProfileDetailRow>
+    <strong>
+      Work:
+    </strong>
+
+    <span>
+      Not added
+    </span>
+  </ProfileDetailRow>
+
+  <ProfileDetailRow>
+    <strong>
+      Recent Delivery Area:
+    </strong>
+
+    <span>
+      Accra
+    </span>
+  </ProfileDetailRow>
 
 </OrderSection>
 
@@ -4709,21 +6642,30 @@ calculateDistance(
 
   <>
 
-    <Hero>
+    <SettingsHero>
 
-      <div>
+  <SettingsHeroContent>
 
-        <HeroTitle>
-          Settings ⚙️
-        </HeroTitle>
+    <SettingsBadge>
+      ⚙️ Account Control Center
+    </SettingsBadge>
 
-        <HeroText>
-          Manage your MonniDrop account settings.
-        </HeroText>
+    <SettingsTitle>
+      Manage Your MonniDrop Settings
+    </SettingsTitle>
 
-      </div>
+    <SettingsText>
+      Control account security, privacy, permissions,
+      payment protection, and app preferences from one clean place.
+    </SettingsText>
 
-    </Hero>
+  </SettingsHeroContent>
+
+  <SettingsHeroIcon>
+    ⚙️
+  </SettingsHeroIcon>
+
+</SettingsHero>
 
     <div
       style={{
@@ -4735,15 +6677,46 @@ calculateDistance(
 
       {/* ACCOUNT SECURITY */}
 
-      <OrderCard>
+     <OrderCard
+  style={{
+    background:
+      "linear-gradient(135deg, #ffffff, #f8fafc)",
+    border:"1px solid rgba(29,78,216,0.12)",
+    borderRadius:"24px",
+    padding:"22px",
+    boxShadow:
+      "0 14px 32px rgba(15,23,42,0.08)"
+  }}
+>
 
   <SectionTitle
+  style={{
+    marginBottom:"18px",
+    display:"flex",
+    alignItems:"center",
+    gap:"10px",
+    color:"#0f172a"
+  }}
+>
+  <span
     style={{
-      marginBottom:"22px"
+      width:"34px",
+      height:"34px",
+      borderRadius:"12px",
+      display:"inline-flex",
+      alignItems:"center",
+      justifyContent:"center",
+      background:
+        "linear-gradient(135deg, #0f172a, #1d4ed8)",
+      color:"#facc15",
+      fontSize:"17px"
     }}
   >
-    Account Security
-  </SectionTitle>
+    🔐
+  </span>
+
+  Account Security
+</SectionTitle>
 
   <div
     onClick={()=>
@@ -4751,11 +6724,16 @@ calculateDistance(
         "Mobile Phone Number"
       )
     }
-    style={{
-      padding:"16px",
-      borderBottom:"1px solid #e5e7eb",
-      cursor:"pointer"
-    }}
+   style={{
+  padding:"14px 16px",
+  border:"1px solid rgba(29,78,216,0.10)",
+  borderRadius:"16px",
+  cursor:"pointer",
+  marginBottom:"10px",
+  background:"#ffffff",
+  boxShadow:
+    "0 8px 18px rgba(15,23,42,0.04)"
+}}
   >
 
     <div
@@ -4790,11 +6768,16 @@ calculateDistance(
       "Email"
     )
   }
-  style={{
-    padding:"16px",
-    borderBottom:"1px solid #e5e7eb",
-    cursor:"pointer"
-  }}
+ style={{
+  padding:"14px 16px",
+  border:"1px solid rgba(29,78,216,0.10)",
+  borderRadius:"16px",
+  cursor:"pointer",
+  marginBottom:"10px",
+  background:"#ffffff",
+  boxShadow:
+    "0 8px 18px rgba(15,23,42,0.04)"
+}}
 >
 
   <div
@@ -4825,11 +6808,16 @@ calculateDistance(
       "Two-Factor Authentication"
     )
   }
-  style={{
-    padding:"16px",
-    borderBottom:"1px solid #e5e7eb",
-    cursor:"pointer"
-  }}
+ style={{
+  padding:"14px 16px",
+  border:"1px solid rgba(29,78,216,0.10)",
+  borderRadius:"16px",
+  cursor:"pointer",
+  marginBottom:"10px",
+  background:"#ffffff",
+  boxShadow:
+    "0 8px 18px rgba(15,23,42,0.04)"
+}}
 >
 
   <div
@@ -4864,10 +6852,15 @@ calculateDistance(
     )
   }
   style={{
-    padding:"16px",
-    borderBottom:"1px solid #e5e7eb",
-    cursor:"pointer"
-  }}
+  padding:"14px 16px",
+  border:"1px solid rgba(29,78,216,0.10)",
+  borderRadius:"16px",
+  cursor:"pointer",
+  marginBottom:"10px",
+  background:"#ffffff",
+  boxShadow:
+    "0 8px 18px rgba(15,23,42,0.04)"
+}}
 >
 
   <div
@@ -4904,10 +6897,15 @@ calculateDistance(
     )
   }
   style={{
-    padding:"16px",
-    borderBottom:"1px solid #e5e7eb",
-    cursor:"pointer"
-  }}
+  padding:"14px 16px",
+  border:"1px solid rgba(29,78,216,0.10)",
+  borderRadius:"16px",
+  cursor:"pointer",
+  marginBottom:"10px",
+  background:"#ffffff",
+  boxShadow:
+    "0 8px 18px rgba(15,23,42,0.04)"
+}}
 >
 
   <div
@@ -4945,10 +6943,15 @@ calculateDistance(
     )
   }
   style={{
-    padding:"16px",
-    borderBottom:"1px solid #e5e7eb",
-    cursor:"pointer"
-  }}
+  padding:"14px 16px",
+  border:"1px solid rgba(29,78,216,0.10)",
+  borderRadius:"16px",
+  cursor:"pointer",
+  marginBottom:"10px",
+  background:"#ffffff",
+  boxShadow:
+    "0 8px 18px rgba(15,23,42,0.04)"
+}}
 >
 
   <div
@@ -4989,15 +6992,15 @@ calculateDistance(
           setSelectedSetting(item)
         }
         style={{
-          padding:"16px",
-          borderBottom:"1px solid #e5e7eb",
-          cursor:"pointer",
-          fontWeight:"600",
-          color:
-            item.includes("Delete")
-            ? "#dc2626"
-            : "#0f172a"
-        }}
+  padding:"14px 16px",
+  border:"1px solid rgba(29,78,216,0.10)",
+  borderRadius:"16px",
+  cursor:"pointer",
+  marginBottom:"10px",
+  background:"#ffffff",
+  boxShadow:
+    "0 8px 18px rgba(15,23,42,0.04)"
+}}
       >
         {item}
       </div>
@@ -5009,15 +7012,47 @@ calculateDistance(
 
       {/* PRIVACY */}
 
-      <OrderCard>
+      <OrderCard
+  style={{
+    background:
+      "linear-gradient(135deg, #ffffff, #f8fafc)",
+    border:"1px solid rgba(29,78,216,0.12)",
+    borderRadius:"24px",
+    padding:"22px",
+    boxShadow:
+      "0 14px 32px rgba(15,23,42,0.08)",
+    marginTop:"22px"
+  }}
+>
 
         <SectionTitle
-          style={{
-            marginBottom:"22px"
-          }}
-        >
-          Privacy
-        </SectionTitle>
+  style={{
+    marginBottom:"18px",
+    display:"flex",
+    alignItems:"center",
+    gap:"10px",
+    color:"#0f172a"
+  }}
+>
+  <span
+    style={{
+      width:"34px",
+      height:"34px",
+      borderRadius:"12px",
+      display:"inline-flex",
+      alignItems:"center",
+      justifyContent:"center",
+      background:
+        "linear-gradient(135deg, #0f172a, #1d4ed8)",
+      color:"#facc15",
+      fontSize:"17px"
+    }}
+  >
+    🛡️
+  </span>
+
+  Privacy
+</SectionTitle>
 
         {
           [
@@ -5031,12 +7066,17 @@ calculateDistance(
               onClick={()=>
                 setSelectedSetting(item)
               }
-              style={{
-                padding:"16px",
-                borderBottom:"1px solid #e5e7eb",
-                cursor:"pointer",
-                fontWeight:"600"
-              }}
+             style={{
+  padding:"14px 16px",
+  border:"1px solid rgba(29,78,216,0.10)",
+  borderRadius:"16px",
+  cursor:"pointer",
+  marginBottom:"10px",
+  background:"#ffffff",
+  fontWeight:"800",
+  boxShadow:
+    "0 8px 18px rgba(15,23,42,0.04)"
+}}
             >
               {item}
             </div>
@@ -5051,20 +7091,44 @@ calculateDistance(
       <OrderCard>
 
         <SectionTitle
-          style={{
-            marginBottom:"10px"
-          }}
-        >
-          Permissions
-        </SectionTitle>
+  style={{
+    marginBottom:"12px",
+    display:"flex",
+    alignItems:"center",
+    gap:"10px",
+    color:"#0f172a"
+  }}
+>
+  <span
+    style={{
+      width:"34px",
+      height:"34px",
+      borderRadius:"12px",
+      display:"inline-flex",
+      alignItems:"center",
+      justifyContent:"center",
+      background:
+        "linear-gradient(135deg, #0f172a, #1d4ed8)",
+      color:"#facc15",
+      fontSize:"17px"
+    }}
+  >
+    🔑
+  </span>
+
+  Permissions
+</SectionTitle>
 
         <HeroText
-          style={{
-            marginBottom:"20px"
-          }}
-        >
-          Access certain device features with your permission.
-        </HeroText>
+  style={{
+    marginBottom:"18px",
+    color:"#64748b",
+    fontSize:"14px",
+    fontWeight:"700"
+  }}
+>
+  Access certain device features with your permission.
+</HeroText>
 
         {
           [
@@ -5079,11 +7143,16 @@ calculateDistance(
                 setSelectedSetting(item)
               }
               style={{
-                padding:"16px",
-                borderBottom:"1px solid #e5e7eb",
-                cursor:"pointer",
-                fontWeight:"600"
-              }}
+  padding:"14px 16px",
+  border:"1px solid rgba(29,78,216,0.10)",
+  borderRadius:"16px",
+  cursor:"pointer",
+  marginBottom:"10px",
+  background:"#ffffff",
+  fontWeight:"800",
+  boxShadow:
+    "0 8px 18px rgba(15,23,42,0.04)"
+}}
             >
               {item}
             </div>
@@ -5098,12 +7167,33 @@ calculateDistance(
       <OrderCard>
 
         <SectionTitle
-          style={{
-            marginBottom:"20px"
-          }}
-        >
-          Safety Center
-        </SectionTitle>
+  style={{
+    marginBottom:"18px",
+    display:"flex",
+    alignItems:"center",
+    gap:"10px",
+    color:"#0f172a"
+  }}
+>
+  <span
+    style={{
+      width:"34px",
+      height:"34px",
+      borderRadius:"12px",
+      display:"inline-flex",
+      alignItems:"center",
+      justifyContent:"center",
+      background:
+        "linear-gradient(135deg, #0f172a, #1d4ed8)",
+      color:"#facc15",
+      fontSize:"17px"
+    }}
+  >
+    🔒
+  </span>
+
+  Safety Center
+</SectionTitle>
 
         {
           [
@@ -5118,11 +7208,16 @@ calculateDistance(
                 setSelectedSetting(item)
               }
               style={{
-                padding:"16px",
-                borderBottom:"1px solid #e5e7eb",
-                cursor:"pointer",
-                fontWeight:"600"
-              }}
+  padding:"14px 16px",
+  border:"1px solid rgba(29,78,216,0.10)",
+  borderRadius:"16px",
+  cursor:"pointer",
+  marginBottom:"10px",
+  background:"#ffffff",
+  fontWeight:"800",
+  boxShadow:
+    "0 8px 18px rgba(15,23,42,0.04)"
+}}
             >
               {item}
             </div>
@@ -5134,15 +7229,47 @@ calculateDistance(
 
       {/* GENERAL SETTINGS */}
 
-      <OrderCard>
+      <OrderCard
+  style={{
+    background:
+      "linear-gradient(135deg, #ffffff, #f8fafc)",
+    border:"1px solid rgba(29,78,216,0.12)",
+    borderRadius:"24px",
+    padding:"22px",
+    boxShadow:
+      "0 14px 32px rgba(15,23,42,0.08)",
+    marginTop:"22px"
+  }}
+>
 
         <SectionTitle
-          style={{
-            marginBottom:"20px"
-          }}
-        >
-          General
-        </SectionTitle>
+  style={{
+    marginBottom:"18px",
+    display:"flex",
+    alignItems:"center",
+    gap:"10px",
+    color:"#0f172a"
+  }}
+>
+  <span
+    style={{
+      width:"34px",
+      height:"34px",
+      borderRadius:"12px",
+      display:"inline-flex",
+      alignItems:"center",
+      justifyContent:"center",
+      background:
+        "linear-gradient(135deg, #0f172a, #1d4ed8)",
+      color:"#facc15",
+      fontSize:"17px"
+    }}
+  >
+    🎛️
+  </span>
+
+  General
+</SectionTitle>
 
         <div
   onClick={()=>
@@ -5151,10 +7278,15 @@ calculateDistance(
     )
   }
   style={{
-    padding:"16px",
-    borderBottom:"1px solid #e5e7eb",
-    cursor:"pointer"
-  }}
+  padding:"14px 16px",
+  border:"1px solid rgba(29,78,216,0.10)",
+  borderRadius:"16px",
+  cursor:"pointer",
+  marginBottom:"10px",
+  background:"#ffffff",
+  boxShadow:
+    "0 8px 18px rgba(15,23,42,0.04)"
+}}
 >
 
   <div
@@ -5185,10 +7317,15 @@ calculateDistance(
     )
   }
   style={{
-    padding:"16px",
-    borderBottom:"1px solid #e5e7eb",
-    cursor:"pointer"
-  }}
+  padding:"14px 16px",
+  border:"1px solid rgba(29,78,216,0.10)",
+  borderRadius:"16px",
+  cursor:"pointer",
+  marginBottom:"10px",
+  background:"#ffffff",
+  boxShadow:
+    "0 8px 18px rgba(15,23,42,0.04)"
+}}
 >
 
   <div
@@ -5219,10 +7356,15 @@ calculateDistance(
     )
   }
   style={{
-    padding:"16px",
-    borderBottom:"1px solid #e5e7eb",
-    cursor:"pointer"
-  }}
+  padding:"14px 16px",
+  border:"1px solid rgba(29,78,216,0.10)",
+  borderRadius:"16px",
+  cursor:"pointer",
+  marginBottom:"10px",
+  background:"#ffffff",
+  boxShadow:
+    "0 8px 18px rgba(15,23,42,0.04)"
+}}
 >
 
   <div
@@ -5262,12 +7404,16 @@ calculateDistance(
               onClick={()=>
                 setSelectedSetting(item)
               }
-              style={{
-                padding:"16px",
-                borderBottom:"1px solid #e5e7eb",
-                cursor:"pointer",
-                fontWeight:"600"
-              }}
+             style={{
+  padding:"14px 16px",
+  border:"1px solid rgba(29,78,216,0.10)",
+  borderRadius:"16px",
+  cursor:"pointer",
+  marginBottom:"10px",
+  background:"#ffffff",
+  boxShadow:
+    "0 8px 18px rgba(15,23,42,0.04)"
+}}
             >
               {item}
             </div>
@@ -5279,7 +7425,7 @@ calculateDistance(
 
     </div>
 
-    {
+{
   selectedSetting && (
 
     <div
@@ -5307,569 +7453,591 @@ calculateDistance(
         }}
       >
 
-       {
+        <div
+          style={{
+            display:"flex",
+            alignItems:"center",
+            gap:"10px",
+            marginBottom:"18px"
+          }}
+        >
+          <span
+            style={{
+              width:"36px",
+              height:"36px",
+              borderRadius:"13px",
+              display:"inline-flex",
+              alignItems:"center",
+              justifyContent:"center",
+              background:
+                "linear-gradient(135deg, #0f172a, #1d4ed8)",
+              color:"#facc15",
+              fontWeight:"900"
+            }}
+          >
+            {
+              selectedSetting === "Sign Out"
+              ? "🚪"
+              : "⚙️"
+            }
+          </span>
 
-  selectedSetting ===
-  "Mobile Phone Number"
+          <div
+            style={{
+              fontSize:"20px",
+              fontWeight:"900",
+              color:"#0f172a"
+            }}
+          >
+            {selectedSetting}
+          </div>
+        </div>
 
-  &&
+        {
+          selectedSetting === "Sign Out" && (
 
-  (
-
-    <BeautifulInput
-      type="text"
-      placeholder="+233 55 000 0000"
-      value={phoneNumber}
-      onChange={(e)=>
-        setPhoneNumber(
-          e.target.value
-        )
-      }
-    />
-
-  )
-}
-
-{
-
-  selectedSetting ===
-  "Email"
-
-  &&
-
-  (
-
-    <BeautifulInput
-      type="email"
-      placeholder="example@gmail.com"
-      value={email}
-      onChange={(e)=>
-        setEmail(
-          e.target.value
-        )
-      }
-
-      
-    />
-
-  )
-
-  
-}
-
-{
-
-  
-
-  selectedSetting ===
-  "Password"
-
-  &&
-
-  (
-
-    <>
-
-      <div
-  style={{
-    position:"relative"
-  }}
->
-
-  <BeautifulInput
-    type={
-      showPasswords
-      ? "text"
-      : "password"
-    }
-    placeholder="Current Password"
-    value={currentPassword}
-    onChange={(e)=>
-      setCurrentPassword(
-        e.target.value
-      )
-    }
-  />
-
-  {
-
-  selectedSetting ===
-  "Country & Region"
-
-  &&
-
-  (
-
-    <>
-
-      <BeautifulInput
-        type="text"
-        placeholder="Enter Country"
-        value={country}
-        onChange={(e)=>
-          setCountry(
-            e.target.value
+            <div
+              style={{
+                background:"#fef2f2",
+                border:"1px solid #fecaca",
+                borderRadius:"16px",
+                padding:"16px",
+                color:"#7f1d1d",
+                fontWeight:"800",
+                lineHeight:"1.6",
+                marginBottom:"16px"
+              }}
+            >
+              Are you sure you want to sign out of your MonniDrop account?
+              You will need to log in again to access your dashboard.
+            </div>
           )
         }
-      />
 
-      <Button
-        style={{
-          marginTop:"18px"
-        }}
-        onClick={()=>
-          setSelectedSetting(null)
-        }
-      >
-        Save Country
-      </Button>
+        {
+          selectedSetting === "Mobile Phone Number" && (
 
-      {
-
-  selectedSetting ===
-  "Language"
-
-  &&
-
-  (
-
-    <>
-
-      <BeautifulInput
-        type="text"
-        placeholder="Enter Language"
-        value={language}
-        onChange={(e)=>
-          setLanguage(
-            e.target.value
+            <BeautifulInput
+              type="tel"
+              placeholder="Enter phone number"
+              value={phoneNumber}
+              onChange={(e)=>
+                setPhoneNumber(
+                  e.target.value
+                )
+              }
+            />
           )
         }
-      />
 
-      <Button
-        style={{
-          marginTop:"18px"
-        }}
-        onClick={()=>
-          setSelectedSetting(null)
-        }
-      >
-        Save Language
-      </Button>
+        {
+          selectedSetting === "Email" && (
 
-      {
-
-  selectedSetting ===
-  "Currency"
-
-  &&
-
-  (
-
-    <>
-
-      <BeautifulInput
-        type="text"
-        placeholder="Enter Currency"
-        value={currency}
-        onChange={(e)=>
-          setCurrency(
-            e.target.value
+            <BeautifulInput
+              type="email"
+              placeholder="Enter email address"
+              value={email}
+              onChange={(e)=>
+                setEmail(
+                  e.target.value
+                )
+              }
+            />
           )
         }
-      />
 
-      {
-
-  selectedSetting ===
-  "Two-Factor Authentication"
-
-  &&
-
-  (
-
-    <>
-
-      <div
-        style={{
-          marginTop:"10px",
-          color:"#64748b",
-          lineHeight:"1.7"
-        }}
-      >
-        Protect your MonniDrop account with
-        extra login security verification.
-      </div>
-
-      <Button
-        style={{
-          marginTop:"20px"
-        }}
-        onClick={()=>{
-
-          setTwoFactorEnabled(
-            !twoFactorEnabled
-          );
-
-          setSelectedSetting(null);
-
-        }}
-      >
         {
-          twoFactorEnabled
-          ? "Disable 2FA"
-          : "Enable 2FA"
+          selectedSetting === "Password" && (
+
+            <>
+
+              <BeautifulInput
+                type={
+                  showPasswords
+                  ? "text"
+                  : "password"
+                }
+                placeholder="Current password"
+                value={currentPassword}
+                onChange={(e)=>
+                  setCurrentPassword(
+                    e.target.value
+                  )
+                }
+              />
+
+              <BeautifulInput
+                type={
+                  showPasswords
+                  ? "text"
+                  : "password"
+                }
+                placeholder="New password"
+                value={newPassword}
+                onChange={(e)=>
+                  setNewPassword(
+                    e.target.value
+                  )
+                }
+              />
+
+              <BeautifulInput
+                type={
+                  showPasswords
+                  ? "text"
+                  : "password"
+                }
+                placeholder="Confirm new password"
+                value={confirmPassword}
+                onChange={(e)=>
+                  setConfirmPassword(
+                    e.target.value
+                  )
+                }
+              />
+
+              <Button
+                type="button"
+                onClick={()=>
+                  setShowPasswords(
+                    !showPasswords
+                  )
+                }
+                style={{
+                  marginTop:"12px",
+                  background:"#eff6ff",
+                  color:"#1d4ed8",
+                  fontWeight:"900"
+                }}
+              >
+                {
+                  showPasswords
+                  ? "Hide Passwords"
+                  : "Show Passwords"
+                }
+              </Button>
+
+            </>
+          )
         }
-      </Button>
 
-    </>
-
-  )
-}
-
-{
-
-  selectedSetting ===
-  "Two-Factor Authentication"
-
-  &&
-
-  (
-
-    <>
-
-      <div
-        style={{
-          marginTop:"10px",
-          color:"#64748b",
-          lineHeight:"1.7"
-        }}
-      >
-        Protect your MonniDrop account with
-        extra login security verification.
-      </div>
-
-      <Button
-        style={{
-          marginTop:"20px"
-        }}
-        onClick={()=>{
-
-          setTwoFactorEnabled(
-            !twoFactorEnabled
-          );
-
-          setSelectedSetting(null);
-
-        }}
-      >
         {
-          twoFactorEnabled
-          ? "Disable 2FA"
-          : "Enable 2FA"
+          selectedSetting === "Country & Region" && (
+
+            <select
+              value={country}
+              onChange={(e)=>
+                setCountry(
+                  e.target.value
+                )
+              }
+              style={{
+                width:"100%",
+                padding:"14px",
+                borderRadius:"14px",
+                border:"1px solid rgba(29,78,216,0.18)",
+                fontWeight:"800",
+                color:"#0f172a",
+                outline:"none"
+              }}
+            >
+              <option value="Ghana">
+                Ghana
+              </option>
+
+              <option value="Nigeria">
+                Nigeria
+              </option>
+
+              <option value="Kenya">
+                Kenya
+              </option>
+
+              <option value="South Africa">
+                South Africa
+              </option>
+            </select>
+          )
         }
-      </Button>
 
-    </>
-
-  )
-}
-
-{
-
-  selectedSetting ===
-  "Google"
-
-  &&
-
-  (
-
-    <>
-
-      <div
-        style={{
-          marginTop:"10px",
-          color:"#64748b",
-          lineHeight:"1.7"
-        }}
-      >
-        Connect your Google account for
-        faster and secure sign in.
-      </div>
-
-      <Button
-        style={{
-          marginTop:"20px"
-        }}
-        onClick={()=>{
-
-          setGoogleConnected(
-            !googleConnected
-          );
-
-          setSelectedSetting(null);
-
-        }}
-      >
         {
-          googleConnected
-          ? "Disconnect Google"
-          : "Connect Google"
+          selectedSetting === "Language" && (
+
+            <select
+              value={language}
+              onChange={(e)=>
+                setLanguage(
+                  e.target.value
+                )
+              }
+              style={{
+                width:"100%",
+                padding:"14px",
+                borderRadius:"14px",
+                border:"1px solid rgba(29,78,216,0.18)",
+                fontWeight:"800",
+                color:"#0f172a",
+                outline:"none"
+              }}
+            >
+              <option value="English">
+                English
+              </option>
+
+              <option value="Twi">
+                Twi
+              </option>
+
+              <option value="French">
+                French
+              </option>
+            </select>
+          )
         }
-      </Button>
 
-    </>
-
-  )
-}
-
-{
-
-  selectedSetting ===
-  "Facebook"
-
-  &&
-
-  (
-
-    <>
-
-      <div
-        style={{
-          marginTop:"10px",
-          color:"#64748b",
-          lineHeight:"1.7"
-        }}
-      >
-        Connect your Facebook account for
-        quick login and account recovery.
-      </div>
-
-      <Button
-        style={{
-          marginTop:"20px"
-        }}
-        onClick={()=>{
-
-          setFacebookConnected(
-            !facebookConnected
-          );
-
-          setSelectedSetting(null);
-
-        }}
-      >
         {
-          facebookConnected
-          ? "Disconnect Facebook"
-          : "Connect Facebook"
+          selectedSetting === "Currency" && (
+
+            <select
+              value={currency}
+              onChange={(e)=>
+                setCurrency(
+                  e.target.value
+                )
+              }
+              style={{
+                width:"100%",
+                padding:"14px",
+                borderRadius:"14px",
+                border:"1px solid rgba(29,78,216,0.18)",
+                fontWeight:"800",
+                color:"#0f172a",
+                outline:"none"
+              }}
+            >
+              <option value="GHS">
+                GHS
+              </option>
+
+              <option value="USD">
+                USD
+              </option>
+
+              <option value="NGN">
+                NGN
+              </option>
+            </select>
+          )
         }
-      </Button>
 
-    </>
+        {
+          selectedSetting === "Your Payment Method" && (
 
-  )
-}
-      <Button
-        style={{
-          marginTop:"18px"
-        }}
-        onClick={()=>
-          setSelectedSetting(null)
+            <select
+              value={paymentMethod}
+              onChange={(e)=>
+                setPaymentMethod(
+                  e.target.value
+                )
+              }
+              style={{
+                width:"100%",
+                padding:"14px",
+                borderRadius:"14px",
+                border:"1px solid rgba(29,78,216,0.18)",
+                fontWeight:"800",
+                color:"#0f172a",
+                outline:"none"
+              }}
+            >
+              <option value="">
+                Select payment method
+              </option>
+
+              <option value="cash">
+                Cash on Delivery
+              </option>
+
+              <option value="momo">
+                Mobile Money
+              </option>
+            </select>
+          )
         }
-      >
-        Save Currency
-      </Button>
 
-    </>
+        {
+          selectedSetting === "Two-Factor Authentication" && (
 
-  )
-}
+            <div
+              style={{
+                background:"#eff6ff",
+                border:"1px solid #dbeafe",
+                borderRadius:"16px",
+                padding:"16px"
+              }}
+            >
+              <label
+                style={{
+                  display:"flex",
+                  alignItems:"center",
+                  justifyContent:"space-between",
+                  gap:"12px",
+                  fontWeight:"900",
+                  color:"#0f172a"
+                }}
+              >
+                Enable two-factor authentication
 
-    </>
+                <input
+                  type="checkbox"
+                  checked={twoFactorEnabled}
+                  onChange={(e)=>
+                    setTwoFactorEnabled(
+                      e.target.checked
+                    )
+                  }
+                />
+              </label>
+            </div>
+          )
+        }
 
-  )
-}
+        {
+          selectedSetting === "Google" && (
 
-    </>
+            <div
+              style={{
+                background:"#eff6ff",
+                border:"1px solid #dbeafe",
+                borderRadius:"16px",
+                padding:"16px"
+              }}
+            >
+              <label
+                style={{
+                  display:"flex",
+                  alignItems:"center",
+                  justifyContent:"space-between",
+                  gap:"12px",
+                  fontWeight:"900",
+                  color:"#0f172a"
+                }}
+              >
+                Connect Google account
 
-  )
-}
+                <input
+                  type="checkbox"
+                  checked={googleConnected}
+                  onChange={(e)=>
+                    setGoogleConnected(
+                      e.target.checked
+                    )
+                  }
+                />
+              </label>
+            </div>
+          )
+        }
 
-  <div
-    onClick={()=>
-      setShowPasswords(
-        !showPasswords
-      )
-    }
-    style={{
-      position:"absolute",
-      right:"18px",
-      top:"50%",
-      transform:"translateY(-50%)",
-      cursor:"pointer",
-      color:"#64748b"
-    }}
-  >
+        {
+          selectedSetting === "Facebook" && (
 
-    {
-      showPasswords
-      ? <FiEyeOff />
-      : <FiEye />
-    }
+            <div
+              style={{
+                background:"#eff6ff",
+                border:"1px solid #dbeafe",
+                borderRadius:"16px",
+                padding:"16px"
+              }}
+            >
+              <label
+                style={{
+                  display:"flex",
+                  alignItems:"center",
+                  justifyContent:"space-between",
+                  gap:"12px",
+                  fontWeight:"900",
+                  color:"#0f172a"
+                }}
+              >
+                Connect Facebook account
 
-  </div>
+                <input
+                  type="checkbox"
+                  checked={facebookConnected}
+                  onChange={(e)=>
+                    setFacebookConnected(
+                      e.target.checked
+                    )
+                  }
+                />
+              </label>
+            </div>
+          )
+        }
 
-</div>
-      
+        {
+          selectedSetting === "Notifications" && (
 
-      <div
-  style={{
-    position:"relative"
-  }}
->
+            <div
+              style={{
+                background:"#eff6ff",
+                border:"1px solid #dbeafe",
+                borderRadius:"16px",
+                padding:"16px",
+                color:"#0f172a",
+                fontWeight:"800"
+              }}
+            >
+              Notifications are enabled for order updates,
+              rider messages, and delivery alerts.
+            </div>
+          )
+        }
 
-  <BeautifulInput
-    type={
-      showPasswords
-      ? "text"
-      : "password"
-    }
-    placeholder="New Password"
-    value={newPassword}
-    onChange={(e)=>
-      setNewPassword(
-        e.target.value
-      )
-    }
-  />
+        {
+          ![
+            "Mobile Phone Number",
+            "Email",
+            "Password",
+            "Country & Region",
+            "Language",
+            "Currency",
+            "Your Payment Method",
+            "Two-Factor Authentication",
+            "Google",
+            "Facebook",
+            "Notifications",
+            "Sign Out"
+          ].includes(selectedSetting) && (
 
-  <div
-    onClick={()=>
-      setShowPasswords(
-        !showPasswords
-      )
-    }
-    style={{
-      position:"absolute",
-      right:"18px",
-      top:"50%",
-      transform:"translateY(-50%)",
-      cursor:"pointer",
-      color:"#64748b"
-    }}
-  >
+            <textarea
+              defaultValue={selectedSetting}
+              style={{
+                width:"100%",
+                minHeight:"120px",
+                padding:"14px",
+                borderRadius:"14px",
+                border:"1px solid rgba(29,78,216,0.18)",
+                fontWeight:"800",
+                color:"#0f172a",
+                outline:"none",
+                resize:"vertical"
+              }}
+            />
+          )
+        }
 
-    {
-      showPasswords
-      ? <FiEyeOff />
-      : <FiEye />
-    }
+        <ButtonRow
+          style={{
+            marginTop:"18px"
+          }}
+        >
 
-  </div>
+          {
+            selectedSetting === "Sign Out"
 
-</div>
-      
+            ?
 
-      <div
-  style={{
-    position:"relative"
-  }}
->
+            <>
 
-  <BeautifulInput
-    type={
-      showPasswords
-      ? "text"
-      : "password"
-    }
-    placeholder="Confirm Password"
-    value={confirmPassword}
-    onChange={(e)=>
-      setConfirmPassword(
-        e.target.value
-      )
-    }
-  />
+              <Button
+                onClick={logout}
+                style={{
+                  background:"#dc2626",
+                  color:"white",
+                  fontWeight:"900",
+                  border:"1px solid rgba(220,38,38,0.25)",
+                  boxShadow:
+                    "0 10px 22px rgba(220,38,38,0.18)"
+                }}
+              >
+                Yes, Sign Out
+              </Button>
 
-  <div
-    onClick={()=>
-      setShowPasswords(
-        !showPasswords
-      )
-    }
-    style={{
-      position:"absolute",
-      right:"18px",
-      top:"50%",
-      transform:"translateY(-50%)",
-      cursor:"pointer",
-      color:"#64748b"
-    }}
-  >
+              <Button
+                onClick={()=>
+                  setSelectedSetting(null)
+                }
+                style={{
+                  background:
+                    "linear-gradient(135deg, #0f172a, #1d4ed8)",
+                  color:"#facc15",
+                  fontWeight:"900",
+                  border:"1px solid rgba(250,204,21,0.35)"
+                }}
+              >
+                Cancel
+              </Button>
 
-    {
-      showPasswords
-      ? <FiEyeOff />
-      : <FiEye />
-    }
+            </>
 
-  </div>
+            :
 
-</div>
+            <>
 
-      <Button
-  style={{
-    marginTop:"18px"
-  }}
-  onClick={()=>{
+              <Button
+                onClick={()=>{
 
-    if(
-      newPassword !==
-      confirmPassword
-    ){
+                  localStorage.setItem(
+                    "monnidropCustomerSettings",
+                    JSON.stringify({
+                      phoneNumber,
+                      email,
+                      country,
+                      language,
+                      currency,
+                      paymentMethod,
+                      twoFactorEnabled,
+                      googleConnected,
+                      facebookConnected
+                    })
+                  );
 
-      alert(
-        "Passwords do not match"
-      );
+                  alert(
+                    `${selectedSetting} saved successfully`
+                  );
 
-      return;
-    }
+                  setSelectedSetting(null);
 
-    alert(
-      "Password updated successfully"
-    );
+                }}
+                style={{
+                  background:
+                    "linear-gradient(135deg, #facc15, #f59e0b)",
+                  color:"#0f172a",
+                  fontWeight:"900",
+                  border:"1px solid rgba(15,23,42,0.12)",
+                  boxShadow:
+                    "0 10px 22px rgba(250,204,21,0.22)"
+                }}
+              >
+                Save
+              </Button>
 
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
+              <Button
+                onClick={()=>
+                  setSelectedSetting(null)
+                }
+                style={{
+                  background:
+                    "linear-gradient(135deg, #0f172a, #1d4ed8)",
+                  color:"#facc15",
+                  fontWeight:"900",
+                  border:"1px solid rgba(250,204,21,0.35)"
+                }}
+              >
+                Cancel
+              </Button>
 
-    setSelectedSetting(null);
+            </>
+          }
 
-  }}
->
-  Save Password
-</Button>
-
-    </>
-
-  )
-}
-
-<Button
-  style={{
-    marginTop:"24px"
-  }}
-  onClick={()=>
-    setSelectedSetting(null)
-  }
->
-  Close
-</Button>
+               </ButtonRow>
 
       </div>
 
     </div>
+
   )
 }
 
