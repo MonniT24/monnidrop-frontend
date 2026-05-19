@@ -138,9 +138,9 @@ const DashboardHero = styled.div`
       #1d4ed8
     );
   color:white;
-  border-radius:32px;
-  padding:28px 34px;
-  margin-bottom:26px;
+  border-radius:24px;
+  padding:18px 22px;
+  margin-bottom:18px;
   box-shadow:
     0 18px 45px rgba(15,23,42,0.18);
 
@@ -209,24 +209,24 @@ const DashboardHeroContent = styled.div`
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:30px;
+  gap:18px;
 
-  min-height:255px;
+  min-height:165px;
 
   @media(max-width:768px){
     flex-direction:column;
     align-items:flex-start;
-    min-height:300px;
+    min-height:auto;
   }
 `;
 
 const HeroLogo = styled.img`
   position:absolute;
-  top:6px;
-  left:42%;
+  top:-4px;
+  left:43%;
 
-  width:92px;
-  height:92px;
+  width:70px;
+  height:70px;
   object-fit:contain;
 
   background:transparent;
@@ -278,24 +278,24 @@ const HeroBadge = styled.div`
   align-items:center;
   gap:8px;
 
-  padding:12px 24px;
+  padding:8px 16px;
   border-radius:999px;
 
   background:rgba(255,255,255,0.14);
   border:1px solid rgba(255,255,255,0.22);
 
   color:white;
-  font-size:16px;
+  font-size:13px;
   font-weight:800;
 
-  margin-bottom:28px;
+  margin-bottom:14px;
 `;
 
 const DashboardHeroTitle = styled.h1`
-  font-size:38px;
+  font-size:30px;
   font-weight:900;
   color:white;
-  margin:0 0 18px;
+  margin:0 0 10px;
   line-height:1.08;
   letter-spacing:-1px;
 
@@ -308,15 +308,15 @@ const DashboardHeroTitle = styled.h1`
 const DashboardHeroText = styled.p`
   max-width:650px;
   color:rgba(255,255,255,0.88);
-  font-size:21px;
+  font-size:15px;
   line-height:1.55;
   margin:0;
 `;
 
 const DashboardDateCard = styled.div`
-  min-width:330px;
+  min-width:260px;
 
-  padding:28px 34px;
+  padding:18px 22px;
   border-radius:30px;
 
   background:
@@ -358,7 +358,7 @@ const DashboardDateCard = styled.div`
   strong{
     display:block;
 
-    font-size:46px;
+    font-size:30px;
     font-weight:900;
     line-height:1;
 
@@ -373,7 +373,7 @@ const DashboardDateCard = styled.div`
   span{
     display:block;
 
-    font-size:16px;
+    font-size:13px;
     font-weight:700;
 
     color:rgba(255,255,255,0.88);
@@ -395,8 +395,8 @@ const DashboardTime = styled.div`
   align-items:center;
   justify-content:center;
 
-  padding:12px 20px;
-  margin-bottom:16px;
+  padding:12px 14px;
+  margin-bottom:10px;
 
   border-radius:18px;
 
@@ -409,7 +409,7 @@ const DashboardTime = styled.div`
 
   color:#0f172a;
 
-  font-size:30px;
+  font-size:20px;
   font-weight:900;
   letter-spacing:1px;
 
@@ -483,11 +483,11 @@ const StatsGrid = styled.div`
   display:grid;
 
   grid-template-columns:
-    repeat(auto-fit,minmax(240px,1fr));
+  repeat(auto-fit,minmax(210px,1fr));
 
-  gap:24px;
+gap:14px;
 
-  margin-bottom:34px;
+margin-bottom:20px;
 `;
 
 const StatCard = styled.div`
@@ -1633,13 +1633,50 @@ async function acceptOrder(orderId){
       return;
     }
 
+    if(activeOrders.length > 0){
+
+      alert(
+        "You already have an active delivery. Complete it before accepting another order."
+      );
+
+      return;
+    }
+
+    const alreadyBusy =
+      orders.some((order)=>{
+
+        const riderId =
+          order.rider?._id ||
+          order.rider ||
+          order.riderId;
+
+        return (
+          String(riderId) === String(user._id)
+          &&
+          order.status !== "delivered"
+          &&
+          order.status !== "cancelled"
+          &&
+          order.status !== "pending"
+        );
+      });
+
+    if(alreadyBusy){
+
+      alert(
+        "You already have an active delivery. Complete it before accepting another order."
+      );
+
+      return;
+    }
+
     await API.put(
       `/orders/${orderId}`,
-     {
-  rider:user._id,
-  riderId:user._id,
-  status:"accepted"
-}
+      {
+        rider:user._id,
+        riderId:user._id,
+        status:"accepted"
+      }
     );
 
     setUser({
@@ -2112,26 +2149,45 @@ async function acceptOrder(orderId){
 
   </DashboardHero>
 
-  <StatsGrid>
+ <StatsGrid>
 
   <div
     style={{
       background:
         "linear-gradient(135deg, #0f172a, #1d4ed8)",
-      padding:"24px",
-      borderRadius:"24px",
-      textAlign:"center",
+      padding:"16px",
+      borderRadius:"18px",
       color:"white",
-      border:"1px solid rgba(255,255,255,0.18)",
+      border:"1px solid rgba(250,204,21,0.28)",
       boxShadow:
-        "0 16px 35px rgba(29,78,216,0.25)"
+        "0 14px 32px rgba(29,78,216,0.20)",
+      position:"relative",
+      overflow:"hidden"
     }}
   >
 
     <div
       style={{
-        fontSize:"14px",
-        color:"rgba(255,255,255,0.85)",
+        width:"46px",
+        height:"46px",
+        borderRadius:"16px",
+        background:"#facc15",
+        color:"#0f172a",
+        display:"flex",
+        alignItems:"center",
+        justifyContent:"center",
+        fontSize:"23px",
+        marginBottom:"16px",
+        fontWeight:"900"
+      }}
+    >
+      🚚
+    </div>
+
+    <div
+      style={{
+        fontSize:"13px",
+        color:"rgba(255,255,255,0.82)",
         fontWeight:"900",
         letterSpacing:"0.5px",
         textTransform:"uppercase"
@@ -2142,15 +2198,25 @@ async function acceptOrder(orderId){
 
     <div
       style={{
-        fontSize:"42px",
+        fontSize:"30px",
         fontWeight:"900",
-        marginTop:"10px",
+        marginTop:"8px",
         color:"#facc15"
       }}
     >
-      {
-        activeOrders.length
-      }
+      {activeOrders.length}
+    </div>
+
+    <div
+      style={{
+        fontSize:"13px",
+        color:"rgba(255,255,255,0.78)",
+        marginTop:"8px",
+        fontWeight:"700",
+        lineHeight:"1.4"
+      }}
+    >
+      Orders you are currently handling.
     </div>
 
   </div>
@@ -2159,19 +2225,38 @@ async function acceptOrder(orderId){
     style={{
       background:
         "linear-gradient(135deg, #facc15, #f59e0b)",
-      padding:"24px",
+      padding:"22px",
       borderRadius:"24px",
-      textAlign:"center",
       color:"#0f172a",
       border:"1px solid rgba(15,23,42,0.12)",
       boxShadow:
-        "0 16px 35px rgba(250,204,21,0.28)"
+        "0 14px 32px rgba(250,204,21,0.24)",
+      position:"relative",
+      overflow:"hidden"
     }}
   >
 
     <div
       style={{
-        fontSize:"14px",
+        width:"36px",
+        height:"36px",
+        borderRadius:"16px",
+        background:"#0f172a",
+        color:"#facc15",
+        display:"flex",
+        alignItems:"center",
+        justifyContent:"center",
+        fontSize:"17px",
+        marginBottom:"16px",
+        fontWeight:"900"
+      }}
+    >
+      ✅
+    </div>
+
+    <div
+      style={{
+        fontSize:"13px",
         color:"#0f172a",
         fontWeight:"900",
         letterSpacing:"0.5px",
@@ -2185,13 +2270,23 @@ async function acceptOrder(orderId){
       style={{
         fontSize:"42px",
         fontWeight:"900",
-        marginTop:"10px",
+        marginTop:"8px",
         color:"#0f172a"
       }}
     >
-      {
-        completedOrders.length
-      }
+      {completedOrders.length}
+    </div>
+
+    <div
+      style={{
+        fontSize:"13px",
+        color:"#334155",
+        marginTop:"8px",
+        fontWeight:"800",
+        lineHeight:"1.4"
+      }}
+    >
+      Successful deliveries completed by you.
     </div>
 
   </div>
@@ -2200,19 +2295,38 @@ async function acceptOrder(orderId){
     style={{
       background:
         "linear-gradient(135deg, #0f172a, #111827)",
-      padding:"24px",
+      padding:"22px",
       borderRadius:"24px",
-      textAlign:"center",
       color:"white",
       border:"1px solid rgba(250,204,21,0.35)",
       boxShadow:
-        "0 16px 35px rgba(15,23,42,0.28)"
+        "0 14px 32px rgba(15,23,42,0.24)",
+      position:"relative",
+      overflow:"hidden"
     }}
   >
 
     <div
       style={{
-        fontSize:"14px",
+        width:"46px",
+        height:"46px",
+        borderRadius:"16px",
+        background:"#facc15",
+        color:"#0f172a",
+        display:"flex",
+        alignItems:"center",
+        justifyContent:"center",
+        fontSize:"23px",
+        marginBottom:"16px",
+        fontWeight:"900"
+      }}
+    >
+      ₵
+    </div>
+
+    <div
+      style={{
+        fontSize:"13px",
         color:"#facc15",
         fontWeight:"900",
         letterSpacing:"0.5px",
@@ -2226,448 +2340,945 @@ async function acceptOrder(orderId){
       style={{
         fontSize:"42px",
         fontWeight:"900",
-        marginTop:"10px",
+        marginTop:"8px",
         color:"#facc15"
       }}
     >
       ₵{earnings}
     </div>
 
+    <div
+      style={{
+        fontSize:"13px",
+        color:"rgba(255,255,255,0.76)",
+        marginTop:"8px",
+        fontWeight:"700",
+        lineHeight:"1.4"
+      }}
+    >
+      Total money earned from delivered orders.
+    </div>
+
   </div>
 
 </StatsGrid>
 
+<div
+  style={{
+    display:"grid",
+    gridTemplateColumns:"1.3fr 0.8fr",
+    gap:"22px",
+    alignItems:"start",
+    marginBottom:"28px"
+  }}
+>
+
+  <OrderCard
+    style={{
+      background:
+        "linear-gradient(135deg, #ffffff, #f8fafc)",
+      border:"1px solid rgba(29,78,216,0.10)",
+      boxShadow:
+        "0 14px 32px rgba(15,23,42,0.06)"
+    }}
+  >
+
+    <div
+      style={{
+        display:"flex",
+        alignItems:"center",
+        justifyContent:"space-between",
+        gap:"12px",
+        marginBottom:"18px",
+        flexWrap:"wrap"
+      }}
+    >
+
+      <div>
+
+        <div
+          style={{
+            fontSize:"21px",
+            fontWeight:"900",
+            color:"#0f172a",
+            marginBottom:"5px"
+          }}
+        >
+          Rider Work Summary
+        </div>
+
+        <div
+          style={{
+            fontSize:"14px",
+            color:"#64748b",
+            fontWeight:"700"
+          }}
+        >
+          Quick view of your delivery performance today.
+        </div>
+
+      </div>
+
+      <div
+        style={{
+          padding:"8px 14px",
+          borderRadius:"999px",
+          background:
+            getRiderDisplayStatus() === "busy"
+            ? "#fee2e2"
+            : "#dcfce7",
+          color:
+            getRiderDisplayStatus() === "busy"
+            ? "#991b1b"
+            : "#166534",
+          fontSize:"12px",
+          fontWeight:"900",
+          textTransform:"uppercase"
+        }}
+      >
         {
+          getRiderDisplayStatus() === "busy"
+          ? "Busy on delivery"
+          : "Available for orders"
+        }
+      </div>
 
-          orders.length === 0
+    </div>
 
-          ?
+    <div
+      style={{
+        display:"grid",
+        gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",
+        gap:"12px"
+      }}
+    >
 
-          (
+      <div
+        style={{
+          background:"#eff6ff",
+          border:"1px solid #dbeafe",
+          borderRadius:"18px",
+          padding:"16px"
+        }}
+      >
+        <div
+          style={{
+            color:"#1d4ed8",
+            fontWeight:"900",
+            fontSize:"13px",
+            marginBottom:"8px"
+          }}
+        >
+          Pending Requests
+        </div>
 
-            <Empty>
+        <div
+          style={{
+            color:"#0f172a",
+            fontWeight:"900",
+            fontSize:"30px"
+          }}
+        >
+          {
+            visibleOrders.filter(
+              (o)=>o.status === "pending"
+            ).length
+          }
+        </div>
+      </div>
 
-              No orders available
+      <div
+        style={{
+          background:"#fefce8",
+          border:"1px solid #fde68a",
+          borderRadius:"18px",
+          padding:"16px"
+        }}
+      >
+        <div
+          style={{
+            color:"#92400e",
+            fontWeight:"900",
+            fontSize:"13px",
+            marginBottom:"8px"
+          }}
+        >
+          Active Jobs
+        </div>
 
-            </Empty>
+        <div
+          style={{
+            color:"#0f172a",
+            fontWeight:"900",
+            fontSize:"30px"
+          }}
+        >
+          {activeOrders.length}
+        </div>
+      </div>
 
-          )
+      <div
+        style={{
+          background:"#f0fdf4",
+          border:"1px solid #bbf7d0",
+          borderRadius:"18px",
+          padding:"16px"
+        }}
+      >
+        <div
+          style={{
+            color:"#166534",
+            fontWeight:"900",
+            fontSize:"13px",
+            marginBottom:"8px"
+          }}
+        >
+          Completed
+        </div>
 
-          :
-          (
+        <div
+          style={{
+            color:"#0f172a",
+            fontWeight:"900",
+            fontSize:"30px"
+          }}
+        >
+          {completedOrders.length}
+        </div>
+      </div>
 
-        <OrdersGrid>
+    </div>
 
-        {
+  </OrderCard>
 
-    visibleOrders.map((o)=>(
+  <OrderCard
+    style={{
+      background:
+        "linear-gradient(135deg, #0f172a, #1d4ed8)",
+      color:"white",
+      border:"1px solid rgba(250,204,21,0.28)",
+      boxShadow:
+        "0 14px 32px rgba(29,78,216,0.18)"
+    }}
+  >
 
-      <OrderCard
-        key={o._id}
+    <div
+      style={{
+        width:"50px",
+        height:"50px",
+        borderRadius:"18px",
+        background:"#facc15",
+        color:"#0f172a",
+        display:"flex",
+        alignItems:"center",
+        justifyContent:"center",
+        fontSize:"24px",
+        marginBottom:"16px"
+      }}
+    >
+      🛵
+    </div>
+
+    <div
+      style={{
+        fontSize:"20px",
+        fontWeight:"900",
+        marginBottom:"8px"
+      }}
+    >
+      Rider Status
+    </div>
+
+    <div
+      style={{
+        color:"rgba(255,255,255,0.80)",
+        fontSize:"14px",
+        fontWeight:"700",
+        lineHeight:"1.5",
+        marginBottom:"18px"
+      }}
+    >
+      Stay online to receive delivery requests from customers.
+    </div>
+
+    <div
+      style={{
+        background:"rgba(255,255,255,0.12)",
+        border:"1px solid rgba(255,255,255,0.18)",
+        borderRadius:"16px",
+        padding:"14px",
+        fontWeight:"900",
+        color:"#facc15"
+      }}
+    >
+      Current Status:{" "}
+      {
+        getRiderDisplayStatus() === "busy"
+        ? "BUSY"
+        : getRiderDisplayStatus() === "offline"
+        ? "OFF-DUTY"
+        : getRiderDisplayStatus() === "suspended"
+        ? "SUSPENDED"
+        : "AVAILABLE"
+      }
+    </div>
+
+  </OrderCard>
+
+</div>
+
+{
+
+  orders.length === 0
+
+  ?
+
+  (
+
+    <Empty
+      style={{
+        background:
+          "linear-gradient(135deg, #ffffff, #f8fafc)",
+        border:"1px solid rgba(29,78,216,0.10)",
+        boxShadow:
+          "0 12px 28px rgba(15,23,42,0.06)",
+        fontWeight:"800",
+        color:"#0f172a"
+      }}
+    >
+
+      No orders available right now.
+
+    </Empty>
+
+  )
+
+  :
+
+  (
+
+    <>
+
+      <div
+        style={{
+          display:"flex",
+          alignItems:"center",
+          justifyContent:"space-between",
+          gap:"12px",
+          flexWrap:"wrap",
+          marginBottom:"16px"
+        }}
       >
 
-        <Row>
-          <strong>
-            Customer:
-          </strong>{" "}
-          {
-            o.customer?.name ||
-            "Unknown Customer"
-          }
-        </Row>
+        <div>
 
-        <Row>
-          <strong>
-            Rider:
-          </strong>{" "}
-          {
-            o.rider?.name ||
-            "No Rider Yet"
-          }
-        </Row>
+          <div
+            style={{
+              fontSize:"24px",
+              fontWeight:"900",
+              color:"#0f172a"
+            }}
+          >
+            Available Order Requests
+          </div>
 
-        <Row>
-          <strong>
-            Pickup:
-          </strong>{" "}
-          {
-            o.pickupLocation
-          }
-        </Row>
+          <div
+            style={{
+              color:"#64748b",
+              fontWeight:"700",
+              fontSize:"14px",
+              marginTop:"4px"
+            }}
+          >
+            Accept pending customer deliveries and manage assigned jobs.
+          </div>
 
-        <Row>
-          <strong>
-            Dropoff:
-          </strong>{" "}
-          {
-            o.dropoffLocation
-          }
-        </Row>
+        </div>
 
-        <Row>
-          <strong>
-            Distance:
-          </strong>{" "}
-          {
-            o.distance
-          } km
-        </Row>
-
-        <Row>
-          <strong>
-            Amount:
-          </strong>{" "}
-          ₵{o.total}
-        </Row>
-
-        <StatusBadge
-          status={o.status}
+        <div
+          style={{
+            padding:"8px 14px",
+            borderRadius:"999px",
+            background:"#fef3c7",
+            color:"#92400e",
+            fontWeight:"900",
+            fontSize:"12px"
+          }}
         >
-          {o.status}
-        </StatusBadge>
+          {
+            visibleOrders.length
+          } orders visible
+        </div>
 
-        {/* ================= CHAT ================= */}
+      </div>
+
+      <OrdersGrid>
 
         {
-          o.customer && (
 
-            <>
+          visibleOrders.map((o)=>(
 
-              <ButtonRow>
+            <OrderCard
+              key={o._id}
+              style={{
+                background:
+                  "linear-gradient(135deg, #ffffff, #f8fafc)",
+                border:"1px solid rgba(29,78,216,0.10)",
+                boxShadow:
+                  "0 12px 28px rgba(15,23,42,0.06)"
+              }}
+            >
 
-                <Button
+              <div
+                style={{
+                  display:"flex",
+                  alignItems:"center",
+                  justifyContent:"space-between",
+                  gap:"12px",
+                  marginBottom:"16px",
+                  flexWrap:"wrap"
+                }}
+              >
 
-                  color="#2563eb"
-
-                  onClick={()=>{
-
-                    setOpenChats({
-
-                      ...openChats,
-
-                      [o._id]:
-                        !openChats[o._id]
-                    });
+                <div
+                  style={{
+                    display:"flex",
+                    alignItems:"center",
+                    gap:"12px"
                   }}
                 >
 
-                  💬 Chat Customer
+                  <div
+                    style={{
+                      width:"44px",
+                      height:"44px",
+                      borderRadius:"16px",
+                      background:
+                        "linear-gradient(135deg, #0f172a, #1d4ed8)",
+                      color:"#facc15",
+                      display:"flex",
+                      alignItems:"center",
+                      justifyContent:"center",
+                      fontSize:"21px",
+                      fontWeight:"900"
+                    }}
+                  >
+                    📦
+                  </div>
 
-                </Button>
+                  <div>
 
-              </ButtonRow>
+                    <div
+                      style={{
+                        fontWeight:"900",
+                        color:"#0f172a",
+                        fontSize:"17px"
+                      }}
+                    >
+                      Delivery Request
+                    </div>
 
-              {
+                    <div
+                      style={{
+                        fontSize:"12px",
+                        fontWeight:"800",
+                        color:"#64748b"
+                      }}
+                    >
+                      Order ID: {String(o._id).slice(-6)}
+                    </div>
 
-                openChats[o._id] && (
+                  </div>
+
+                </div>
+
+                <StatusBadge
+                  status={o.status}
+                  style={{
+                    marginTop:"0"
+                  }}
+                >
+                  {o.status}
+                </StatusBadge>
+
+              </div>
+
+              <Row
+                style={{
+                  background:"#eff6ff",
+                  border:"1px solid #dbeafe",
+                  borderRadius:"14px",
+                  padding:"12px",
+                  fontWeight:"800"
+                }}
+              >
+                <strong style={{color:"#1d4ed8"}}>
+                  Customer:
+                </strong>{" "}
+                {
+                  o.customer?.name ||
+                  "Unknown Customer"
+                }
+              </Row>
+
+              <Row
+                style={{
+                  background:"#f8fafc",
+                  border:"1px solid #e5e7eb",
+                  borderRadius:"14px",
+                  padding:"12px"
+                }}
+              >
+                <strong>
+                  Pickup:
+                </strong>{" "}
+                {o.pickupLocation}
+              </Row>
+
+              <Row
+                style={{
+                  background:"#f8fafc",
+                  border:"1px solid #e5e7eb",
+                  borderRadius:"14px",
+                  padding:"12px"
+                }}
+              >
+                <strong>
+                  Dropoff:
+                </strong>{" "}
+                {o.dropoffLocation}
+              </Row>
+
+              <div
+                style={{
+                  display:"grid",
+                  gridTemplateColumns:"1fr 1fr",
+                  gap:"10px",
+                  marginTop:"12px"
+                }}
+              >
+
+                <div
+                  style={{
+                    background:"#fefce8",
+                    border:"1px solid #fde68a",
+                    borderRadius:"14px",
+                    padding:"12px"
+                  }}
+                >
+                  <div
+                    style={{
+                      color:"#92400e",
+                      fontSize:"12px",
+                      fontWeight:"900",
+                      marginBottom:"5px"
+                    }}
+                  >
+                    Distance
+                  </div>
 
                   <div
                     style={{
-                      marginTop:"12px",
-                      background:"#f8fafc",
-                      padding:"15px",
-                      borderRadius:"12px"
+                      color:"#0f172a",
+                      fontSize:"18px",
+                      fontWeight:"900"
                     }}
                   >
+                    {o.distance} km
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #0f172a, #1d4ed8)",
+                    border:"1px solid rgba(250,204,21,0.28)",
+                    borderRadius:"14px",
+                    padding:"12px"
+                  }}
+                >
+                  <div
+                    style={{
+                      color:"rgba(255,255,255,0.82)",
+                      fontSize:"12px",
+                      fontWeight:"900",
+                      marginBottom:"5px"
+                    }}
+                  >
+                    Amount
+                  </div>
+
+                  <div
+                    style={{
+                      color:"#facc15",
+                      fontSize:"18px",
+                      fontWeight:"900"
+                    }}
+                  >
+                    ₵{o.total}
+                  </div>
+                </div>
+
+              </div>
+
+              {
+                o.customer && (
+
+                  <>
+
+                    <ButtonRow>
+
+                      <Button
+                        onClick={()=>{
+
+                          setOpenChats({
+
+                            ...openChats,
+
+                            [o._id]:
+                              !openChats[o._id]
+                          });
+                        }}
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #0f172a, #1d4ed8)",
+                          color:"#facc15",
+                          fontWeight:"900",
+                          border:"1px solid rgba(250,204,21,0.35)"
+                        }}
+                      >
+
+                        💬 Chat Customer
+
+                      </Button>
+
+                    </ButtonRow>
 
                     {
 
-                      o.messages &&
-                      o.messages.length > 0 && (
+                      openChats[o._id] && (
 
                         <div
                           style={{
-                            marginBottom:"15px"
+                            marginTop:"14px",
+                            background:
+                              "linear-gradient(135deg, #ffffff, #f8fafc)",
+                            padding:"15px",
+                            borderRadius:"16px",
+                            border:"1px solid rgba(29,78,216,0.10)"
                           }}
                         >
 
                           {
 
-                            o.messages.map(
+                            o.messages &&
+                            o.messages.length > 0 && (
 
-                              (
-                                msg,
-                                index
-                              )=>(
+                              <div
+                                style={{
+                                  marginBottom:"15px"
+                                }}
+                              >
 
-                                <div
+                                {
 
-                                  key={index}
+                                  o.messages.map(
+                                    (
+                                      msg,
+                                      index
+                                    )=>(
 
-                                  style={{
+                                      <div
+                                        key={index}
+                                        style={{
+                                          background:
+                                            msg.sender === "rider"
+                                            ? "#dbeafe"
+                                            : "#fef3c7",
+                                          color:"#0f172a",
+                                          padding:"10px",
+                                          borderRadius:"12px",
+                                          marginBottom:"8px",
+                                          fontWeight:"700"
+                                        }}
+                                      >
 
-                                    background:
+                                        <strong>
 
-                                      msg.sender ===
-                                      "rider"
+                                          {
+                                            msg.sender === "rider"
+                                            ? "You"
+                                            : "Customer"
+                                          }
 
-                                      ?
+                                          :
 
-                                      "#dbeafe"
+                                        </strong>
 
-                                      :
+                                        {" "}
 
-                                      "#dcfce7",
+                                        {msg.text}
 
-                                    padding:"10px",
+                                      </div>
+                                    )
+                                  )
+                                }
 
-                                    borderRadius:"10px",
-
-                                    marginBottom:"8px"
-                                  }}
-                                >
-
-                                  <strong>
-
-                                    {
-
-                                      msg.sender ===
-                                      "rider"
-
-                                      ?
-
-                                      "You"
-
-                                      :
-
-                                      "Customer"
-                                    }
-
-                                    :
-
-                                  </strong>
-
-                                  {" "}
-
-                                  {msg.text}
-
-                                </div>
-                              )
+                              </div>
                             )
                           }
+
+                          <div
+                            style={{
+                              display:"flex",
+                              gap:"10px"
+                            }}
+                          >
+
+                            <input
+                              type="text"
+                              placeholder="Type message..."
+                              value={
+                                chatText[o._id] || ""
+                              }
+                              onChange={(e)=>
+
+                                setChatText({
+
+                                  ...chatText,
+
+                                  [o._id]:
+                                    e.target.value
+                                })
+                              }
+                              style={{
+                                flex:1,
+                                padding:"13px",
+                                borderRadius:"12px",
+                                border:"1px solid #dbeafe",
+                                outline:"none",
+                                fontWeight:"700"
+                              }}
+                            />
+
+                            <Button
+                              onClick={()=>{
+
+                                sendMessage(
+                                  o._id,
+                                  chatText[o._id]
+                                );
+                              }}
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, #facc15, #f59e0b)",
+                                color:"#0f172a",
+                                fontWeight:"900"
+                              }}
+                            >
+
+                              Send
+
+                            </Button>
+
+                          </div>
 
                         </div>
                       )
                     }
 
-                    <div
-                      style={{
-                        display:"flex",
-                        gap:"10px"
-                      }}
-                    >
-
-                      <input
-
-                        type="text"
-
-                        placeholder="Type message..."
-
-                        value={
-                          chatText[o._id] || ""
-                        }
-
-                        onChange={(e)=>
-
-                          setChatText({
-
-                            ...chatText,
-
-                            [o._id]:
-                              e.target.value
-                          })
-                        }
-
-                        style={{
-                          flex:1,
-                          padding:"12px",
-                          borderRadius:"10px",
-                          border:"1px solid #d1d5db"
-                        }}
-                      />
-
-                      <Button
-
-                        color="#2563eb"
-
-                        onClick={()=>{
-
-                          sendMessage(
-
-                            o._id,
-
-                            chatText[o._id]
-                          );
-                        }}
-                      >
-
-                        Send
-
-                      </Button>
-
-                    </div>
-
-                  </div>
+                  </>
                 )
               }
 
-            </>
-          )
+              {
+o.status === "pending" &&
+activeOrders.length === 0 &&
+user?.status !== "busy" && (
+
+                  <ButtonRow>
+
+                    <Button
+                      onClick={()=>
+
+                        acceptOrder(
+                          o._id
+                        )
+                      }
+                      style={{
+                        background:
+                          "linear-gradient(135deg, #16a34a, #22c55e)",
+                        color:"white",
+                        fontWeight:"900"
+                      }}
+                    >
+
+                      Accept Order
+
+                    </Button>
+
+                    <Button
+                      onClick={()=>
+
+                        rejectOrder(
+                          o._id
+                        )
+                      }
+                      style={{
+                        background:"#dc2626",
+                        color:"white",
+                        fontWeight:"900"
+                      }}
+                    >
+
+                      Reject
+
+                    </Button>
+
+                  </ButtonRow>
+                )
+              }
+
+              {
+  o.status === "pending" &&
+  activeOrders.length > 0 && (
+
+    <div
+      style={{
+        marginTop:"14px",
+        background:"#fef2f2",
+        border:"1px solid #fecaca",
+        color:"#991b1b",
+        borderRadius:"14px",
+        padding:"12px",
+        fontWeight:"900",
+        fontSize:"13px",
+        lineHeight:"1.4"
+      }}
+    >
+      You already have an active delivery. Complete it before accepting another order.
+    </div>
+  )
+}
+
+              {
+  o.status === "pending" &&
+  activeOrders.length > 0 && (
+
+    <div
+      style={{
+        marginTop:"14px",
+        background:"#fef2f2",
+        border:"1px solid #fecaca",
+        color:"#991b1b",
+        borderRadius:"14px",
+        padding:"12px",
+        fontWeight:"900",
+        fontSize:"13px",
+        lineHeight:"1.4"
+      }}
+    >
+      You already have an active delivery. Complete it before accepting another order.
+    </div>
+  )
+}
+
+              {
+                o.status === "accepted" && (
+
+                  <ButtonRow>
+
+                    <Button
+                      onClick={()=>
+
+                        pickupOrder(
+                          o._id
+                        )
+                      }
+                      style={{
+                        background:
+                          "linear-gradient(135deg, #0f172a, #1d4ed8)",
+                        color:"#facc15",
+                        fontWeight:"900"
+                      }}
+                    >
+
+                      Item Picked
+
+                    </Button>
+
+                  </ButtonRow>
+                )
+              }
+
+              {
+                o.status === "picked" && (
+
+                  <ButtonRow>
+
+                    <Button
+                      onClick={()=>
+
+                        startDelivery(
+                          o._id
+                        )
+                      }
+                      style={{
+                        background:
+                          "linear-gradient(135deg, #7c3aed, #6d28d9)",
+                        color:"white",
+                        fontWeight:"900"
+                      }}
+                    >
+
+                      Start Delivery
+
+                    </Button>
+
+                  </ButtonRow>
+                )
+              }
+
+              {
+                o.status === "delivering" && (
+
+                  <ButtonRow>
+
+                    <Button
+                      onClick={()=>
+
+                        completeDelivery(
+                          o._id
+                        )
+                      }
+                      style={{
+                        background:
+                          "linear-gradient(135deg, #16a34a, #22c55e)",
+                        color:"white",
+                        fontWeight:"900"
+                      }}
+                    >
+
+                      Delivered
+
+                    </Button>
+
+                  </ButtonRow>
+                )
+              }
+
+            </OrderCard>
+          ))
         }
 
-        {/* ================= PENDING ================= */}
+      </OrdersGrid>
 
-        {
-          o.status ===
-          "pending"
+    </>
+  )
+}
 
-          &&
-
-          user?.status !==
-          "busy"
-
-          && (
-
-            <ButtonRow>
-
-              <Button
-
-                color="#16a34a"
-
-                onClick={()=>
-
-                  acceptOrder(
-                    o._id
-                  )
-                }
-              >
-
-                Accept Order
-
-              </Button>
-
-              <Button
-
-  color="#dc2626"
-
-  onClick={()=>
-
-    rejectOrder(
-      o._id
-    )
-  }
->
-
-  Reject
-
-</Button>
-
-            </ButtonRow>
-          )
-        }
-
-        {/* ================= ASSIGNED ================= */}
-
-        {
-          o.status ===
-          "accepted"
-
-          && (
-
-            <ButtonRow>
-
-              <Button
-
-                color="#2563eb"
-
-                onClick={()=>
-
-                  pickupOrder(
-                    o._id
-                  )
-                }
-              >
-
-                Item Picked
-
-              </Button>
-
-            </ButtonRow>
-          )
-        }
-
-        {/* ================= PICKED ================= */}
-
-        {
-          o.status ===
-          "picked"
-
-          && (
-
-            <ButtonRow>
-
-              <Button
-
-                color="#7c3aed"
-
-                onClick={()=>
-
-                  startDelivery(
-                    o._id
-                  )
-                }
-              >
-
-                Start Delivery
-
-              </Button>
-
-            </ButtonRow>
-          )
-        }
-
-        {/* DELIVERING  */}
-
-        {
-          o.status ===
-          "delivering"
-
-          && (
-
-            <ButtonRow>
-
-              <Button
-
-                color="#16a34a"
-
-                onClick={()=>
-
-                  completeDelivery(
-                    o._id
-                  )
-                }
-              >
-
-                Delivered
-
-              </Button>
-
-            </ButtonRow>
-          )
-        }
-
-      </OrderCard>
-    ))
-  }
-
-</OrdersGrid>
-
-          )
-        }
-
-            </>
-  )}
-
+  </>
+)}
   {activeSection === "activeDeliveries" && (
   <>
 
