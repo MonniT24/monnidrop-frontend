@@ -2650,71 +2650,118 @@ const [
 
 useEffect(()=>{
 
-  const savedSettings =
-    JSON.parse(
-      localStorage.getItem(
-        "monnidropCustomerSettings"
-      )
-    );
+  async function loadCustomerSettings(){
 
-  if(savedSettings){
+    try{
 
-    setPhoneNumber(
-      savedSettings.phoneNumber || ""
-    );
+      const res =
+        await API.get(
+          "/customer/settings"
+        );
 
-    setEmail(
-      savedSettings.email || ""
-    );
+      const savedSettings =
+        res.data.settings || {};
 
-    setCountry(
-      savedSettings.country || "Ghana"
-    );
+      setPhoneNumber(
+        savedSettings.phoneNumber || ""
+      );
 
-    setLanguage(
-      savedSettings.language || "English"
-    );
+      setEmail(
+        savedSettings.email || ""
+      );
 
-    setCurrency(
-      savedSettings.currency || "GHS"
-    );
+      setCountry(
+        savedSettings.country || "Ghana"
+      );
 
-    setPaymentMethod(
-      savedSettings.paymentMethod || ""
-    );
+      setLanguage(
+        savedSettings.language || "English"
+      );
 
-    setTwoFactorEnabled(
-      savedSettings.twoFactorEnabled || false
-    );
+      setCurrency(
+        savedSettings.currency || "GHS"
+      );
 
-    setGoogleConnected(
-      savedSettings.googleConnected || false
-    );
+      setPaymentMethod(
+        savedSettings.paymentMethod || ""
+      );
 
-    setFacebookConnected(
-      savedSettings.facebookConnected || false
-    );
+      setTwoFactorEnabled(
+        savedSettings.twoFactorEnabled || false
+      );
+
+      setGoogleConnected(
+        savedSettings.googleConnected || false
+      );
+
+      setFacebookConnected(
+        savedSettings.facebookConnected || false
+      );
+
+      localStorage.setItem(
+        "monnidropCustomerSettings",
+        JSON.stringify(savedSettings)
+      );
+
+    }catch(err){
+
+      console.log(
+        "LOAD SETTINGS ERROR:",
+        err.response?.data || err
+      );
+
+      const localSettings =
+        localStorage.getItem(
+          "monnidropCustomerSettings"
+        );
+
+      if(localSettings){
+
+        const savedSettings =
+          JSON.parse(localSettings);
+
+        setPhoneNumber(
+          savedSettings.phoneNumber || ""
+        );
+
+        setEmail(
+          savedSettings.email || ""
+        );
+
+        setCountry(
+          savedSettings.country || "Ghana"
+        );
+
+        setLanguage(
+          savedSettings.language || "English"
+        );
+
+        setCurrency(
+          savedSettings.currency || "GHS"
+        );
+
+        setPaymentMethod(
+          savedSettings.paymentMethod || ""
+        );
+
+        setTwoFactorEnabled(
+          savedSettings.twoFactorEnabled || false
+        );
+
+        setGoogleConnected(
+          savedSettings.googleConnected || false
+        );
+
+        setFacebookConnected(
+          savedSettings.facebookConnected || false
+        );
+      }
+    }
   }
 
+  loadCustomerSettings();
+
 },[]);
-
-  useEffect(()=>{
-
-    fetchMe();
-
-
-    fetchOrders();
-
-    const interval =
-      setInterval(()=>{
-
-        fetchOrders();
-
-      },3000);
-
-    return ()=>clearInterval(interval);
-
-  },[]);
 
   useEffect(()=>{
 
@@ -7977,42 +8024,67 @@ calculateDistance(
             <>
 
               <Button
-                onClick={()=>{
+  onClick={async()=>{
 
-                  localStorage.setItem(
-                    "monnidropCustomerSettings",
-                    JSON.stringify({
-                      phoneNumber,
-                      email,
-                      country,
-                      language,
-                      currency,
-                      paymentMethod,
-                      twoFactorEnabled,
-                      googleConnected,
-                      facebookConnected
-                    })
-                  );
+    try{
 
-                  alert(
-                    `${selectedSetting} saved successfully`
-                  );
+      const settingsData = {
+        phoneNumber,
+        email,
+        country,
+        language,
+        currency,
+        paymentMethod,
+        twoFactorEnabled,
+        googleConnected,
+        facebookConnected
+      };
 
-                  setSelectedSetting(null);
+      const res =
+        await API.put(
+          "/customer/settings",
+          settingsData
+        );
 
-                }}
-                style={{
-                  background:
-                    "linear-gradient(135deg, #facc15, #f59e0b)",
-                  color:"#0f172a",
-                  fontWeight:"900",
-                  border:"1px solid rgba(15,23,42,0.12)",
-                  boxShadow:
-                    "0 10px 22px rgba(250,204,21,0.22)"
-                }}
-              >
-                Save
-              </Button>
+      localStorage.setItem(
+        "monnidropCustomerSettings",
+        JSON.stringify(
+          res.data.settings || settingsData
+        )
+      );
+
+      alert(
+        `${selectedSetting} saved successfully`
+      );
+
+      setSelectedSetting(null);
+
+    }catch(err){
+
+      console.log(
+        "SAVE SETTINGS ERROR:",
+        err.response?.data || err
+      );
+
+      alert(
+        err.response?.data?.message ||
+        "Failed to save settings"
+      );
+    }
+
+  }}
+  style={{
+    background:
+      "linear-gradient(135deg, #facc15, #f59e0b)",
+    color:"#0f172a",
+    fontWeight:"900",
+    border:"1px solid rgba(15,23,42,0.12)",
+    boxShadow:
+      "0 10px 22px rgba(250,204,21,0.22)"
+  }}
+>
+  Save
+</Button>
 
               <Button
                 onClick={()=>
