@@ -222,11 +222,11 @@ const DashboardHeroContent = styled.div`
 
 const HeroLogo = styled.img`
   position:absolute;
-  top:-4px;
+  top:18px;
   left:43%;
 
-  width:70px;
-  height:70px;
+  width:105px;
+  height:105px;
   object-fit:contain;
 
   background:transparent;
@@ -257,12 +257,12 @@ const HeroLogo = styled.img`
     }
   }
 
-  @media(max-width:768px){
-    top:8px;
-    left:60%;
+  @media(max-width:760px){
+    top:18px;
+    left:58%;
 
-    width:62px;
-    height:62px;
+    width:88px;
+    height:88px;
     object-fit:contain;
 
     background:transparent;
@@ -619,7 +619,7 @@ const Layout = styled.div`
 `;
 
 const Sidebar = styled.div`
-  width:210px;
+  width:200px;
 
   background:white;
 
@@ -740,7 +740,7 @@ const CloseButton = styled.button`
 const Main = styled.div`
   flex:1;
 
-  margin-left:220px;
+  margin-left:210px;
 
   padding:32px;
 
@@ -752,10 +752,10 @@ const Main = styled.div`
 
   @media(max-width:760px){
 
-    margin-left:0;
+  margin-left:0;
 
-    padding:24px 18px 20px;
-  }
+  padding:82px 14px 20px;
+}
 `;
 
 const ProfileCard = styled.div`
@@ -769,9 +769,9 @@ const ProfileCard = styled.div`
 `;
 
 const ProfileImage = styled.img`
-  width:85px;
+  width:72px;
 
-  height:85px;
+  height:72px;
 
   border-radius:50%;
 
@@ -781,7 +781,7 @@ const ProfileImage = styled.img`
 
   margin-bottom:12px;
 
-  border:5px solid #facc15;
+  border:4px solid #facc15;
 
   box-shadow:
     0 4px 12px rgba(0,0,0,0.08);
@@ -934,7 +934,7 @@ const ButtonRow = styled.div`
 
   gap:10px;
 
-  margin-top:14px;
+  margin-top:10px;
 
   flex-wrap:wrap;
 `;
@@ -944,9 +944,9 @@ const ButtonRow = styled.div`
 
   border:none;
 
-  border-radius:14px;
+  border-radius:12px;
 
-  padding:12px 16px;
+  padding:10px 14px;
 
   background:#2563eb;
 
@@ -1001,9 +1001,101 @@ const OrdersGrid = styled.div`
   gap:18px;
 
   align-items:start;
+
+  @media(max-width:520px){
+    grid-template-columns:1fr;
+    gap:12px;
+  }
 `;
 
+const ResponsiveTwoColumn = styled.div`
+  display:grid;
+  grid-template-columns:1.3fr 0.8fr;
+  gap:22px;
+  align-items:start;
+  margin-bottom:28px;
 
+  @media(max-width:900px){
+    grid-template-columns:1fr;
+    gap:16px;
+  }
+`;
+
+const ProfileResponsiveGrid = styled.div`
+  display:grid;
+  grid-template-columns:0.8fr 1.2fr;
+  gap:22px;
+  align-items:start;
+
+  @media(max-width:900px){
+    grid-template-columns:1fr;
+    gap:16px;
+  }
+`;
+
+const CompactInfoGrid = styled.div`
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:12px;
+
+  @media(max-width:520px){
+    grid-template-columns:1fr;
+  }
+`;
+
+const MessageRow = styled.div`
+  display:grid;
+  grid-template-columns:44px 1fr auto;
+  gap:12px;
+  align-items:center;
+  background:#f8fafc;
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+  padding:12px;
+
+  @media(max-width:620px){
+    grid-template-columns:40px 1fr;
+  }
+`;
+
+const MessageTime = styled.div`
+  text-align:right;
+  color:#64748b;
+  font-size:12px;
+  font-weight:900;
+  white-space:nowrap;
+
+  @media(max-width:620px){
+    grid-column:2;
+    text-align:left;
+  }
+`;
+
+const HistoryRow = styled.div`
+  display:grid;
+  grid-template-columns:1.2fr 1.2fr 0.6fr;
+  gap:10px;
+  align-items:center;
+  background:#f8fafc;
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+  padding:12px;
+
+  @media(max-width:720px){
+    grid-template-columns:1fr;
+  }
+`;
+
+const MobileStackGrid = styled.div`
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:8px;
+
+  @media(max-width:480px){
+    grid-template-columns:1fr;
+  }
+`;
 
 export default function Rider(){
 
@@ -1441,24 +1533,39 @@ useEffect(()=>{
 
   async function fetchMe(){
 
-    try{
+  try{
 
-      const res =
-        await API.get(
-          "/rider/me"
-        );
-
-      setUser(
-        res.data.user ||
-        res.data
+    const res =
+      await API.get(
+        "/rider/me"
       );
 
-    }catch(err){
+    const loggedUser =
+      res.data.user ||
+      res.data;
 
-      console.log(err);
-    }
+    setUser(
+      loggedUser
+    );
+
+    setSelectedProfileImage(
+      loggedUser.profileImage || ""
+    );
+
+    setProfileImage(
+      loggedUser.profileImage || riderImage
+    );
+
+    console.log(
+      "LOADED RIDER IMAGE:",
+      loggedUser.profileImage
+    );
+
+  }catch(err){
+
+    console.log(err);
   }
-
+}
 
   async function fetchOrders(){
 
@@ -1910,24 +2017,104 @@ async function acceptOrder(orderId){
   alt="Rider"
 />
 
- <div
+<label
+  htmlFor="riderProfileUpload"
   style={{
-    marginTop:"14px",
-    marginBottom:"40px"
-  }}
-></div>
-
-<div
-  style={{
-    marginTop:"10px"
+    display:"inline-flex",
+    alignItems:"center",
+    justifyContent:"center",
+    padding:"12px 18px",
+    borderRadius:"14px",
+    background:"#facc15",
+    color:"#0f172a",
+    fontWeight:"900",
+    cursor:"pointer",
+    marginTop:"10px",
+    marginBottom:"16px"
   }}
 >
+  Change Picture
+</label>
 
-  <input
-    type="file"
-  />
+<input
+  id="riderProfileUpload"
+  type="file"
+  accept="image/*"
+  style={{
+    display:"none"
+  }}
+  onChange={async(e)=>{
 
-</div>
+    try{
+
+      const file =
+        e.target.files[0];
+
+      if(!file){
+
+        return;
+      }
+
+      if(file.size > 5 * 1024 * 1024){
+
+        alert(
+          "Image is too large. Please choose an image below 5MB."
+        );
+
+        return;
+      }
+
+      const formData =
+        new FormData();
+
+      formData.append(
+        "profileImage",
+        file
+      );
+
+      const res =
+        await API.put(
+          "/rider/profile-image",
+          formData
+        );
+
+      setUser(
+        res.data.user
+      );
+
+      setSelectedProfileImage(
+        res.data.user.profileImage || ""
+      );
+
+      setProfileImage(
+        res.data.user.profileImage || riderImage
+      );
+
+      alert(
+        "Rider profile picture saved successfully"
+      );
+
+      e.target.value =
+        "";
+
+    }catch(err){
+
+      console.log(err);
+
+      alert(
+        err.response?.data?.message ||
+        "Rider profile picture upload failed"
+      );
+    }
+  }}
+/>
+
+ <div
+  style={{
+    marginTop:"8px",
+    marginBottom:"16px"
+  }}
+></div>
 
 <div
   style={{
@@ -2363,15 +2550,7 @@ async function acceptOrder(orderId){
 
 </StatsGrid>
 
-<div
-  style={{
-    display:"grid",
-    gridTemplateColumns:"1.3fr 0.8fr",
-    gap:"22px",
-    alignItems:"start",
-    marginBottom:"28px"
-  }}
->
+<ResponsiveTwoColumn>
 
   <OrderCard
     style={{
@@ -2625,7 +2804,7 @@ async function acceptOrder(orderId){
 
   </OrderCard>
 
-</div>
+</ResponsiveTwoColumn>
 
 {
 
@@ -2719,26 +2898,28 @@ async function acceptOrder(orderId){
           visibleOrders.map((o)=>(
 
             <OrderCard
-              key={o._id}
-              style={{
-                background:
-                  "linear-gradient(135deg, #ffffff, #f8fafc)",
-                border:"1px solid rgba(29,78,216,0.10)",
-                boxShadow:
-                  "0 12px 28px rgba(15,23,42,0.06)"
-              }}
-            >
+  key={o._id}
+  style={{
+    background:
+      "linear-gradient(135deg, #ffffff, #f8fafc)",
+    border:"1px solid rgba(29,78,216,0.10)",
+    boxShadow:
+      "0 8px 20px rgba(15,23,42,0.05)",
+    padding:"18px",
+    borderRadius:"22px"
+  }}
+>
 
               <div
-                style={{
-                  display:"flex",
-                  alignItems:"center",
-                  justifyContent:"space-between",
-                  gap:"12px",
-                  marginBottom:"16px",
-                  flexWrap:"wrap"
-                }}
-              >
+  style={{
+    display:"flex",
+    alignItems:"center",
+    justifyContent:"space-between",
+    gap:"10px",
+    marginBottom:"12px",
+    flexWrap:"wrap"
+  }}
+>
 
                 <div
                   style={{
@@ -2748,35 +2929,35 @@ async function acceptOrder(orderId){
                   }}
                 >
 
-                  <div
-                    style={{
-                      width:"44px",
-                      height:"44px",
-                      borderRadius:"16px",
-                      background:
-                        "linear-gradient(135deg, #0f172a, #1d4ed8)",
-                      color:"#facc15",
-                      display:"flex",
-                      alignItems:"center",
-                      justifyContent:"center",
-                      fontSize:"21px",
-                      fontWeight:"900"
-                    }}
-                  >
-                    📦
-                  </div>
+                 <div
+  style={{
+    width:"36px",
+    height:"36px",
+    borderRadius:"13px",
+    background:
+      "linear-gradient(135deg, #0f172a, #1d4ed8)",
+    color:"#facc15",
+    display:"flex",
+    alignItems:"center",
+    justifyContent:"center",
+    fontSize:"17px",
+    fontWeight:"900"
+  }}
+>
+  📦
+</div>
 
                   <div>
 
                     <div
-                      style={{
-                        fontWeight:"900",
-                        color:"#0f172a",
-                        fontSize:"17px"
-                      }}
-                    >
-                      Delivery Request
-                    </div>
+  style={{
+    fontWeight:"900",
+    color:"#0f172a",
+    fontSize:"15px"
+  }}
+>
+  Delivery Request
+</div>
 
                     <div
                       style={{
@@ -2808,7 +2989,7 @@ async function acceptOrder(orderId){
                   background:"#eff6ff",
                   border:"1px solid #dbeafe",
                   borderRadius:"14px",
-                  padding:"12px",
+                  padding:"9px 10px",
                   fontWeight:"800"
                 }}
               >
@@ -2826,7 +3007,7 @@ async function acceptOrder(orderId){
                   background:"#f8fafc",
                   border:"1px solid #e5e7eb",
                   borderRadius:"14px",
-                  padding:"12px"
+                  padding:"9px 10px",
                 }}
               >
                 <strong>
@@ -2849,77 +3030,7 @@ async function acceptOrder(orderId){
                 {o.dropoffLocation}
               </Row>
 
-              <div
-                style={{
-                  display:"grid",
-                  gridTemplateColumns:"1fr 1fr",
-                  gap:"10px",
-                  marginTop:"12px"
-                }}
-              >
-
-                <div
-                  style={{
-                    background:"#fefce8",
-                    border:"1px solid #fde68a",
-                    borderRadius:"14px",
-                    padding:"12px"
-                  }}
-                >
-                  <div
-                    style={{
-                      color:"#92400e",
-                      fontSize:"12px",
-                      fontWeight:"900",
-                      marginBottom:"5px"
-                    }}
-                  >
-                    Distance
-                  </div>
-
-                  <div
-                    style={{
-                      color:"#0f172a",
-                      fontSize:"18px",
-                      fontWeight:"900"
-                    }}
-                  >
-                    {o.distance} km
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #0f172a, #1d4ed8)",
-                    border:"1px solid rgba(250,204,21,0.28)",
-                    borderRadius:"14px",
-                    padding:"12px"
-                  }}
-                >
-                  <div
-                    style={{
-                      color:"rgba(255,255,255,0.82)",
-                      fontSize:"12px",
-                      fontWeight:"900",
-                      marginBottom:"5px"
-                    }}
-                  >
-                    Amount
-                  </div>
-
-                  <div
-                    style={{
-                      color:"#facc15",
-                      fontSize:"18px",
-                      fontWeight:"900"
-                    }}
-                  >
-                    ₵{o.total}
-                  </div>
-                </div>
-
-              </div>
+             {o.distance} km
 
               {
                 o.customer && (
@@ -3279,26 +3390,99 @@ user?.status !== "busy" && (
 
   </>
 )}
+
   {activeSection === "activeDeliveries" && (
   <>
 
-    <Hero>
-      <div>
+    <DashboardHero
+      style={{
+        padding:"20px 24px",
+        borderRadius:"24px",
+        marginBottom:"20px"
+      }}
+    >
 
-        <HeroTitle>
-          Active Deliveries 📦
-        </HeroTitle>
+      <DashboardHeroContent
+        style={{
+          minHeight:"140px"
+        }}
+      >
 
-        <HeroText>
-          Your Current Assigned Deliveries.
-        </HeroText>
+        <div>
 
-      </div>
-    </Hero>
+          <HeroBadge
+            style={{
+              padding:"8px 16px",
+              fontSize:"13px",
+              marginBottom:"14px"
+            }}
+          >
+            🚚 Active Rider Jobs
+          </HeroBadge>
+
+          <DashboardHeroTitle
+            style={{
+              fontSize:"30px",
+              marginBottom:"10px"
+            }}
+          >
+            Active Deliveries
+          </DashboardHeroTitle>
+
+          <DashboardHeroText
+            style={{
+              fontSize:"15px",
+              maxWidth:"600px"
+            }}
+          >
+            Track your assigned deliveries, pickup progress, dropoff route, and delivery status in one clean view.
+          </DashboardHeroText>
+
+        </div>
+
+        <DashboardDateCard
+          style={{
+            minWidth:"240px",
+            padding:"16px 18px",
+            borderRadius:"20px"
+          }}
+        >
+
+          <div>
+            Active Jobs
+          </div>
+
+          <strong
+            style={{
+              fontSize:"34px"
+            }}
+          >
+            {activeOrders.length}
+          </strong>
+
+          <span>
+            Deliveries currently assigned to you.
+          </span>
+
+        </DashboardDateCard>
+
+      </DashboardHeroContent>
+
+    </DashboardHero>
 
     {activeOrders.length === 0 ? (
 
-      <Empty>
+      <Empty
+        style={{
+          background:
+            "linear-gradient(135deg, #ffffff, #f8fafc)",
+          border:"1px solid rgba(29,78,216,0.10)",
+          boxShadow:
+            "0 10px 24px rgba(15,23,42,0.06)",
+          fontWeight:"800",
+          color:"#0f172a"
+        }}
+      >
         No active deliveries right now.
       </Empty>
 
@@ -3308,51 +3492,290 @@ user?.status !== "busy" && (
 
         {activeOrders.map((order) => (
 
-          <OrderCard key={order._id}>
+          <OrderCard
+            key={order._id}
+            style={{
+              background:
+                "linear-gradient(135deg, #ffffff, #f8fafc)",
+              border:"1px solid rgba(29,78,216,0.10)",
+              boxShadow:
+                "0 8px 20px rgba(15,23,42,0.05)",
+              padding:"18px",
+              borderRadius:"22px"
+            }}
+          >
 
-            <Row>
-  <strong>Customer:</strong>
-  {" "}
-  {
-    order.customer?.name ||
-    "Unknown Customer"
-  }
-</Row>
-
-<Row>
-  <strong>Pickup:</strong>
-  {" "}
-  {
-    order.pickupLocation
-  }
-</Row>
-
-<Row>
-  <strong>Dropoff:</strong>
-  {" "}
-  {
-    order.dropoffLocation
-  }
-</Row>
-
-<Row>
-  <strong>Distance:</strong>
-  {" "}
-  {
-    order.distance
-  } km
-</Row>
-
-<Row>
-  <strong>Amount:</strong>
-  {" "}
-  ₵{order.total}
-</Row>
-            <StatusBadge
-              status={order.status}
+            <div
+              style={{
+                display:"flex",
+                alignItems:"center",
+                justifyContent:"space-between",
+                gap:"10px",
+                marginBottom:"12px",
+                flexWrap:"wrap"
+              }}
             >
-              {order.status}
-            </StatusBadge>
+
+              <div
+                style={{
+                  display:"flex",
+                  alignItems:"center",
+                  gap:"10px"
+                }}
+              >
+
+                <div
+                  style={{
+                    width:"36px",
+                    height:"36px",
+                    borderRadius:"13px",
+                    background:
+                      "linear-gradient(135deg, #0f172a, #1d4ed8)",
+                    color:"#facc15",
+                    display:"flex",
+                    alignItems:"center",
+                    justifyContent:"center",
+                    fontSize:"17px",
+                    fontWeight:"900"
+                  }}
+                >
+                  🛵
+                </div>
+
+                <div>
+
+                  <div
+                    style={{
+                      fontWeight:"900",
+                      color:"#0f172a",
+                      fontSize:"15px"
+                    }}
+                  >
+                    Current Delivery
+                  </div>
+
+                  <div
+                    style={{
+                      fontSize:"12px",
+                      fontWeight:"800",
+                      color:"#64748b"
+                    }}
+                  >
+                    Order ID: {String(order._id).slice(-6)}
+                  </div>
+
+                </div>
+
+              </div>
+
+              <StatusBadge
+                status={order.status}
+                style={{
+                  marginTop:"0",
+                  padding:"8px 12px",
+                  fontSize:"12px"
+                }}
+              >
+                {order.status}
+              </StatusBadge>
+
+            </div>
+
+            <Row
+              style={{
+                background:"#eff6ff",
+                border:"1px solid #dbeafe",
+                borderRadius:"14px",
+                padding:"9px 10px",
+                fontWeight:"800"
+              }}
+            >
+              <strong style={{color:"#1d4ed8"}}>
+                Customer:
+              </strong>
+              {" "}
+              {
+                order.customer?.name ||
+                "Unknown Customer"
+              }
+            </Row>
+
+            <Row
+              style={{
+                background:"#f8fafc",
+                border:"1px solid #e5e7eb",
+                borderRadius:"14px",
+                padding:"9px 10px"
+              }}
+            >
+              <strong>
+                Pickup:
+              </strong>
+              {" "}
+              {order.pickupLocation}
+            </Row>
+
+            <Row
+              style={{
+                background:"#f8fafc",
+                border:"1px solid #e5e7eb",
+                borderRadius:"14px",
+                padding:"9px 10px"
+              }}
+            >
+              <strong>
+                Dropoff:
+              </strong>
+              {" "}
+              {order.dropoffLocation}
+            </Row>
+
+           <MobileStackGrid>
+
+  <div
+    style={{
+      background:"#fefce8",
+      border:"1px solid #fde68a",
+      borderRadius:"14px",
+      padding:"9px 10px"
+    }}
+  >
+
+    <div
+      style={{
+        color:"#92400e",
+        fontSize:"12px",
+        fontWeight:"900",
+        marginBottom:"5px"
+      }}
+    >
+      Distance
+    </div>
+
+    <div
+      style={{
+        color:"#0f172a",
+        fontSize:"15px",
+        fontWeight:"900"
+      }}
+    >
+      {order.distance} km
+    </div>
+
+  </div>
+
+  <div
+    style={{
+      background:
+        "linear-gradient(135deg, #0f172a, #1d4ed8)",
+      border:"1px solid rgba(250,204,21,0.28)",
+      borderRadius:"14px",
+      padding:"9px 10px"
+    }}
+  >
+
+    <div
+      style={{
+        color:"rgba(255,255,255,0.82)",
+        fontSize:"12px",
+        fontWeight:"900",
+        marginBottom:"5px"
+      }}
+    >
+      Amount
+    </div>
+
+    <div
+      style={{
+        color:"#facc15",
+        fontSize:"15px",
+        fontWeight:"900"
+      }}
+    >
+      ₵{order.total}
+    </div>
+
+  </div>
+
+</MobileStackGrid>
+
+            {
+              order.status === "accepted" && (
+
+                <ButtonRow>
+
+                  <Button
+                    onClick={()=>
+
+                      pickupOrder(
+                        order._id
+                      )
+                    }
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #0f172a, #1d4ed8)",
+                      color:"#facc15",
+                      fontWeight:"900"
+                    }}
+                  >
+                    Item Picked
+                  </Button>
+
+                </ButtonRow>
+              )
+            }
+
+            {
+              order.status === "picked" && (
+
+                <ButtonRow>
+
+                  <Button
+                    onClick={()=>
+
+                      startDelivery(
+                        order._id
+                      )
+                    }
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #7c3aed, #6d28d9)",
+                      color:"white",
+                      fontWeight:"900"
+                    }}
+                  >
+                    Start Delivery
+                  </Button>
+
+                </ButtonRow>
+              )
+            }
+
+            {
+              order.status === "delivering" && (
+
+                <ButtonRow>
+
+                  <Button
+                    onClick={()=>
+
+                      completeDelivery(
+                        order._id
+                      )
+                    }
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #16a34a, #22c55e)",
+                      color:"white",
+                      fontWeight:"900"
+                    }}
+                  >
+                    Delivered
+                  </Button>
+
+                </ButtonRow>
+              )
+            }
 
           </OrderCard>
 
@@ -3368,43 +3791,490 @@ user?.status !== "busy" && (
 {activeSection === "earnings" && (
   <>
 
-    <Hero>
-      <div>
+    <DashboardHero
+      style={{
+        padding:"20px 24px",
+        borderRadius:"24px",
+        marginBottom:"20px"
+      }}
+    >
 
-        <HeroTitle>
-          Earnings 💰
-        </HeroTitle>
+      <DashboardHeroContent
+        style={{
+          minHeight:"140px"
+        }}
+      >
 
-        <HeroText>
-          Track your delivery income and completed jobs.
-        </HeroText>
+        <div>
 
-      </div>
-    </Hero>
+          <HeroBadge
+            style={{
+              padding:"8px 16px",
+              fontSize:"13px",
+              marginBottom:"14px"
+            }}
+          >
+            💰 Rider Earnings
+          </HeroBadge>
+
+          <DashboardHeroTitle
+            style={{
+              fontSize:"30px",
+              marginBottom:"10px"
+            }}
+          >
+            Earnings Overview
+          </DashboardHeroTitle>
+
+          <DashboardHeroText
+            style={{
+              fontSize:"15px",
+              maxWidth:"600px"
+            }}
+          >
+            Track your completed deliveries, total income, and estimated average earning per delivery.
+          </DashboardHeroText>
+
+        </div>
+
+        <DashboardDateCard
+          style={{
+            minWidth:"240px",
+            padding:"16px 18px",
+            borderRadius:"20px"
+          }}
+        >
+
+          <div>
+            Total Earned
+          </div>
+
+          <strong
+            style={{
+              fontSize:"34px"
+            }}
+          >
+            ₵{earnings}
+          </strong>
+
+          <span>
+            From completed deliveries.
+          </span>
+
+        </DashboardDateCard>
+
+      </DashboardHeroContent>
+
+    </DashboardHero>
 
     <StatsGrid>
 
-      <StatCard>
-        <StatTitle>
+      <div
+        style={{
+          background:
+            "linear-gradient(135deg, #0f172a, #1d4ed8)",
+          padding:"18px",
+          borderRadius:"22px",
+          color:"white",
+          border:"1px solid rgba(250,204,21,0.28)",
+          boxShadow:
+            "0 10px 24px rgba(29,78,216,0.16)"
+        }}
+      >
+
+        <div
+          style={{
+            width:"38px",
+            height:"38px",
+            borderRadius:"14px",
+            background:"#facc15",
+            color:"#0f172a",
+            display:"flex",
+            alignItems:"center",
+            justifyContent:"center",
+            fontSize:"18px",
+            fontWeight:"900",
+            marginBottom:"14px"
+          }}
+        >
+          ₵
+        </div>
+
+        <div
+          style={{
+            fontSize:"13px",
+            fontWeight:"900",
+            color:"rgba(255,255,255,0.80)",
+            textTransform:"uppercase",
+            letterSpacing:"0.5px"
+          }}
+        >
           Total Earnings
-        </StatTitle>
+        </div>
 
-        <StatValue>
+        <div
+          style={{
+            fontSize:"32px",
+            fontWeight:"900",
+            color:"#facc15",
+            marginTop:"8px"
+          }}
+        >
           ₵{earnings}
-        </StatValue>
-      </StatCard>
+        </div>
 
-      <StatCard>
-        <StatTitle>
+        <div
+          style={{
+            fontSize:"13px",
+            color:"rgba(255,255,255,0.76)",
+            fontWeight:"700",
+            marginTop:"6px"
+          }}
+        >
+          Money earned from delivered orders.
+        </div>
+
+      </div>
+
+      <div
+        style={{
+          background:
+            "linear-gradient(135deg, #facc15, #f59e0b)",
+          padding:"18px",
+          borderRadius:"22px",
+          color:"#0f172a",
+          border:"1px solid rgba(15,23,42,0.12)",
+          boxShadow:
+            "0 10px 24px rgba(250,204,21,0.22)"
+        }}
+      >
+
+        <div
+          style={{
+            width:"38px",
+            height:"38px",
+            borderRadius:"14px",
+            background:"#0f172a",
+            color:"#facc15",
+            display:"flex",
+            alignItems:"center",
+            justifyContent:"center",
+            fontSize:"18px",
+            fontWeight:"900",
+            marginBottom:"14px"
+          }}
+        >
+          ✅
+        </div>
+
+        <div
+          style={{
+            fontSize:"13px",
+            fontWeight:"900",
+            color:"#0f172a",
+            textTransform:"uppercase",
+            letterSpacing:"0.5px"
+          }}
+        >
           Completed Orders
-        </StatTitle>
+        </div>
 
-        <StatValue>
+        <div
+          style={{
+            fontSize:"32px",
+            fontWeight:"900",
+            color:"#0f172a",
+            marginTop:"8px"
+          }}
+        >
           {completedOrders.length}
-        </StatValue>
-      </StatCard>
+        </div>
+
+        <div
+          style={{
+            fontSize:"13px",
+            color:"#334155",
+            fontWeight:"800",
+            marginTop:"6px"
+          }}
+        >
+          Total deliveries completed by you.
+        </div>
+
+      </div>
+
+      <div
+        style={{
+          background:
+            "linear-gradient(135deg, #ffffff, #f8fafc)",
+          padding:"18px",
+          borderRadius:"22px",
+          color:"#0f172a",
+          border:"1px solid rgba(29,78,216,0.10)",
+          boxShadow:
+            "0 10px 24px rgba(15,23,42,0.06)"
+        }}
+      >
+
+        <div
+          style={{
+            width:"38px",
+            height:"38px",
+            borderRadius:"14px",
+            background:
+              "linear-gradient(135deg, #0f172a, #1d4ed8)",
+            color:"#facc15",
+            display:"flex",
+            alignItems:"center",
+            justifyContent:"center",
+            fontSize:"18px",
+            fontWeight:"900",
+            marginBottom:"14px"
+          }}
+        >
+          📊
+        </div>
+
+        <div
+          style={{
+            fontSize:"13px",
+            fontWeight:"900",
+            color:"#64748b",
+            textTransform:"uppercase",
+            letterSpacing:"0.5px"
+          }}
+        >
+          Average Per Delivery
+        </div>
+
+        <div
+          style={{
+            fontSize:"32px",
+            fontWeight:"900",
+            color:"#0f172a",
+            marginTop:"8px"
+          }}
+        >
+          ₵{
+            completedOrders.length > 0
+            ? Math.round(
+                earnings / completedOrders.length
+              )
+            : 0
+          }
+        </div>
+
+        <div
+          style={{
+            fontSize:"13px",
+            color:"#64748b",
+            fontWeight:"700",
+            marginTop:"6px"
+          }}
+        >
+          Estimated average income per completed order.
+        </div>
+
+      </div>
 
     </StatsGrid>
+
+    <OrderCard
+      style={{
+        background:
+          "linear-gradient(135deg, #ffffff, #f8fafc)",
+        border:"1px solid rgba(29,78,216,0.10)",
+        boxShadow:
+          "0 10px 24px rgba(15,23,42,0.06)",
+        padding:"20px",
+        borderRadius:"24px"
+      }}
+    >
+
+      <div
+        style={{
+          display:"flex",
+          alignItems:"center",
+          justifyContent:"space-between",
+          gap:"12px",
+          flexWrap:"wrap",
+          marginBottom:"16px"
+        }}
+      >
+
+        <div>
+
+          <div
+            style={{
+              fontSize:"22px",
+              fontWeight:"900",
+              color:"#0f172a"
+            }}
+          >
+            Completed Delivery History
+          </div>
+
+          <div
+            style={{
+              fontSize:"14px",
+              color:"#64748b",
+              fontWeight:"700",
+              marginTop:"4px"
+            }}
+          >
+            Your delivered orders and earnings breakdown.
+          </div>
+
+        </div>
+
+        <div
+          style={{
+            padding:"8px 14px",
+            borderRadius:"999px",
+            background:"#fef3c7",
+            color:"#92400e",
+            fontWeight:"900",
+            fontSize:"12px"
+          }}
+        >
+          {completedOrders.length} completed
+        </div>
+
+      </div>
+
+      {
+        completedOrders.length === 0 ? (
+
+          <Empty
+            style={{
+              boxShadow:"none",
+              border:"1px dashed #cbd5e1",
+              background:"#f8fafc",
+              fontWeight:"800",
+              color:"#64748b"
+            }}
+          >
+            No completed deliveries yet.
+          </Empty>
+
+        ) : (
+
+          <div
+            style={{
+              display:"grid",
+              gap:"10px"
+            }}
+          >
+
+            {
+              completedOrders.map((order)=>(
+
+                <div
+                  key={order._id}
+                  style={{
+                    display:"grid",
+                    gridTemplateColumns:"1.2fr 1.2fr 0.6fr",
+                    gap:"10px",
+                    alignItems:"center",
+                    background:"#f8fafc",
+                    border:"1px solid #e5e7eb",
+                    borderRadius:"16px",
+                    padding:"12px"
+                  }}
+                >
+
+                  <div>
+
+                    <div
+                      style={{
+                        fontSize:"12px",
+                        color:"#64748b",
+                        fontWeight:"900",
+                        marginBottom:"4px"
+                      }}
+                    >
+                      CUSTOMER
+                    </div>
+
+                    <div
+                      style={{
+                        color:"#0f172a",
+                        fontWeight:"900",
+                        fontSize:"14px"
+                      }}
+                    >
+                      {
+                        order.customer?.name ||
+                        "Unknown Customer"
+                      }
+                    </div>
+
+                  </div>
+
+                  <div>
+
+                    <div
+                      style={{
+                        fontSize:"12px",
+                        color:"#64748b",
+                        fontWeight:"900",
+                        marginBottom:"4px"
+                      }}
+                    >
+                      ROUTE
+                    </div>
+
+                    <div
+                      style={{
+                        color:"#0f172a",
+                        fontWeight:"800",
+                        fontSize:"13px",
+                        lineHeight:"1.4"
+                      }}
+                    >
+                      {order.pickupLocation} → {order.dropoffLocation}
+                    </div>
+
+                  </div>
+
+                  <div
+                    style={{
+                      textAlign:"right"
+                    }}
+                  >
+
+                    <div
+                      style={{
+                        fontSize:"12px",
+                        color:"#64748b",
+                        fontWeight:"900",
+                        marginBottom:"4px"
+                      }}
+                    >
+                      AMOUNT
+                    </div>
+
+                    <div
+                      style={{
+                        color:"#16a34a",
+                        fontWeight:"900",
+                        fontSize:"16px"
+                      }}
+                    >
+                      ₵{order.total}
+                    </div>
+
+                  </div>
+
+                </div>
+              ))
+            }
+
+          </div>
+        )
+      }
+
+    </OrderCard>
 
   </>
 )}
@@ -3412,62 +4282,277 @@ user?.status !== "busy" && (
 {activeSection === "messages" && (
   <>
 
-    <Hero>
-      <div>
+    <DashboardHero
+      style={{
+        padding:"20px 24px",
+        borderRadius:"24px",
+        marginBottom:"20px"
+      }}
+    >
 
-        <HeroTitle>
-          Messages 💬
-        </HeroTitle>
+      <DashboardHeroContent
+        style={{
+          minHeight:"140px"
+        }}
+      >
 
-        <HeroText>
-          Customer messages from your deliveries.
-        </HeroText>
+        <div>
+
+          <HeroBadge
+            style={{
+              padding:"8px 16px",
+              fontSize:"13px",
+              marginBottom:"14px"
+            }}
+          >
+            💬 Rider Messages
+          </HeroBadge>
+
+          <DashboardHeroTitle
+            style={{
+              fontSize:"30px",
+              marginBottom:"10px"
+            }}
+          >
+            Customer Messages
+          </DashboardHeroTitle>
+
+          <DashboardHeroText
+            style={{
+              fontSize:"15px",
+              maxWidth:"600px"
+            }}
+          >
+            View customer messages from delivery orders and respond quickly from your active delivery cards.
+          </DashboardHeroText>
+
+        </div>
+
+        <DashboardDateCard
+          style={{
+            minWidth:"240px",
+            padding:"16px 18px",
+            borderRadius:"20px"
+          }}
+        >
+
+          <div>
+            Inbox
+          </div>
+
+          <strong
+            style={{
+              fontSize:"34px"
+            }}
+          >
+            {messageInbox.length}
+          </strong>
+
+          <span>
+            Customer messages received.
+          </span>
+
+        </DashboardDateCard>
+
+      </DashboardHeroContent>
+
+    </DashboardHero>
+
+    <OrderCard
+      style={{
+        background:
+          "linear-gradient(135deg, #ffffff, #f8fafc)",
+        border:"1px solid rgba(29,78,216,0.10)",
+        boxShadow:
+          "0 10px 24px rgba(15,23,42,0.06)",
+        padding:"20px",
+        borderRadius:"24px"
+      }}
+    >
+
+      <div
+        style={{
+          display:"flex",
+          alignItems:"center",
+          justifyContent:"space-between",
+          gap:"12px",
+          flexWrap:"wrap",
+          marginBottom:"16px"
+        }}
+      >
+
+        <div>
+
+          <div
+            style={{
+              fontSize:"22px",
+              fontWeight:"900",
+              color:"#0f172a"
+            }}
+          >
+            Message Inbox
+          </div>
+
+          <div
+            style={{
+              fontSize:"14px",
+              color:"#64748b",
+              fontWeight:"700",
+              marginTop:"4px"
+            }}
+          >
+            Latest customer messages connected to delivery orders.
+          </div>
+
+        </div>
+
+        <div
+          style={{
+            padding:"8px 14px",
+            borderRadius:"999px",
+            background:"#eff6ff",
+            color:"#1d4ed8",
+            fontWeight:"900",
+            fontSize:"12px"
+          }}
+        >
+          {messageInbox.length} messages
+        </div>
 
       </div>
-    </Hero>
 
-    {messageInbox.length === 0 ? (
+      {messageInbox.length === 0 ? (
 
-      <Empty>
-        No messages yet.
-      </Empty>
+        <Empty
+          style={{
+            boxShadow:"none",
+            border:"1px dashed #cbd5e1",
+            background:"#f8fafc",
+            fontWeight:"800",
+            color:"#64748b"
+          }}
+        >
+          No messages yet.
+        </Empty>
 
-    ) : (
+      ) : (
 
-      <OrdersGrid>
+        <div
+          style={{
+            display:"grid",
+            gap:"10px"
+          }}
+        >
 
-        {messageInbox.map(
-          (msg,index) => (
+          {messageInbox.map(
+            (msg,index) => (
 
-            <OrderCard key={index}>
+              <div
+                key={index}
+                style={{
+                  display:"grid",
+                  gridTemplateColumns:"44px 1fr auto",
+                  gap:"12px",
+                  alignItems:"center",
+                  background:"#f8fafc",
+                  border:"1px solid #e5e7eb",
+                  borderRadius:"16px",
+                  padding:"12px"
+                }}
+              >
 
-              <Row>
-                <strong>
-                  From:
-                </strong>
-                {" "}
-                {
-                  msg.sender === "customer"
-                  ? "Customer"
-                  : msg.sender
-                }
-              </Row>
+                <div
+                  style={{
+                    width:"44px",
+                    height:"44px",
+                    borderRadius:"16px",
+                    background:
+                      "linear-gradient(135deg, #0f172a, #1d4ed8)",
+                    color:"#facc15",
+                    display:"flex",
+                    alignItems:"center",
+                    justifyContent:"center",
+                    fontSize:"18px",
+                    fontWeight:"900"
+                  }}
+                >
+                  💬
+                </div>
 
-              <Row>
-                {msg.text}
-              </Row>
+                <div>
 
-              <StatusBadge>
-                {msg.time}
-              </StatusBadge>
+                  <div
+                    style={{
+                      display:"flex",
+                      alignItems:"center",
+                      gap:"8px",
+                      flexWrap:"wrap",
+                      marginBottom:"5px"
+                    }}
+                  >
 
-            </OrderCard>
-          )
-        )}
+                    <div
+                      style={{
+                        fontSize:"14px",
+                        fontWeight:"900",
+                        color:"#0f172a"
+                      }}
+                    >
+                      {
+                        msg.sender === "customer"
+                        ? "Customer"
+                        : msg.sender || "MonniDrop"
+                      }
+                    </div>
 
-      </OrdersGrid>
+                    <div
+                      style={{
+                        padding:"4px 8px",
+                        borderRadius:"999px",
+                        background:"#fef3c7",
+                        color:"#92400e",
+                        fontSize:"11px",
+                        fontWeight:"900"
+                      }}
+                    >
+                      Order {String(msg.orderId || "").slice(-6)}
+                    </div>
 
-    )}
+                  </div>
+
+                  <div
+                    style={{
+                      fontSize:"14px",
+                      color:"#334155",
+                      fontWeight:"700",
+                      lineHeight:"1.45"
+                    }}
+                  >
+                    {msg.text}
+                  </div>
+
+                </div>
+
+                <div
+                  style={{
+                    textAlign:"right",
+                    color:"#64748b",
+                    fontSize:"12px",
+                    fontWeight:"900",
+                    whiteSpace:"nowrap"
+                  }}
+                >
+                  {msg.time}
+                </div>
+
+              </div>
+            )
+          )}
+
+        </div>
+      )}
+
+    </OrderCard>
 
   </>
 )}
@@ -3475,300 +4560,496 @@ user?.status !== "busy" && (
 {activeSection === "notifications" && (
   <>
 
-    <Hero>
-      <div>
+    <DashboardHero
+      style={{
+        padding:"20px 24px",
+        borderRadius:"24px",
+        marginBottom:"20px"
+      }}
+    >
 
-        <HeroTitle>
-          Notifications 🔔
-        </HeroTitle>
+      <DashboardHeroContent
+        style={{
+          minHeight:"140px"
+        }}
+      >
 
-        <HeroText>
-          Stay updated with delivery alerts and messages.
-        </HeroText>
+        <div>
+
+          <HeroBadge
+            style={{
+              padding:"8px 16px",
+              fontSize:"13px",
+              marginBottom:"14px"
+            }}
+          >
+            🔔 Rider Alerts
+          </HeroBadge>
+
+          <DashboardHeroTitle
+            style={{
+              fontSize:"30px",
+              marginBottom:"10px"
+            }}
+          >
+            Notifications
+          </DashboardHeroTitle>
+
+          <DashboardHeroText
+            style={{
+              fontSize:"15px",
+              maxWidth:"600px"
+            }}
+          >
+            Stay updated with delivery alerts, customer activity, order changes, and important rider updates.
+          </DashboardHeroText>
+
+        </div>
+
+        <DashboardDateCard
+          style={{
+            minWidth:"240px",
+            padding:"16px 18px",
+            borderRadius:"20px"
+          }}
+        >
+
+          <div>
+            Alerts
+          </div>
+
+          <strong
+            style={{
+              fontSize:"34px"
+            }}
+          >
+            {notifications.length}
+          </strong>
+
+          <span>
+            New rider notifications.
+          </span>
+
+        </DashboardDateCard>
+
+      </DashboardHeroContent>
+
+    </DashboardHero>
+
+    <OrderCard
+      style={{
+        background:
+          "linear-gradient(135deg, #ffffff, #f8fafc)",
+        border:"1px solid rgba(29,78,216,0.10)",
+        boxShadow:
+          "0 10px 24px rgba(15,23,42,0.06)",
+        padding:"20px",
+        borderRadius:"24px"
+      }}
+    >
+
+      <div
+        style={{
+          display:"flex",
+          alignItems:"center",
+          justifyContent:"space-between",
+          gap:"12px",
+          flexWrap:"wrap",
+          marginBottom:"16px"
+        }}
+      >
+
+        <div>
+
+          <div
+            style={{
+              fontSize:"22px",
+              fontWeight:"900",
+              color:"#0f172a"
+            }}
+          >
+            Notification Center
+          </div>
+
+          <div
+            style={{
+              fontSize:"14px",
+              color:"#64748b",
+              fontWeight:"700",
+              marginTop:"4px"
+            }}
+          >
+            Latest alerts and system messages for your rider account.
+          </div>
+
+        </div>
+
+        <div
+          style={{
+            padding:"8px 14px",
+            borderRadius:"999px",
+            background:"#fef3c7",
+            color:"#92400e",
+            fontWeight:"900",
+            fontSize:"12px"
+          }}
+        >
+          {notifications.length} alerts
+        </div>
 
       </div>
-    </Hero>
 
-    {notifications.length === 0 ? (
+      {notifications.length === 0 ? (
 
-      <Empty>
-        No new notifications yet.
-      </Empty>
+        <Empty
+          style={{
+            boxShadow:"none",
+            border:"1px dashed #cbd5e1",
+            background:"#f8fafc",
+            fontWeight:"800",
+            color:"#64748b"
+          }}
+        >
+          No new notifications yet.
+        </Empty>
 
-    ) : (
+      ) : (
 
-      <OrdersGrid>
+        <div
+          style={{
+            display:"grid",
+            gap:"10px"
+          }}
+        >
 
-        {notifications.map(
-          (note, index) => (
+          {notifications.map(
+            (note,index) => (
 
-            <OrderCard key={index}>
-
-              <Row>
-                <strong>
-                  {note.sender}
-                </strong>
-              </Row>
-
-              <Row>
-                {note.text}
-              </Row>
-
-              <StatusBadge
-                status="delivered"
+              <div
+                key={index}
+                style={{
+                  display:"grid",
+                  gridTemplateColumns:"44px 1fr auto",
+                  gap:"12px",
+                  alignItems:"center",
+                  background:"#f8fafc",
+                  border:"1px solid #e5e7eb",
+                  borderRadius:"16px",
+                  padding:"12px"
+                }}
               >
-                {note.time}
-              </StatusBadge>
 
-            </OrderCard>
-          )
-        )}
+                <div
+                  style={{
+                    width:"44px",
+                    height:"44px",
+                    borderRadius:"16px",
+                    background:
+                      "linear-gradient(135deg, #facc15, #f59e0b)",
+                    color:"#0f172a",
+                    display:"flex",
+                    alignItems:"center",
+                    justifyContent:"center",
+                    fontSize:"18px",
+                    fontWeight:"900"
+                  }}
+                >
+                  🔔
+                </div>
 
-      </OrdersGrid>
+                <div>
 
-    )}
+                  <div
+                    style={{
+                      display:"flex",
+                      alignItems:"center",
+                      gap:"8px",
+                      flexWrap:"wrap",
+                      marginBottom:"5px"
+                    }}
+                  >
+
+                    <div
+                      style={{
+                        fontSize:"14px",
+                        fontWeight:"900",
+                        color:"#0f172a"
+                      }}
+                    >
+                      {note.sender || "MonniDrop"}
+                    </div>
+
+                    <div
+                      style={{
+                        padding:"4px 8px",
+                        borderRadius:"999px",
+                        background:"#eff6ff",
+                        color:"#1d4ed8",
+                        fontSize:"11px",
+                        fontWeight:"900"
+                      }}
+                    >
+                      Alert
+                    </div>
+
+                  </div>
+
+                  <div
+                    style={{
+                      fontSize:"14px",
+                      color:"#334155",
+                      fontWeight:"700",
+                      lineHeight:"1.45"
+                    }}
+                  >
+                    {note.text}
+                  </div>
+
+                </div>
+
+                <div
+                  style={{
+                    textAlign:"right",
+                    color:"#64748b",
+                    fontSize:"12px",
+                    fontWeight:"900",
+                    whiteSpace:"nowrap"
+                  }}
+                >
+                  {note.time}
+                </div>
+
+              </div>
+            )
+          )}
+
+        </div>
+      )}
+
+    </OrderCard>
 
   </>
 )}
 
 {activeSection === "profile" && (
+  <>
 
-  <OrderCard
-    style={{
-      maxWidth:"1000px",
-      margin:"0 auto",
-      padding:"44px 42px",
-      borderRadius:"30px",
-      minHeight:"620px"
-    }}
-  >
-
-    <ProfileImage
-      src={
-        selectedProfileImage ||
-        riderImage
-      }
-
-      
-      alt="Rider"
+    <DashboardHero
       style={{
-        width:"150px",
-        height:"150px",
-        border:"8px solid #facc15",
-        marginBottom:"28px"
-      }}
-      
-    />
-     <input
-     type="file"
-    accept="image/*"
-    onChange={(e)=>{
-      const file = e.target.files[0];
-
-       if(file){
-         setSelectedProfileImage(
-      URL.createObjectURL(file)
-     );
-    }
-    }}
-    />
-
-    <HeroTitle
-  style={{
-    fontSize:"42px",
-    marginBottom:"10px"
-  }}
->
-  Rider Profile
-</HeroTitle>
-
-<Button
-  style={{
-    width:"140px",
-    padding:"10px",
-    fontSize:"14px",
-    borderRadius:"12px",
-    marginBottom:"20px",
-    background:"#2563eb"
-  }}
-
-  onClick={async()=>{
-
-    if(riderProfileEditing){
-
-      try{
-
-        const res =
-          await API.put(
-            "/rider/profile",
-           {
-        dob:riderDOB,
-        emergencyContact:riderEmergency,
-        motorNumber:motorNumber
-         }
-          );
-
-        setUser(
-          res.data.user
-        );
-
-        alert(
-          "Profile saved successfully"
-        );
-
-        setRiderProfileEditing(false);
-
-      }catch(err){
-
-        console.log(err);
-
-        alert(
-          err.response?.data?.message ||
-          "Failed to save profile"
-        );
-      }
-
-    }else{
-
-      setRiderProfileEditing(true);
-    }
-  }}
->
-  {
-    riderProfileEditing
-    ? "Save Profile"
-    : "Edit Profile"
-  }
-</Button>
-
-
-    <HeroText
-      style={{
-        fontSize:"20px",
-        marginBottom:"50px"
+        padding:"20px 24px",
+        borderRadius:"24px",
+        marginBottom:"20px"
       }}
     >
-      View and manage your rider information.
-    </HeroText>
+
+      <DashboardHeroContent
+        style={{
+          minHeight:"140px"
+        }}
+      >
+
+        <div>
+
+          <HeroBadge
+            style={{
+              padding:"8px 16px",
+              fontSize:"13px",
+              marginBottom:"14px"
+            }}
+          >
+            👤 Rider Profile
+          </HeroBadge>
+
+          <DashboardHeroTitle
+            style={{
+              fontSize:"30px",
+              marginBottom:"10px"
+            }}
+          >
+            Manage Your Profile
+          </DashboardHeroTitle>
+
+          <DashboardHeroText
+            style={{
+              fontSize:"15px",
+              maxWidth:"600px"
+            }}
+          >
+            Keep your rider details updated, manage emergency contact information, and control your availability.
+          </DashboardHeroText>
+
+        </div>
+
+        <DashboardDateCard
+          style={{
+            minWidth:"240px",
+            padding:"16px 18px",
+            borderRadius:"20px"
+          }}
+        >
+
+          <div>
+            Status
+          </div>
+
+          <strong
+            style={{
+              fontSize:"30px"
+            }}
+          >
+            {
+              getRiderDisplayStatus() === "busy"
+              ? "Busy"
+              : getRiderDisplayStatus() === "offline"
+              ? "Off"
+              : getRiderDisplayStatus() === "suspended"
+              ? "Stop"
+              : "Live"
+            }
+          </strong>
+
+          <span>
+            Current rider availability.
+          </span>
+
+        </DashboardDateCard>
+
+      </DashboardHeroContent>
+
+    </DashboardHero>
 
     <div
       style={{
         display:"grid",
-        gridTemplateColumns:"1fr 1fr",
-        gap:"40px",
-        width:"100%"
+        gridTemplateColumns:"0.8fr 1.2fr",
+        gap:"22px",
+        alignItems:"start"
       }}
     >
 
-      <div>
+      <OrderCard
+        style={{
+          background:
+            "linear-gradient(135deg, #0f172a, #1d4ed8)",
+          color:"white",
+          border:"1px solid rgba(250,204,21,0.28)",
+          boxShadow:
+            "0 10px 24px rgba(29,78,216,0.18)",
+          padding:"22px",
+          borderRadius:"24px",
+          textAlign:"center"
+        }}
+      >
 
-        <Row style={{fontSize:"20px",marginBottom:"24px"}}>
-
-          <strong>Name:</strong>
-           {user?.name || "Rider"}
-        </Row>
-
-        <Row style={{fontSize:"20px",marginBottom:"24px"}}>
-
-          <strong>Email:</strong> 
-          {user?.email || "No email"}
-        </Row>
-
-        <Row style={{fontSize:"20px",marginBottom:"24px"}}>
-          <strong>Phone:</strong> {user?.phone || "No phone"}
-        </Row>
-
-        <Row style={{fontSize:"20px",marginBottom:"40px"}}>
-          <strong>Status:</strong>{" "}
-          {
-            riderAvailability === "online"
-            ? "Online 🟢"
-            : "Offline 🔴"
+        <ProfileImage
+          src={
+            selectedProfileImage ||
+            user?.profileImage ||
+            riderImage
           }
-        </Row>
+          alt="Rider"
+          style={{
+            width:"120px",
+            height:"120px",
+            border:"6px solid #facc15",
+            marginBottom:"16px"
+          }}
+        />
 
-        {
-  riderProfileEditing
+        <div
+          style={{
+            fontSize:"24px",
+            fontWeight:"900",
+            marginBottom:"6px"
+          }}
+        >
+          {user?.name || "Rider"}
+        </div>
 
-  ?
+        <div
+          style={{
+            color:"rgba(255,255,255,0.78)",
+            fontSize:"14px",
+            fontWeight:"700",
+            marginBottom:"16px"
+          }}
+        >
+          {user?.email || "No email added"}
+        </div>
 
-  <>
+        <div
+          style={{
+            display:"inline-flex",
+            padding:"8px 14px",
+            borderRadius:"999px",
+            background:
+              getRiderDisplayStatus() === "busy"
+              ? "#fee2e2"
+              : getRiderDisplayStatus() === "suspended"
+              ? "#fee2e2"
+              : "#dcfce7",
+            color:
+              getRiderDisplayStatus() === "busy"
+              ? "#991b1b"
+              : getRiderDisplayStatus() === "suspended"
+              ? "#991b1b"
+              : "#166534",
+            fontSize:"12px",
+            fontWeight:"900",
+            marginBottom:"18px",
+            textTransform:"uppercase"
+          }}
+        >
+          {
+            getRiderDisplayStatus() === "busy"
+            ? "Busy"
+            : getRiderDisplayStatus() === "offline"
+            ? "Off-duty"
+            : getRiderDisplayStatus() === "suspended"
+            ? "Suspended"
+            : "Available"
+          }
+        </div>
 
-    <input
-      type="date"
-      value={riderDOB}
-      onChange={(e)=>
-        setRiderDOB(
-          e.target.value
-        )
-      }
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e)=>{
 
-      style={{
-        width:"100%",
-        padding:"14px",
-        borderRadius:"12px",
-        border:"1px solid #d1d5db",
-        marginBottom:"20px",
-        fontSize:"16px"
-      }}
-    />
+            const file =
+              e.target.files[0];
 
-    <input
-      type="text"
-      placeholder="Emergency Contact"
-      value={riderEmergency}
-      onChange={(e)=>
-        setRiderEmergency(
-          e.target.value
-        )
-      }
+            if(file){
 
-      style={{
-        width:"100%",
-        padding:"14px",
-        borderRadius:"12px",
-        border:"1px solid #d1d5db",
-        marginBottom:"20px",
-        fontSize:"16px"
-      }}
-    />
-
-  </>
-
-  :
-
-  <>
-
-    <Row style={{fontSize:"20px",marginBottom:"24px"}}>
-      <strong>Date of Birth:</strong>{" "}
-      {riderDOB || "Not added"}
-    </Row>
-
-    <Row style={{fontSize:"20px",marginBottom:"24px"}}>
-      <strong>Emergency Contact:</strong>{" "}
-      {riderEmergency || "Not added"}
-    </Row>
-
-    <Row style={{fontSize:"20px",marginBottom:"24px"}}>
-  <strong>Motor Number:</strong>{" "}
-  {motorNumber || "Not added"}
-</Row>
-
-  </>
-}
+              setSelectedProfileImage(
+                URL.createObjectURL(file)
+              );
+            }
+          }}
+          style={{
+            width:"100%",
+            background:"rgba(255,255,255,0.12)",
+            border:"1px solid rgba(255,255,255,0.22)",
+            borderRadius:"14px",
+            padding:"10px",
+            color:"white",
+            fontWeight:"700",
+            marginBottom:"14px"
+          }}
+        />
 
         <Button
           style={{
-            width:"190px",
-            padding:"16px",
-            fontSize:"20px",
-            borderRadius:"16px",
             background:
               riderAvailability === "online"
               ? "#dc2626"
-              : "#16a34a"
+              : "#16a34a",
+            color:"white",
+            fontWeight:"900",
+            borderRadius:"14px"
           }}
           onClick={()=>{
+
             setRiderAvailability(
               riderAvailability === "online"
               ? "offline"
@@ -3776,21 +5057,466 @@ user?.status !== "busy" && (
             );
           }}
         >
-
           {
             riderAvailability === "online"
             ? "Go Offline"
             : "Go Online"
           }
         </Button>
-        
 
-      </div>
+      </OrderCard>
 
-      </div>
+      <OrderCard
+        style={{
+          background:
+            "linear-gradient(135deg, #ffffff, #f8fafc)",
+          border:"1px solid rgba(29,78,216,0.10)",
+          boxShadow:
+            "0 10px 24px rgba(15,23,42,0.06)",
+          padding:"22px",
+          borderRadius:"24px"
+        }}
+      >
 
-  </OrderCard>
+        <div
+          style={{
+            display:"flex",
+            alignItems:"center",
+            justifyContent:"space-between",
+            gap:"12px",
+            flexWrap:"wrap",
+            marginBottom:"18px"
+          }}
+        >
 
+          <div>
+
+            <div
+              style={{
+                fontSize:"22px",
+                fontWeight:"900",
+                color:"#0f172a"
+              }}
+            >
+              Personal Information
+            </div>
+
+            <div
+              style={{
+                fontSize:"14px",
+                color:"#64748b",
+                fontWeight:"700",
+                marginTop:"4px"
+              }}
+            >
+              Your rider account and emergency details.
+            </div>
+
+          </div>
+
+          <Button
+            style={{
+              width:"130px",
+              background:
+                riderProfileEditing
+                ? "linear-gradient(135deg, #16a34a, #22c55e)"
+                : "linear-gradient(135deg, #0f172a, #1d4ed8)",
+              color:
+                riderProfileEditing
+                ? "white"
+                : "#facc15",
+              fontWeight:"900"
+            }}
+            onClick={async()=>{
+
+              if(riderProfileEditing){
+
+                try{
+
+                  const res =
+                    await API.put(
+                      "/rider/profile",
+                      {
+                        dob:riderDOB,
+                        emergencyContact:riderEmergency,
+                        motorNumber:motorNumber
+                      }
+                    );
+
+                  setUser(
+                    res.data.user
+                  );
+
+                  alert(
+                    "Profile saved successfully"
+                  );
+
+                  setRiderProfileEditing(false);
+
+                }catch(err){
+
+                  console.log(err);
+
+                  alert(
+                    err.response?.data?.message ||
+                    "Failed to save profile"
+                  );
+                }
+
+              }else{
+
+                setRiderProfileEditing(true);
+              }
+            }}
+          >
+            {
+              riderProfileEditing
+              ? "Save"
+              : "Edit"
+            }
+          </Button>
+
+        </div>
+
+        <div
+          style={{
+            display:"grid",
+            gridTemplateColumns:"repeat(auto-fit,minmax(230px,1fr))",
+            gap:"12px"
+          }}
+        >
+
+          <div
+            style={{
+              background:"#eff6ff",
+              border:"1px solid #dbeafe",
+              borderRadius:"16px",
+              padding:"14px"
+            }}
+          >
+            <div
+              style={{
+                color:"#1d4ed8",
+                fontSize:"12px",
+                fontWeight:"900",
+                marginBottom:"6px"
+              }}
+            >
+              NAME
+            </div>
+
+            <div
+              style={{
+                color:"#0f172a",
+                fontSize:"15px",
+                fontWeight:"900"
+              }}
+            >
+              {user?.name || "Rider"}
+            </div>
+          </div>
+
+          <div
+            style={{
+              background:"#f8fafc",
+              border:"1px solid #e5e7eb",
+              borderRadius:"16px",
+              padding:"14px"
+            }}
+          >
+            <div
+              style={{
+                color:"#64748b",
+                fontSize:"12px",
+                fontWeight:"900",
+                marginBottom:"6px"
+              }}
+            >
+              EMAIL
+            </div>
+
+            <div
+              style={{
+                color:"#0f172a",
+                fontSize:"15px",
+                fontWeight:"900",
+                wordBreak:"break-word"
+              }}
+            >
+              {user?.email || "No email"}
+            </div>
+          </div>
+
+          <div
+            style={{
+              background:"#f8fafc",
+              border:"1px solid #e5e7eb",
+              borderRadius:"16px",
+              padding:"14px"
+            }}
+          >
+            <div
+              style={{
+                color:"#64748b",
+                fontSize:"12px",
+                fontWeight:"900",
+                marginBottom:"6px"
+              }}
+            >
+              PHONE
+            </div>
+
+            <div
+              style={{
+                color:"#0f172a",
+                fontSize:"15px",
+                fontWeight:"900"
+              }}
+            >
+              {user?.phone || "No phone"}
+            </div>
+          </div>
+
+          <div
+            style={{
+              background:"#fefce8",
+              border:"1px solid #fde68a",
+              borderRadius:"16px",
+              padding:"14px"
+            }}
+          >
+            <div
+              style={{
+                color:"#92400e",
+                fontSize:"12px",
+                fontWeight:"900",
+                marginBottom:"6px"
+              }}
+            >
+              ACCOUNT STATUS
+            </div>
+
+            <div
+              style={{
+                color:"#0f172a",
+                fontSize:"15px",
+                fontWeight:"900"
+              }}
+            >
+              {
+                riderAvailability === "online"
+                ? "Online 🟢"
+                : "Offline 🔴"
+              }
+            </div>
+          </div>
+
+        </div>
+
+        <div
+          style={{
+            marginTop:"18px",
+            paddingTop:"18px",
+            borderTop:"1px solid #e5e7eb"
+          }}
+        >
+
+          <div
+            style={{
+              fontSize:"18px",
+              fontWeight:"900",
+              color:"#0f172a",
+              marginBottom:"12px"
+            }}
+          >
+            Rider Details
+          </div>
+
+          {
+            riderProfileEditing ? (
+
+              <div
+                style={{
+                  display:"grid",
+                  gap:"12px"
+                }}
+              >
+
+                <input
+                  type="date"
+                  value={riderDOB}
+                  onChange={(e)=>
+
+                    setRiderDOB(
+                      e.target.value
+                    )
+                  }
+                  style={{
+                    width:"100%",
+                    padding:"13px",
+                    borderRadius:"14px",
+                    border:"1px solid #dbeafe",
+                    fontSize:"15px",
+                    fontWeight:"700",
+                    outline:"none"
+                  }}
+                />
+
+                <input
+                  type="text"
+                  placeholder="Emergency Contact"
+                  value={riderEmergency}
+                  onChange={(e)=>
+
+                    setRiderEmergency(
+                      e.target.value
+                    )
+                  }
+                  style={{
+                    width:"100%",
+                    padding:"13px",
+                    borderRadius:"14px",
+                    border:"1px solid #dbeafe",
+                    fontSize:"15px",
+                    fontWeight:"700",
+                    outline:"none"
+                  }}
+                />
+
+                <input
+                  type="text"
+                  placeholder="Motor Number"
+                  value={motorNumber}
+                  onChange={(e)=>
+
+                    setMotorNumber(
+                      e.target.value
+                    )
+                  }
+                  style={{
+                    width:"100%",
+                    padding:"13px",
+                    borderRadius:"14px",
+                    border:"1px solid #dbeafe",
+                    fontSize:"15px",
+                    fontWeight:"700",
+                    outline:"none"
+                  }}
+                />
+
+              </div>
+
+            ) : (
+
+              <div
+                style={{
+                  display:"grid",
+                  gridTemplateColumns:"repeat(auto-fit,minmax(230px,1fr))",
+                  gap:"12px"
+                }}
+              >
+
+                <div
+                  style={{
+                    background:"#f8fafc",
+                    border:"1px solid #e5e7eb",
+                    borderRadius:"16px",
+                    padding:"14px"
+                  }}
+                >
+                  <div
+                    style={{
+                      color:"#64748b",
+                      fontSize:"12px",
+                      fontWeight:"900",
+                      marginBottom:"6px"
+                    }}
+                  >
+                    DATE OF BIRTH
+                  </div>
+
+                  <div
+                    style={{
+                      color:"#0f172a",
+                      fontSize:"15px",
+                      fontWeight:"900"
+                    }}
+                  >
+                    {riderDOB || "Not added"}
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    background:"#f8fafc",
+                    border:"1px solid #e5e7eb",
+                    borderRadius:"16px",
+                    padding:"14px"
+                  }}
+                >
+                  <div
+                    style={{
+                      color:"#64748b",
+                      fontSize:"12px",
+                      fontWeight:"900",
+                      marginBottom:"6px"
+                    }}
+                  >
+                    EMERGENCY CONTACT
+                  </div>
+
+                  <div
+                    style={{
+                      color:"#0f172a",
+                      fontSize:"15px",
+                      fontWeight:"900"
+                    }}
+                  >
+                    {riderEmergency || "Not added"}
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    background:"#f8fafc",
+                    border:"1px solid #e5e7eb",
+                    borderRadius:"16px",
+                    padding:"14px"
+                  }}
+                >
+                  <div
+                    style={{
+                      color:"#64748b",
+                      fontSize:"12px",
+                      fontWeight:"900",
+                      marginBottom:"6px"
+                    }}
+                  >
+                    MOTOR NUMBER
+                  </div>
+
+                  <div
+                    style={{
+                      color:"#0f172a",
+                      fontSize:"15px",
+                      fontWeight:"900"
+                    }}
+                  >
+                    {motorNumber || "Not added"}
+                  </div>
+                </div>
+
+              </div>
+            )
+          }
+
+        </div>
+
+      </OrderCard>
+
+    </div>
+
+  </>
 )}
 
     </Main>

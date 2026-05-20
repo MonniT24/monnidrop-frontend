@@ -4,9 +4,6 @@ import styled,{createGlobalStyle} from "styled-components";
 import API from "../api/api";
 import socket from "../socket";
 
-import customerImage from "../assets/customer.png";
-import logo from "../assets/logo.png";
-
 import {
   FiHome,
   FiPlusCircle,
@@ -32,6 +29,9 @@ import {
 import "leaflet/dist/leaflet.css";
 
 import L from "leaflet";
+
+const customerImage =
+  "https://ui-avatars.com/api/?name=Customer&background=2563eb&color=ffffff&size=256";
 
 const GlobalLeafletFix = createGlobalStyle`
 
@@ -1878,10 +1878,10 @@ const DashboardHero = styled.div`
 const HeroLogo = styled.img`
   position:absolute;
   top:-12px;
-  left:42%;
+  right:42%;
 
-  width:92px;
-  height:92px;
+  width:105px;
+  height:105px;
   object-fit:contain;
 
   background:transparent;
@@ -1914,10 +1914,10 @@ const HeroLogo = styled.img`
 
   @media(max-width:768px){
     top:-8px;
-    left:60%;
+    right:60%;
 
-    width:62px;
-    height:62px;
+    width:88px;
+    height:88px;
     object-fit:contain;
 
     background:transparent;
@@ -2780,6 +2780,25 @@ useEffect(()=>{
 
 },[]);
 
+useEffect(()=>{
+
+  fetchMe();
+
+  fetchOrders();
+
+  const interval =
+    setInterval(()=>{
+
+      fetchOrders();
+
+    },3000);
+
+  return ()=>clearInterval(
+    interval
+  );
+
+},[]);
+
 
   useEffect(()=>{
 
@@ -2919,23 +2938,44 @@ async function saveProfile(){
       );
 
     setUser(
-      res.data.user
-    );
+  res.data.user
+);
 
-setProfileName(res.data.user.name || "");
-setProfileEmail(res.data.user.email || "");
-setProfilePhone(res.data.user.phone || "");
-setProfileAddress(res.data.user.address || "");
-setProfileDOB(res.data.user.dob || "");
-setProfileGender(res.data.user.gender || "");
-setProfileEmergency(res.data.user.emergencyContact || "");
-setProfileImage(res.data.user.profileImage || "");
+setProfileName(
+  res.data.user.name || ""
+);
 
-fetchMe();
+setProfileEmail(
+  res.data.user.email || ""
+);
 
-    alert(
-      "Profile saved successfully"
-    );
+setProfilePhone(
+  res.data.user.phone || ""
+);
+
+setProfileAddress(
+  res.data.user.address || ""
+);
+
+setProfileDOB(
+  res.data.user.dob || ""
+);
+
+setProfileGender(
+  res.data.user.gender || ""
+);
+
+setProfileEmergency(
+  res.data.user.emergencyContact || ""
+);
+
+setProfileImage(
+  res.data.user.profileImage || ""
+);
+
+alert(
+  "Profile saved successfully"
+);
 
     setProfileEditing(false);
 
@@ -2952,30 +2992,63 @@ fetchMe();
 
   async function fetchMe(){
 
-    try{
+  try{
 
-      const res =
-        await API.get("/customer/me");
+    const res =
+      await API.get(
+        "/customer/me"
+      );
 
-        console.log(
-  "CUSTOMER ME DATA:",
-  res.data
-);
+    const loggedUser =
+      res.data.user ||
+      res.data;
 
-const loggedUser =
-  res.data.user || res.data;
+    setUser(
+      loggedUser
+    );
 
-setUser(loggedUser);
+    setProfileName(
+      loggedUser.name || ""
+    );
 
-setProfileImage(
-  loggedUser.profileImage || ""
-);
+    setProfileEmail(
+      loggedUser.email || ""
+    );
 
-    }catch(err){
+    setProfilePhone(
+      loggedUser.phone || ""
+    );
 
-      console.log(err);
-    }
+    setProfileAddress(
+      loggedUser.address || ""
+    );
+
+    setProfileDOB(
+      loggedUser.dob || ""
+    );
+
+    setProfileGender(
+      loggedUser.gender || ""
+    );
+
+    setProfileEmergency(
+      loggedUser.emergencyContact || ""
+    );
+
+    setProfileImage(
+      loggedUser.profileImage || ""
+    );
+
+    console.log(
+      "LOADED CUSTOMER IMAGE:",
+      loggedUser.profileImage
+    );
+
+  }catch(err){
+
+    console.log(err);
   }
+}
 
  async function fetchOrders(){
 
@@ -3529,24 +3602,24 @@ async function sendMessage(
 
           <ProfileCard>
 
-           <ProfileImage
- src={
-  user?.profileImage
-    ? `${user.profileImage}?t=${Date.now()}`
-    : customerImage
-}
 
 
+<ProfileImage
+  src={
+    profileImage ||
+    user?.profileImage ||
+    customerImage
+  }
   alt="Customer"
   style={{
-  width:"110px",
-  height:"110px",
-  borderRadius:"50%",
-  border:"4px solid #2563eb",
-  boxShadow:"0 8px 24px rgba(37,99,235,0.18)",
-  objectFit:"cover",
-  marginBottom:"14px"
-}}
+    width:"110px",
+    height:"110px",
+    borderRadius:"50%",
+    border:"4px solid #2563eb",
+    boxShadow:"0 8px 24px rgba(37,99,235,0.18)",
+    objectFit:"cover",
+    marginBottom:"14px"
+  }}
 />
 
 <label
@@ -3582,7 +3655,6 @@ async function sendMessage(
       return;
     }
 
-
     const formData =
       new FormData();
 
@@ -3596,21 +3668,23 @@ async function sendMessage(
       const res =
         await API.put(
           "/customer/profile-image",
-          formData,
-          {
-            headers:{
-              "Content-Type":"multipart/form-data"
-            }
-          }
+          formData
         );
 
       setUser(
         res.data.user
       );
 
+      setProfileImage(
+        res.data.user.profileImage || ""
+      );
+
       alert(
         "Profile image updated successfully"
       );
+
+      e.target.value =
+        "";
 
     }catch(err){
 
@@ -3623,20 +3697,6 @@ async function sendMessage(
     }
   }}
 />
-
-           <h3
-  style={{
-    fontSize:"20px",
-    fontWeight:"800",
-    color:"#0f172a",
-    marginTop:"10px",
-    marginBottom:"4px"
-  }}
->
-  {
-    user?.name || "Customer"
-  }
-</h3>
 
 <p
   style={{
@@ -6259,13 +6319,13 @@ calculateDistance(
  <ProfileHero>
 
   <ProfileHeroPhoto
-    src={
-      user?.profileImage
-        ? `${user.profileImage}?t=${Date.now()}`
-        : customerImage
-    }
-    alt="Customer Profile"
-  />
+  src={
+    profileImage ||
+    user?.profileImage ||
+    customerImage
+  }
+  alt="Customer Profile"
+/>
 
   <ProfileHeroContent>
 
