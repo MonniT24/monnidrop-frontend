@@ -3397,13 +3397,14 @@ async function createOrder(){
         }
       );
 
-    const createdOrder =
-      orderRes.data;
+   const createdOrder =
+  orderRes.data.order ||
+  orderRes.data;
 
-    console.log(
-      "CREATED ORDER:",
-      createdOrder
-    );
+console.log(
+  "CREATED ORDER RESPONSE:",
+  createdOrder
+);
 
     if(paymentMethod === "momo"){
 
@@ -3444,22 +3445,22 @@ async function createOrder(){
         );
 
         alert(
-          "MoMo payment successful. Order created and marked as paid."
-        );
+        `MoMo payment successful. Order created and marked as paid. Your delivery code is ${createdOrder.deliveryCode}`
+       );
 
       }else{
 
         alert(
-          "Order created, but MoMo payment was not successful."
-        );
+        `Order created, but MoMo payment was not successful. Your delivery code is ${createdOrder.deliveryCode}`
+       );
       }
 
     }else{
 
-      alert(
-        "Order created successfully"
-      );
-    }
+ alert(
+  `Order created successfully. Your delivery code is ${createdOrder.deliveryCode || "not generated"}`
+);
+}
 
     setPickupLocation("");
     setDropoffLocation("");
@@ -4556,7 +4557,7 @@ async function sendMessage(
     <SearchingPulse />
 
     <span>
-      Searching for rider online
+      Searching for a rider 
     </span>
 
     <SearchingDots>
@@ -4635,7 +4636,69 @@ async function sendMessage(
  {o.status}
 </StatusBadge>
 
- <Timeline>
+{
+  o.deliveryCode &&
+  o.status !== "delivered" &&
+  o.status !== "cancelled" && (
+
+    <div
+      style={{
+        marginTop:"18px",
+        padding:"18px",
+        borderRadius:"20px",
+        background:
+          "linear-gradient(135deg, #facc15, #f59e0b)",
+        border:"2px solid #0f172a",
+        boxShadow:
+          "0 14px 30px rgba(250,204,21,0.30)",
+        textAlign:"center"
+      }}
+    >
+
+      <div
+        style={{
+          fontSize:"13px",
+          fontWeight:"900",
+          color:"#0f172a",
+          textTransform:"uppercase",
+          letterSpacing:"0.7px",
+          marginBottom:"8px"
+        }}
+      >
+        Delivery Verification Code
+      </div>
+
+      <div
+        style={{
+          fontSize:"13px",
+          fontWeight:"800",
+          color:"#334155",
+          marginBottom:"12px",
+          lineHeight:"1.4"
+        }}
+      >
+        Give this code to the rider only when your package arrives.
+      </div>
+
+      <div
+        style={{
+          background:"#0f172a",
+          color:"#facc15",
+          borderRadius:"16px",
+          padding:"16px",
+          fontSize:"34px",
+          fontWeight:"900",
+          letterSpacing:"10px"
+        }}
+      >
+        {o.deliveryCode}
+      </div>
+
+    </div>
+  )
+}
+
+<Timeline>
 
   <TimelineItem>
 

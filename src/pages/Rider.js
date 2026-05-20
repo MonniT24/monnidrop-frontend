@@ -1176,6 +1176,14 @@ const [openChats,
   setOpenChats] =
     useState({});
 
+    const [deliveryCodes,
+  setDeliveryCodes] =
+    useState({});
+
+const [completingOrderId,
+  setCompletingOrderId] =
+    useState(null);
+
     const [notifications,
   setNotifications] =
     useState([]);
@@ -1891,7 +1899,7 @@ async function acceptOrder(orderId){
     }
   }
 
-  //COMPLETE DELIVERY 
+   // COMPLETE DELIVERY WITH CUSTOMER CODE
 
   async function completeDelivery(
     orderId
@@ -1899,14 +1907,44 @@ async function acceptOrder(orderId){
 
     try{
 
-      await API.put(
+      const deliveryCode =
+        deliveryCodes[orderId];
 
-        `/orders/${orderId}`,
+      if(
+        !deliveryCode ||
+        deliveryCode.length !== 4
+      ){
 
-        {
-          status:"delivered"
-        }
+        alert(
+          "Please enter the 4-digit customer delivery code"
+        );
+
+        return;
+      }
+
+      setCompletingOrderId(
+        orderId
       );
+
+      const res =
+        await API.put(
+
+          `/orders/${orderId}/complete-delivery`,
+
+          {
+            deliveryCode
+          }
+        );
+
+      alert(
+        res.data.message ||
+        "Delivery completed successfully"
+      );
+
+      setDeliveryCodes({
+        ...deliveryCodes,
+        [orderId]:""
+      });
 
       fetchOrders();
 
@@ -1915,7 +1953,14 @@ async function acceptOrder(orderId){
       console.log(err);
 
       alert(
+        err.response?.data?.message ||
         "Delivery failed"
+      );
+
+    }finally{
+
+      setCompletingOrderId(
+        null
       );
     }
   }
@@ -3249,29 +3294,7 @@ user?.status !== "busy" && (
                   </ButtonRow>
                 )
               }
-
-              {
-  o.status === "pending" &&
-  activeOrders.length > 0 && (
-
-    <div
-      style={{
-        marginTop:"14px",
-        background:"#fef2f2",
-        border:"1px solid #fecaca",
-        color:"#991b1b",
-        borderRadius:"14px",
-        padding:"12px",
-        fontWeight:"900",
-        fontSize:"13px",
-        lineHeight:"1.4"
-      }}
-    >
-      You already have an active delivery. Complete it before accepting another order.
-    </div>
-  )
-}
-
+              
               {
   o.status === "pending" &&
   activeOrders.length > 0 && (
@@ -3350,33 +3373,104 @@ user?.status !== "busy" && (
                 )
               }
 
-              {
-                o.status === "delivering" && (
+             {
+  o.status === "delivering" && (
 
-                  <ButtonRow>
+    <div
+      style={{
+        marginTop:"14px",
+        background:"#f0fdf4",
+        border:"1px solid #bbf7d0",
+        borderRadius:"16px",
+        padding:"14px"
+      }}
+    >
 
-                    <Button
-                      onClick={()=>
+      <div
+        style={{
+          color:"#166534",
+          fontSize:"14px",
+          fontWeight:"900",
+          marginBottom:"8px"
+        }}
+      >
+        Complete Delivery
+      </div>
 
-                        completeDelivery(
-                          o._id
-                        )
-                      }
-                      style={{
-                        background:
-                          "linear-gradient(135deg, #16a34a, #22c55e)",
-                        color:"white",
-                        fontWeight:"900"
-                      }}
-                    >
+      <div
+        style={{
+          color:"#334155",
+          fontSize:"13px",
+          fontWeight:"700",
+          marginBottom:"10px",
+          lineHeight:"1.4"
+        }}
+      >
+        Ask the customer for the 4-digit delivery code.
+      </div>
 
-                      Delivered
+      <input
+        type="text"
+        maxLength="4"
+        placeholder="Enter 4-digit code"
+        value={
+          deliveryCodes[o._id] || ""
+        }
+        onChange={(e)=>
+          setDeliveryCodes({
+            ...deliveryCodes,
+            [o._id]:
+              e.target.value.replace(/\D/g,"")
+          })
+        }
+        style={{
+          width:"100%",
+          padding:"13px",
+          borderRadius:"14px",
+          border:"1px solid #86efac",
+          outline:"none",
+          textAlign:"center",
+          fontSize:"22px",
+          fontWeight:"900",
+          letterSpacing:"6px",
+          marginBottom:"10px",
+          color:"#0f172a"
+        }}
+      />
 
-                    </Button>
+      <Button
+        onClick={()=>
 
-                  </ButtonRow>
-                )
-              }
+          completeDelivery(
+            o._id
+          )
+        }
+        disabled={
+          completingOrderId === o._id ||
+          !deliveryCodes[o._id] ||
+          deliveryCodes[o._id].length !== 4
+        }
+        style={{
+          background:
+            completingOrderId === o._id ||
+            !deliveryCodes[o._id] ||
+            deliveryCodes[o._id].length !== 4
+            ? "#94a3b8"
+            : "linear-gradient(135deg, #16a34a, #22c55e)",
+          color:"white",
+          fontWeight:"900"
+        }}
+      >
+        {
+          completingOrderId === o._id
+          ? "Verifying Code..."
+          : "Complete Delivery"
+        }
+      </Button>
+
+    </div>
+  )
+}
 
             </OrderCard>
           ))
@@ -3751,31 +3845,104 @@ user?.status !== "busy" && (
               )
             }
 
-            {
-              order.status === "delivering" && (
+          {
+  order.status === "delivering" && (
 
-                <ButtonRow>
+    <div
+      style={{
+        marginTop:"14px",
+        background:"#f0fdf4",
+        border:"1px solid #bbf7d0",
+        borderRadius:"16px",
+        padding:"14px"
+      }}
+    >
 
-                  <Button
-                    onClick={()=>
+      <div
+        style={{
+          color:"#166534",
+          fontSize:"14px",
+          fontWeight:"900",
+          marginBottom:"8px"
+        }}
+      >
+        Complete Delivery
+      </div>
 
-                      completeDelivery(
-                        order._id
-                      )
-                    }
-                    style={{
-                      background:
-                        "linear-gradient(135deg, #16a34a, #22c55e)",
-                      color:"white",
-                      fontWeight:"900"
-                    }}
-                  >
-                    Delivered
-                  </Button>
+      <div
+        style={{
+          color:"#334155",
+          fontSize:"13px",
+          fontWeight:"700",
+          marginBottom:"10px",
+          lineHeight:"1.4"
+        }}
+      >
+        Ask the customer for the 4-digit delivery code.
+      </div>
 
-                </ButtonRow>
-              )
-            }
+      <input
+        type="text"
+        maxLength="4"
+        placeholder="Enter 4-digit code"
+        value={
+          deliveryCodes[order._id] || ""
+        }
+        onChange={(e)=>
+          setDeliveryCodes({
+            ...deliveryCodes,
+            [order._id]:
+              e.target.value.replace(/\D/g,"")
+          })
+        }
+        style={{
+          width:"100%",
+          padding:"13px",
+          borderRadius:"14px",
+          border:"1px solid #86efac",
+          outline:"none",
+          textAlign:"center",
+          fontSize:"22px",
+          fontWeight:"900",
+          letterSpacing:"6px",
+          marginBottom:"10px",
+          color:"#0f172a"
+        }}
+      />
+
+      <Button
+        onClick={()=>
+
+          completeDelivery(
+            order._id
+          )
+        }
+        disabled={
+          completingOrderId === order._id ||
+          !deliveryCodes[order._id] ||
+          deliveryCodes[order._id].length !== 4
+        }
+        style={{
+          background:
+            completingOrderId === order._id ||
+            !deliveryCodes[order._id] ||
+            deliveryCodes[order._id].length !== 4
+            ? "#94a3b8"
+            : "linear-gradient(135deg, #16a34a, #22c55e)",
+          color:"white",
+          fontWeight:"900"
+        }}
+      >
+        {
+          completingOrderId === order._id
+          ? "Verifying Code..."
+          : "Complete Delivery"
+        }
+      </Button>
+
+    </div>
+  )
+}
 
           </OrderCard>
 
