@@ -1876,21 +1876,21 @@ const DashboardHero = styled.div`
 `;
 
 const HeroLogo = styled.img`
-  position:absolute;
-  top:-12px;
-  right:42%;
-
-  width:105px;
-  height:105px;
+  width:96px;
+  height:96px;
   object-fit:contain;
 
-  background:transparent;
-  padding:0;
-  border:none;
+  background:white;
+  padding:8px;
   border-radius:50%;
-  box-shadow:none;
 
-  z-index:10;
+  box-shadow:
+    0 14px 30px rgba(15,23,42,0.22);
+
+  position:relative;
+  z-index:3;
+
+  flex-shrink:0;
 
   animation:logoRotatePause 5s ease-in-out infinite;
 
@@ -1913,29 +1913,34 @@ const HeroLogo = styled.img`
   }
 
   @media(max-width:768px){
-    top:-8px;
-    right:60%;
+    width:82px;
+    height:82px;
+    margin:0 auto 2px auto;
+    display:block;
+  }
 
-    width:88px;
-    height:88px;
-    object-fit:contain;
-
-    background:transparent;
-    padding:0;
-    border:none;
-    border-radius:50%;
-    box-shadow:none;
+  @media(max-width:480px){
+    width:74px;
+    height:74px;
+    padding:7px;
   }
 `;
 
 const DashboardHeroContent = styled.div`
   position:relative;
   z-index:2;
+
   display:flex;
   justify-content:space-between;
   align-items:center;
   gap:24px;
-  flex-wrap:wrap;
+
+  @media(max-width:768px){
+    flex-direction:column;
+    align-items:stretch;
+    text-align:left;
+    gap:18px;
+  }
 `;
 
 const DashboardHeroTitle = styled.h1`
@@ -1943,10 +1948,15 @@ const DashboardHeroTitle = styled.h1`
   font-weight:900;
   margin:0 0 8px;
   letter-spacing:-0.6px;
-  line-height:1.1;
+  line-height:1.15;
 
   @media(max-width:768px){
+    font-size:28px;
+  }
+
+  @media(max-width:480px){
     font-size:25px;
+    line-height:1.2;
   }
 `;
 
@@ -1982,22 +1992,31 @@ const DashboardActions = styled.div`
   gap:12px;
   flex-wrap:wrap;
   margin-top:24px;
+
+  @media(max-width:480px){
+    flex-direction:column;
+    gap:12px;
+  }
 `;
 
 const DashboardActionButton = styled.button`
   border:none;
   border-radius:14px;
-  padding:12px 16px;
+  padding:13px 18px;
+
   background:${props =>
     props.primary
     ? "#facc15"
     : "rgba(255,255,255,0.14)"};
+
   color:${props =>
     props.primary
     ? "#111827"
     : "white"};
+
   font-weight:900;
   cursor:pointer;
+
   border:1px solid rgba(255,255,255,0.22);
   transition:0.25s ease;
   font-size:14px;
@@ -2008,6 +2027,7 @@ const DashboardActionButton = styled.button`
 
   @media(max-width:480px){
     width:100%;
+    padding:15px 18px;
   }
 `;
 
@@ -3445,20 +3465,20 @@ console.log(
         );
 
         alert(
-        `MoMo payment successful. Order created and marked as paid. Your delivery code is ${createdOrder.deliveryCode}`
+        `MoMo payment successful. Order created and marked as paid. Your OTP Number is ${createdOrder.deliveryCode}`
        );
 
       }else{
 
         alert(
-        `Order created, but MoMo payment was not successful. Your delivery code is ${createdOrder.deliveryCode}`
+        `Order created, but MoMo payment was not successful. Your OTP Number is ${createdOrder.deliveryCode}`
        );
       }
 
     }else{
 
  alert(
-  `Order created successfully. Your delivery code is ${createdOrder.deliveryCode || "not generated"}`
+  `Order created successfully. Your OTP Number is ${createdOrder.deliveryCode || "not generated"}`
 );
 }
 
@@ -3865,7 +3885,7 @@ async function sendMessage(
           </HeroBadge>
 
           <DashboardHeroTitle>
-            Welcome back,
+            Welcome/Akwaaba,
             {" "}
             {
               user?.name || "Customer"
@@ -4677,7 +4697,7 @@ async function sendMessage(
           lineHeight:"1.4"
         }}
       >
-        Give this code to the rider only when your package arrives.
+       Give this OTP number to the rider when your package arrives.
       </div>
 
       <div

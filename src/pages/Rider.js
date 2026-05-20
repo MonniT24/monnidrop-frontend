@@ -126,27 +126,30 @@ const RiderStatus = styled.span`
 const DashboardHero = styled.div`
   position:relative;
   overflow:hidden;
+
   background:
     radial-gradient(
       circle at top right,
-      rgba(250,204,21,0.55),
-      transparent 32%
+      rgba(250,204,21,0.38),
+      transparent 28%
     ),
     linear-gradient(
       135deg,
       #0f172a,
       #1d4ed8
     );
+
   color:white;
   border-radius:24px;
   padding:18px 22px;
   margin-bottom:18px;
-  box-shadow:
-    0 18px 45px rgba(15,23,42,0.18);
 
-    @media(max-width:768px){
-    padding:24px 20px;
-    border-radius:24px;
+  box-shadow:
+    0 12px 28px rgba(15,23,42,0.14);
+
+  @media(max-width:768px){
+    padding:18px 16px;
+    border-radius:22px;
   }
 
   &::before{
@@ -157,48 +160,14 @@ const DashboardHero = styled.div`
     z-index:1;
 
     background-image:
-      radial-gradient(circle, rgba(255,255,255,0.9) 0 2px, transparent 3px),
-      radial-gradient(circle, rgba(250,204,21,0.9) 0 2px, transparent 3px),
-      radial-gradient(circle, rgba(255,255,255,0.7) 0 1.5px, transparent 3px);
+      radial-gradient(circle, rgba(255,255,255,0.55) 0 2px, transparent 3px),
+      radial-gradient(circle, rgba(250,204,21,0.55) 0 2px, transparent 3px);
 
     background-size:
       120px 120px,
-      170px 170px,
-      90px 90px;
+      170px 170px;
 
-    background-position:
-      20px 30px,
-      80px 70px,
-      140px 20px;
-
-    opacity:0.55;
-    animation:sparkleMove 5s linear infinite;
-  }
-
-  @keyframes sparkleMove{
-    0%{
-      background-position:
-        20px 30px,
-        80px 70px,
-        140px 20px;
-      opacity:0.35;
-    }
-
-    50%{
-      background-position:
-        40px 45px,
-        100px 55px,
-        160px 35px;
-      opacity:0.85;
-    }
-
-    100%{
-      background-position:
-        20px 30px,
-        80px 70px,
-        140px 20px;
-      opacity:0.35;
-    }
+    opacity:0.30;
   }
 `;
 
@@ -206,36 +175,50 @@ const DashboardHeroContent = styled.div`
   position:relative;
   z-index:2;
 
-  display:flex;
+  display:grid;
+  grid-template-columns:minmax(0, 1fr) 350px;
   align-items:center;
-  justify-content:space-between;
   gap:18px;
 
-  min-height:165px;
-
-  @media(max-width:768px){
-    flex-direction:column;
-    align-items:flex-start;
-    min-height:auto;
+  @media(max-width:900px){
+    grid-template-columns:1fr;
+    gap:16px;
   }
 `;
 
-const HeroLogo = styled.img`
-  position:absolute;
-  top:18px;
-  left:43%;
+const HeroLeftBlock = styled.div`
+  display:flex;
+  align-items:center;
+  gap:16px;
+  min-width:0;
 
-  width:105px;
-  height:105px;
+  @media(max-width:768px){
+    gap:12px;
+    align-items:flex-start;
+  }
+`;
+
+const HeroTextBlock = styled.div`
+  min-width:0;
+  padding-left:2px;
+`;
+
+const HeroLogo = styled.img`
+  width:85px;
+  height:85px;
   object-fit:contain;
 
-  background:transparent;
-  padding:0;
-  border:none;
+  background:white;
+  padding:5px;
   border-radius:50%;
-  box-shadow:none;
 
-  z-index:10;
+  box-shadow:
+    0 8px 18px rgba(15,23,42,0.20);
+
+  position:static;
+  z-index:3;
+
+  flex-shrink:0;
 
   animation:logoRotatePause 5s ease-in-out infinite;
 
@@ -257,19 +240,15 @@ const HeroLogo = styled.img`
     }
   }
 
-  @media(max-width:760px){
-    top:18px;
-    left:58%;
+  @media(max-width:768px){
+    width:48px;
+    height:48px;
+    padding:4px;
+  }
 
-    width:88px;
-    height:88px;
-    object-fit:contain;
-
-    background:transparent;
-    padding:0;
-    border:none;
-    border-radius:50%;
-    box-shadow:none;
+  @media(max-width:480px){
+    width:42px;
+    height:42px;
   }
 `;
 
@@ -292,32 +271,40 @@ const HeroBadge = styled.div`
 `;
 
 const DashboardHeroTitle = styled.h1`
-  font-size:30px;
+  font-size:26px;
   font-weight:900;
-  color:white;
-  margin:0 0 10px;
-  line-height:1.08;
-  letter-spacing:-1px;
+  margin:0 0 6px;
+  letter-spacing:-0.4px;
+  line-height:1.12;
 
   @media(max-width:768px){
-    font-size:28px;
-    padding-top:40px;
+    font-size:24px;
+  }
+
+  @media(max-width:480px){
+    font-size:22px;
+    line-height:1.18;
   }
 `;
 
 const DashboardHeroText = styled.p`
-  max-width:650px;
-  color:rgba(255,255,255,0.88);
-  font-size:15px;
-  line-height:1.55;
+  max-width:560px;
+  color:#dbeafe;
+  font-size:13px;
+  line-height:1.45;
   margin:0;
+
+  @media(max-width:768px){
+    font-size:12.5px;
+  }
 `;
 
 const DashboardDateCard = styled.div`
-  min-width:260px;
+  width:100%;
+  max-width:350px;
 
-  padding:18px 22px;
-  border-radius:30px;
+  padding:14px 18px;
+  border-radius:22px;
 
   background:
     linear-gradient(
@@ -331,7 +318,7 @@ const DashboardDateCard = styled.div`
   color:white;
 
   box-shadow:
-    0 20px 45px rgba(0,0,0,0.22),
+    0 14px 30px rgba(0,0,0,0.18),
     inset 0 1px 0 rgba(255,255,255,0.28);
 
   backdrop-filter:blur(14px);
@@ -341,51 +328,54 @@ const DashboardDateCard = styled.div`
     align-items:center;
     justify-content:center;
 
-    padding:8px 16px;
+    padding:7px 14px;
     border-radius:999px;
 
     background:#facc15;
     color:#0f172a;
 
-    font-size:14px;
+    font-size:12px;
     font-weight:900;
     letter-spacing:0.8px;
     text-transform:uppercase;
 
-    margin-bottom:16px;
+    margin-bottom:12px;
   }
 
   strong{
     display:block;
 
-    font-size:30px;
+    font-size:25px;
     font-weight:900;
-    line-height:1;
+    line-height:1.05;
 
     color:white;
 
-    margin-bottom:12px;
+    margin-bottom:10px;
 
     text-shadow:
-      0 8px 22px rgba(0,0,0,0.28);
+      0 8px 20px rgba(0,0,0,0.24);
   }
 
   span{
     display:block;
 
-    font-size:13px;
+    font-size:12px;
     font-weight:700;
 
     color:rgba(255,255,255,0.88);
   }
 
+  @media(max-width:900px){
+    max-width:100%;
+  }
+
   @media(max-width:768px){
-    min-width:100%;
-    padding:24px;
-    border-radius:24px;
+    padding:16px;
+    border-radius:20px;
 
     strong{
-      font-size:36px;
+      font-size:24px;
     }
   }
 `;
@@ -395,10 +385,10 @@ const DashboardTime = styled.div`
   align-items:center;
   justify-content:center;
 
-  padding:12px 14px;
-  margin-bottom:10px;
+  padding:8px 12px;
+  margin-bottom:9px;
 
-  border-radius:18px;
+  border-radius:14px;
 
   background:
     linear-gradient(
@@ -409,35 +399,18 @@ const DashboardTime = styled.div`
 
   color:#0f172a;
 
-  font-size:20px;
+  font-size:16px;
   font-weight:900;
   letter-spacing:1px;
 
   box-shadow:
-    0 12px 26px rgba(250,204,21,0.35);
+    0 10px 20px rgba(250,204,21,0.28);
 
   border:1px solid rgba(255,255,255,0.35);
 
   @media(max-width:768px){
-    font-size:23px;
-    padding:10px 16px;
-  }
-`;
-
-const HeroTitle = styled.h1`
-  font-size:34px;
-
-  font-weight:800;
-
-  color:#0f172a;
-
-  margin-bottom:6px;
-
-  line-height:1.2;
-
-  @media(max-width:768px){
-
-    font-size:26px;
+    font-size:15px;
+    padding:8px 12px;
   }
 `;
 
@@ -2306,21 +2279,23 @@ async function acceptOrder(orderId){
 
     <DashboardHero>
 
+<DashboardHeroContent>
+
+  <HeroLeftBlock>
+
     <HeroLogo
       src={logo}
       alt="MonniDrop Logo"
     />
 
-    <DashboardHeroContent>
-
-      <div>
+    <HeroTextBlock>
 
         <HeroBadge>
           ⚡ MonniDrop Rider Dashboard
         </HeroBadge>
 
         <DashboardHeroTitle>
-          Welcome back,
+          Welcome / Akwaaba,
           {" "}
           {
             user?.name || "Rider"
@@ -2328,12 +2303,14 @@ async function acceptOrder(orderId){
           👋
         </DashboardHeroTitle>
 
-        <DashboardHeroText>
+                <DashboardHeroText>
           View assigned deliveries, update package status,
           track earnings, and manage your rider activity from one clean dashboard.
         </DashboardHeroText>
 
-      </div>
+    </HeroTextBlock>
+
+  </HeroLeftBlock>
 
       <DashboardDateCard>
 
@@ -2527,7 +2504,7 @@ async function acceptOrder(orderId){
     style={{
       background:
         "linear-gradient(135deg, #0f172a, #111827)",
-      padding:"22px",
+      padding:"20px",
       borderRadius:"24px",
       color:"white",
       border:"1px solid rgba(250,204,21,0.35)",
@@ -2581,7 +2558,7 @@ async function acceptOrder(orderId){
 
     <div
       style={{
-        fontSize:"13px",
+        fontSize:"12px",
         color:"rgba(255,255,255,0.76)",
         marginTop:"8px",
         fontWeight:"700",
@@ -3294,7 +3271,7 @@ user?.status !== "busy" && (
                   </ButtonRow>
                 )
               }
-              
+
               {
   o.status === "pending" &&
   activeOrders.length > 0 && (
@@ -3412,7 +3389,7 @@ user?.status !== "busy" && (
       <input
         type="text"
         maxLength="4"
-        placeholder="Enter 4-digit code"
+        placeholder="Enter OTP number"
         value={
           deliveryCodes[o._id] || ""
         }
@@ -3432,7 +3409,7 @@ user?.status !== "busy" && (
           textAlign:"center",
           fontSize:"22px",
           fontWeight:"900",
-          letterSpacing:"6px",
+          letterSpacing:"1px",
           marginBottom:"10px",
           color:"#0f172a"
         }}
@@ -3878,7 +3855,7 @@ user?.status !== "busy" && (
           lineHeight:"1.4"
         }}
       >
-        Ask the customer for the 4-digit delivery code.
+       Ask the customer for the OTP number.
       </div>
 
       <input
