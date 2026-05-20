@@ -66,13 +66,14 @@ const Welcome = styled.div`
   margin-top:2px;
 `;
 const RiderStatus = styled.span`
-  margin-left:10px;
-
-  padding:6px 14px;
-
+ display:inline-flex;
+align-items:center;
+justify-content:center;
+margin-left:0;
+margin-top:4px;
+padding:7px 16px;
   border-radius:999px;
-
-  font-size:12px;
+  font-size:11px;
 
   font-weight:700;
 
@@ -535,43 +536,32 @@ const LogoutButton = styled.button`
   width:100%;
 
   border:none;
+  border-radius:14px;
 
-  border-radius:18px;
+  padding:11px 13px;
 
-  padding:16px;
+  background:#fee2e2;
 
-  background:#ef4444;
+  color:#b91c1c;
 
-  color:white;
-
-  font-size:15px;
-
-  font-weight:700;
+  font-size:13px;
+  font-weight:900;
 
   cursor:pointer;
+
+  margin-top:10px;
 
   transition:0.25s ease;
 
   display:flex;
-
   align-items:center;
-
   justify-content:center;
-
-  gap:10px;
+  gap:8px;
 
   &:hover{
-
-  background:${props =>
-    props.active
-      ? "#2563eb"
-      : "#eff6ff"};
-
-  color:${props =>
-    props.active
-      ? "#fff"
-      : "#2563eb"};
-}
+    background:#ef4444;
+    color:white;
+  }
 `;
 
 
@@ -592,37 +582,35 @@ const Layout = styled.div`
 `;
 
 const Sidebar = styled.div`
-  width:200px;
+  width:210px;
+  box-sizing:border-box;
 
-  background:white;
+  background:#ffffff;
 
-  padding:24px 18px;
+  padding:18px 14px;
 
-  border-right:1px solid #eef2f7;
+  border-right:1px solid #e5e7eb;
 
   display:flex;
-
   flex-direction:column;
-
   justify-content:space-between;
 
   position:fixed;
-
   left:0;
-
   top:0;
 
   height:100vh;
-
   overflow-y:auto;
 
   z-index:100;
 
+  box-shadow:
+    8px 0 24px rgba(15,23,42,0.06);
+
   transition:0.3s ease;
 
   @media(max-width:768px){
-
-    width:200px;
+    width:260px;
 
     left:${props =>
       props.open ? "0" : "-100%"};
@@ -734,91 +722,98 @@ const Main = styled.div`
 const ProfileCard = styled.div`
   text-align:center;
 
-  margin-bottom:24px;
+  margin-bottom:14px;
+  padding:12px 10px;
 
-  padding-bottom:20px;
+  border-radius:18px;
 
-  border-bottom:1px solid #e5e7eb;
+  background:#f8fafc;
+
+  border:1px solid #e5e7eb;
+
+  box-shadow:
+    0 6px 16px rgba(15,23,42,0.04);
 `;
 
 const ProfileImage = styled.img`
-  width:72px;
-
-  height:72px;
+  width:76px;
+  height:76px;
 
   border-radius:50%;
-
   object-fit:cover;
 
   margin:auto;
+  margin-bottom:8px;
 
-  margin-bottom:12px;
-
-  border:4px solid #facc15;
+  border:3px solid #facc15;
 
   box-shadow:
-    0 4px 12px rgba(0,0,0,0.08);
+    0 6px 16px rgba(250,204,21,0.20);
 `;
 
 const SidebarMenu = styled.div`
   display:flex;
-
   flex-direction:column;
+  gap:8px;
 
-  gap:2px;
-
-  margin-top:6px;
+  margin-top:10px;
 
   @media(max-width:760px){
-
     flex-direction:column;
-
     flex-wrap:nowrap;
   }
 `;
 
 const MenuItem = styled.div`
   display:flex;
-
   align-items:center;
+  gap:11px;
 
-  gap:14px;
+  padding:11px 13px;
 
-  padding:12px 16px;
+  border-radius:14px;
 
-  border-radius:18px;
-
-  font-size:12px;
-
-  font-weight:700;
+  font-size:13px;
+  font-weight:800;
 
   cursor:pointer;
 
-  transition:0.25s ease;
-
   color:${props =>
     props.active
-      ? "#fff"
-      : "#334155"};
+      ? "#0f172a"
+      : "#475569"};
 
   background:${props =>
     props.active
-      ? "#2563eb"
-      : "transparent"};
+      ? "#facc15"
+      : "#ffffff"};
 
-  margin-bottom:2px;
+  border:${props =>
+    props.active
+      ? "1px solid #facc15"
+      : "1px solid #e5e7eb"};
+
+  box-shadow:${props =>
+    props.active
+      ? "0 8px 18px rgba(250,204,21,0.22)"
+      : "0 4px 12px rgba(15,23,42,0.03)"};
+
+  transition:0.25s ease;
+
+  svg{
+    font-size:17px;
+    flex-shrink:0;
+  }
 
   &:hover{
-
     background:${props =>
       props.active
-        ? "#2563eb"
+        ? "#facc15"
         : "#eff6ff"};
 
-    color:${props =>
-      props.active
-        ? "#fff"
-        : "#2563eb"};
+    color:#0f172a;
+
+    transform:translateX(3px);
   }
 `;
 
@@ -2038,18 +2033,20 @@ async function acceptOrder(orderId){
 <label
   htmlFor="riderProfileUpload"
   style={{
-    display:"inline-flex",
-    alignItems:"center",
-    justifyContent:"center",
-    padding:"12px 18px",
-    borderRadius:"14px",
-    background:"#facc15",
-    color:"#0f172a",
-    fontWeight:"900",
-    cursor:"pointer",
-    marginTop:"10px",
-    marginBottom:"16px"
-  }}
+  display:"inline-flex",
+  alignItems:"center",
+  justifyContent:"center",
+  padding:"9px 16px",
+  borderRadius:"14px",
+  background:"#facc15",
+  color:"#0f172a",
+  fontWeight:"900",
+  cursor:"pointer",
+  marginTop:"6px",
+  marginBottom:"8px",
+  fontSize:"13px",
+  lineHeight:"1"
+}}
 >
   Change Picture
 </label>
@@ -2144,12 +2141,15 @@ async function acceptOrder(orderId){
 
 <h3
   style={{
-    display:"flex",
-   alignItems:"flex-start",
-    justifyContent:"center",
-    gap:"8px",
-    marginTop:"0px"
-  }}
+  display:"flex",
+  alignItems:"center",
+  justifyContent:"center",
+  gap:"8px",
+  margin:"6px 0 6px",
+  fontSize:"15px",
+  fontWeight:"900",
+  color:"#0f172a"
+}}
 >
   <FiUser />
 

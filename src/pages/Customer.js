@@ -83,33 +83,36 @@ const Layout = styled.div`
 
 const Sidebar = styled.div`
   width:220px;
-  background:white;
-  padding:24px 18px;
-  border-right:1px solid #eef2f7;
+
+  background:#ffffff;
+
+  padding:20px 16px;
+
+  border-right:1px solid #e5e7eb;
+
   display:flex;
   flex-direction:column;
   justify-content:space-between;
+
   position:fixed;
   left:0;
   top:0;
+
   height:100vh;
   overflow-y:auto;
-  z-index:99999;
+
+  z-index:100;
+
+  box-shadow:
+    8px 0 24px rgba(15,23,42,0.06);
+
   transition:0.3s ease;
 
   @media(max-width:768px){
-    width:78vw;
-    max-width:300px;
-    left:${props => props.open ? "0" : "-110%"};
-    box-shadow:${props =>
-      props.open
-      ? "12px 0 30px rgba(15,23,42,0.18)"
-      : "none"};
-  }
+    width:260px;
 
-  @media(max-width:480px){
-    width:82vw;
-    padding:20px 16px;
+    left:${props =>
+      props.open ? "0" : "-100%"};
   }
 `;
 
@@ -138,27 +141,34 @@ const MobileMenuButton = styled.button`
     display:flex;
     align-items:center;
     justify-content:center;
+
     position:fixed;
     top:14px;
     left:14px;
+
     width:46px;
     height:46px;
-    border:none;
-    border-radius:14px;
-    background:#2563eb;
-    color:white;
-    font-size:24px;
-    cursor:pointer;
-    z-index:100000;
-    box-shadow:0 8px 20px rgba(37,99,235,0.25);
-  }
 
-  @media(max-width:480px){
-    top:12px;
-    left:12px;
-    width:44px;
-    height:44px;
-    font-size:22px;
+    border:none;
+    border-radius:16px;
+
+    background:
+      linear-gradient(
+        135deg,
+        #0f172a,
+        #1d4ed8
+      );
+
+    color:#facc15;
+
+    font-size:24px;
+
+    cursor:pointer;
+
+    z-index:100001;
+
+    box-shadow:
+      0 10px 24px rgba(15,23,42,0.24);
   }
 `;
 
@@ -169,98 +179,232 @@ const CloseButton = styled.button`
     display:flex;
     align-items:center;
     justify-content:center;
+
     align-self:flex-end;
-    width:32px;
-    height:32px;
+
+    width:34px;
+    height:34px;
+
     border:none;
-    border-radius:10px;
-    background:#dc2626;
-    color:white;
+    border-radius:12px;
+
+    background:rgba(239,68,68,0.16);
+    color:#fecaca;
+
+    font-size:20px;
+    font-weight:900;
+
     cursor:pointer;
-    margin-bottom:20px;
+
+    margin-bottom:14px;
+
+    transition:0.25s ease;
+
+    &:hover{
+      background:#dc2626;
+      color:white;
+    }
   }
 `;
 
 const ProfileCard = styled.div`
   text-align:center;
-  margin-bottom:24px;
-  padding-bottom:20px;
-  border-bottom:1px solid #e5e7eb;
+
+  margin-bottom:14px;
+  padding:12px 10px;
+
+  border-radius:18px;
+
+  background:#f8fafc;
+
+  border:1px solid #e5e7eb;
+
+  box-shadow:
+    0 6px 16px rgba(15,23,42,0.04);
 `;
 
 const ProfileImage = styled.img`
-  width:90px;
-  height:90px;
+  width:100%;
+  height:100%;
+
   border-radius:50%;
   object-fit:cover;
-  margin:auto;
-  margin-bottom:12px;
-  border:5px solid #2563eb;
 
-  @media(max-width:480px){
-    width:74px;
-    height:74px;
-    border:4px solid #2563eb;
+  border:3px solid #facc15;
+
+  box-shadow:
+    0 6px 16px rgba(250,204,21,0.20);
+`;
+
+const ProfileImageBox = styled.div`
+  position:relative;
+
+  width:86px;
+  height:86px;
+
+  margin:0 auto 8px;
+
+  &::after{
+    content:"";
+
+    position:absolute;
+    right:3px;
+    bottom:4px;
+
+    width:13px;
+    height:13px;
+
+    background:#22c55e;
+
+    border:3px solid white;
+    border-radius:50%;
+  }
+`;
+
+const CustomerName = styled.h3`
+  font-size:18px;
+  font-weight:900;
+  color:white;
+
+  margin:12px 0 5px;
+
+  line-height:1.25;
+`;
+
+const CustomerRole = styled.p`
+  color:#e2e8f0;
+  font-size:13px;
+  font-weight:800;
+
+  margin:0 0 10px;
+`;
+
+const OnlineBadge = styled.div`
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+
+  padding:7px 13px;
+
+  border-radius:999px;
+
+  background:rgba(34,197,94,0.14);
+  border:1px solid rgba(34,197,94,0.35);
+
+  color:#86efac;
+
+  font-size:12px;
+  font-weight:900;
+
+  margin-bottom:10px;
+
+  &::before{
+    content:"";
+
+    width:8px;
+    height:8px;
+
+    border-radius:50%;
+    background:#22c55e;
+
+    box-shadow:
+      0 0 0 4px rgba(34,197,94,0.14),
+      0 0 12px rgba(34,197,94,0.70);
   }
 `;
 
 const SidebarMenu = styled.div`
   display:flex;
   flex-direction:column;
+  gap:8px;
+
+  margin-top:14px;
 `;
 
 const MenuItem = styled.div`
   display:flex;
   align-items:center;
   gap:12px;
-  padding:12px 16px;
-  border-radius:16px;
-  cursor:pointer;
-  font-size:15px;
-  font-weight:700;
-  margin-bottom:4px;
 
-  background:${props =>
-    props.active
-      ? "#2563eb"
-      : "transparent"};
+  padding:12px 14px;
+
+  border-radius:14px;
+
+  font-size:14px;
+  font-weight:800;
+
+  cursor:pointer;
 
   color:${props =>
     props.active
-      ? "#fff"
-      : "#334155"};
+      ? "#0f172a"
+      : "#475569"};
+
+  background:${props =>
+    props.active
+      ? "#facc15"
+      : "#ffffff"};
+
+  border:${props =>
+    props.active
+      ? "1px solid #facc15"
+      : "1px solid #e5e7eb"};
+
+  box-shadow:${props =>
+    props.active
+      ? "0 8px 18px rgba(250,204,21,0.25)"
+      : "0 4px 12px rgba(15,23,42,0.03)"};
 
   transition:0.25s ease;
 
-  @media(max-width:768px){
-
-  padding:10px 14px;
-  gap:10px;
-}
+  svg{
+    font-size:18px;
+    flex-shrink:0;
+  }
 
   &:hover{
     background:${props =>
       props.active
-        ? "#2563eb"
+        ? "#facc15"
         : "#eff6ff"};
 
-    color:${props =>
-      props.active
-        ? "#fff"
-        : "#2563eb"};
+    color:#0f172a;
+
+    transform:translateX(3px);
   }
 `;
 
 const LogoutButton = styled.button`
   width:100%;
+
   border:none;
-  border-radius:16px;
-  padding:14px;
-  background:#ef4444;
-  color:white;
-  font-weight:700;
+  border-radius:14px;
+
+  padding:12px 14px;
+
+  background:#fee2e2;
+
+  color:#b91c1c;
+
+  font-size:14px;
+  font-weight:900;
+
   cursor:pointer;
-  margin-top:10px;
+
+  margin-top:12px;
+
+  transition:0.25s ease;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+
+  &:hover{
+    background:#ef4444;
+    color:white;
+  }
 `;
 
 const Hero = styled.div`
@@ -1799,28 +1943,26 @@ const Empty = styled.div`
 const DashboardHero = styled.div`
   position:relative;
   overflow:hidden;
+
   background:
     radial-gradient(
       circle at top right,
-      rgba(250,204,21,0.48),
-      transparent 30%
+      rgba(250,204,21,0.38),
+      transparent 28%
     ),
     linear-gradient(
       135deg,
       #0f172a,
       #1d4ed8
     );
-  color:white;
-  border-radius:28px;
-  padding:24px 28px;
-  margin-bottom:22px;
-  box-shadow:
-    0 14px 34px rgba(15,23,42,0.16);
 
-  @media(max-width:768px){
-    padding:22px 18px;
-    border-radius:22px;
-  }
+  color:white;
+  border-radius:24px;
+  padding:18px 22px;
+  margin-bottom:18px;
+
+  box-shadow:
+    0 12px 28px rgba(15,23,42,0.14);
 
   &::before{
     content:"";
@@ -1830,64 +1972,35 @@ const DashboardHero = styled.div`
     z-index:1;
 
     background-image:
-      radial-gradient(circle, rgba(255,255,255,0.75) 0 2px, transparent 3px),
-      radial-gradient(circle, rgba(250,204,21,0.75) 0 2px, transparent 3px),
-      radial-gradient(circle, rgba(255,255,255,0.55) 0 1.5px, transparent 3px);
+      radial-gradient(circle, rgba(255,255,255,0.55) 0 2px, transparent 3px),
+      radial-gradient(circle, rgba(250,204,21,0.55) 0 2px, transparent 3px);
 
     background-size:
       120px 120px,
-      170px 170px,
-      90px 90px;
+      170px 170px;
 
-    background-position:
-      20px 30px,
-      80px 70px,
-      140px 20px;
-
-    opacity:0.42;
-    animation:sparkleMove 5s linear infinite;
+    opacity:0.30;
   }
 
-  @keyframes sparkleMove{
-    0%{
-      background-position:
-        20px 30px,
-        80px 70px,
-        140px 20px;
-      opacity:0.30;
-    }
-
-    50%{
-      background-position:
-        40px 45px,
-        100px 55px,
-        160px 35px;
-      opacity:0.65;
-    }
-
-    100%{
-      background-position:
-        20px 30px,
-        80px 70px,
-        140px 20px;
-      opacity:0.30;
-    }
+  @media(max-width:768px){
+    padding:18px 16px;
+    border-radius:22px;
   }
 `;
 
 const HeroLogo = styled.img`
-  width:96px;
-  height:96px;
+  width:85px;
+  height:85px;
   object-fit:contain;
 
   background:white;
-  padding:8px;
+  padding:6px;
   border-radius:50%;
 
   box-shadow:
-    0 14px 30px rgba(15,23,42,0.22);
+    0 10px 22px rgba(15,23,42,0.22);
 
-  position:relative;
+  position:static;
   z-index:3;
 
   flex-shrink:0;
@@ -1913,16 +2026,15 @@ const HeroLogo = styled.img`
   }
 
   @media(max-width:768px){
-    width:82px;
-    height:82px;
-    margin:0 auto 2px auto;
-    display:block;
+    width:60px;
+    height:60px;
+    padding:5px;
   }
 
   @media(max-width:480px){
-    width:74px;
-    height:74px;
-    padding:7px;
+    width:52px;
+    height:52px;
+    padding:4px;
   }
 `;
 
@@ -1930,17 +2042,31 @@ const DashboardHeroContent = styled.div`
   position:relative;
   z-index:2;
 
-  display:flex;
-  justify-content:space-between;
+  display:grid;
+  grid-template-columns:minmax(0, 1fr) 330px;
   align-items:center;
-  gap:24px;
+  gap:18px;
+
+  @media(max-width:900px){
+    grid-template-columns:1fr;
+    gap:16px;
+  }
+`;
+
+const HeroLeftBlock = styled.div`
+  display:flex;
+  align-items:center;
+  gap:16px;
+  min-width:0;
 
   @media(max-width:768px){
-    flex-direction:column;
-    align-items:stretch;
-    text-align:left;
-    gap:18px;
+    gap:12px;
+    align-items:flex-start;
   }
+`;
+
+const HeroTextBlock = styled.div`
+  min-width:0;
 `;
 
 const DashboardHeroTitle = styled.h1`
@@ -2032,15 +2158,31 @@ const DashboardActionButton = styled.button`
 `;
 
 const DashboardHeroCard = styled.div`
-  min-width:250px;
-  background:rgba(255,255,255,0.13);
-  border:1px solid rgba(255,255,255,0.22);
-  border-radius:22px;
-  padding:18px;
-  backdrop-filter:blur(12px);
+  width:100%;
+  max-width:330px;
 
-  @media(max-width:768px){
-    width:100%;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.25),
+      rgba(255,255,255,0.08)
+    );
+
+  border:1px solid rgba(255,255,255,0.34);
+  border-radius:22px;
+
+  padding:14px 18px;
+
+  color:white;
+
+  box-shadow:
+    0 14px 30px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.28);
+
+  backdrop-filter:blur(14px);
+
+  @media(max-width:900px){
+    max-width:100%;
   }
 `;
 
@@ -2052,10 +2194,22 @@ const HeroCardLabel = styled.div`
 `;
 
 const HeroCardValue = styled.div`
+  display:block;
+
+  font-size:24px;
   font-weight:900;
-line-height:1.15;
-margin-bottom:12px;
-  font-weight:900;
+  line-height:1.05;
+
+  color:white;
+
+  margin-bottom:10px;
+
+  text-shadow:
+    0 8px 20px rgba(0,0,0,0.24);
+
+  @media(max-width:768px){
+    font-size:23px;
+  }
 `;
 
 const HeroCardTime = styled.div`
@@ -2063,8 +2217,8 @@ const HeroCardTime = styled.div`
   align-items:center;
   justify-content:center;
 
-  padding:8px 14px;
-  margin-bottom:12px;
+  padding:8px 12px;
+  margin-bottom:9px;
 
   border-radius:14px;
 
@@ -2077,17 +2231,17 @@ const HeroCardTime = styled.div`
 
   color:#0f172a;
 
-  font-size:21px;
+  font-size:16px;
   font-weight:900;
-  letter-spacing:0.8px;
+  letter-spacing:1px;
 
   box-shadow:
-    0 10px 22px rgba(250,204,21,0.28);
+    0 10px 20px rgba(250,204,21,0.28);
 
   border:1px solid rgba(255,255,255,0.35);
 
   @media(max-width:768px){
-    font-size:18px;
+    font-size:15px;
     padding:8px 12px;
   }
 `;
@@ -3625,37 +3779,36 @@ async function sendMessage(
 
 
 
-<ProfileImage
-  src={
-    profileImage ||
-    user?.profileImage ||
-    customerImage
-  }
-  alt="Customer"
-  style={{
-    width:"110px",
-    height:"110px",
-    borderRadius:"50%",
-    border:"4px solid #2563eb",
-    boxShadow:"0 8px 24px rgba(37,99,235,0.18)",
-    objectFit:"cover",
-    marginBottom:"14px"
-  }}
-/>
+<ProfileImageBox>
+
+  <ProfileImage
+    src={
+      user?.profileImage
+      ? `${user.profileImage}?t=${Date.now()}`
+      : customerImage
+    }
+    alt="Customer"
+  />
+
+</ProfileImageBox>
 
 <label
   htmlFor="profileUpload"
   style={{
-    marginTop:"18px",
-    background:"#2563eb",
-    color:"white",
-    padding:"12px 22px",
-    borderRadius:"14px",
-    cursor:"pointer",
-    fontWeight:"700",
-    fontSize:"15px",
-    display:"inline-block"
-  }}
+  display:"inline-flex",
+  alignItems:"center",
+  justifyContent:"center",
+  padding:"9px 16px",
+  borderRadius:"14px",
+  background:"#2563eb",
+  color:"white",
+  fontWeight:"900",
+  cursor:"pointer",
+  marginTop:"6px",
+  marginBottom:"8px",
+  fontSize:"13px",
+  lineHeight:"1"
+}}
 >
   Change Picture
 </label>
@@ -3721,13 +3874,43 @@ async function sendMessage(
 
 <p
   style={{
-    color:"#64748b",
-    fontSize:"14px",
-    marginBottom:"16px"
+  color:"#475569",
+  fontSize:"13px",
+  fontWeight:"700",
+  margin:"0 0 6px"
+}}
+>
+ {
+  user?.name || "Customer"
+}
+</p>
+
+<div
+  style={{
+    display:"inline-flex",
+    alignItems:"center",
+    gap:"6px",
+    background:"#dcfce7",
+    color:"#166534",
+    padding:"4px 10px",
+    borderRadius:"999px",
+    fontSize:"12px",
+    fontWeight:"900",
+    marginTop:"0px",
+    marginBottom:"0px"
   }}
 >
-  MonniDrop Customer
-</p>
+  <span
+    style={{
+      width:"8px",
+      height:"8px",
+      borderRadius:"50%",
+      background:"#22c55e",
+      display:"inline-block"
+    }}
+  ></span>
+  Online
+</div>
 
           </ProfileCard>
 
@@ -3869,16 +4052,18 @@ async function sendMessage(
 
   <>
 
-    <DashboardHero>
+   <DashboardHero>
 
-      <DashboardHeroContent>
+  <DashboardHeroContent>
 
-        <HeroLogo
-  src="/logo.png"
-  alt="MonniDrop Logo"
-/>
+    <HeroLeftBlock>
 
-        <div>
+      <HeroLogo
+        src="/logo.png"
+        alt="MonniDrop Logo"
+      />
+
+      <HeroTextBlock>
 
           <HeroBadge>
             ⚡ MonniDrop Customer Dashboard
@@ -3917,11 +4102,13 @@ async function sendMessage(
               Track My Orders
             </DashboardActionButton>
 
-          </DashboardActions>
+                  </DashboardActions>
 
-        </div>
+      </HeroTextBlock>
 
-        <DashboardHeroCard>
+    </HeroLeftBlock>
+
+      <DashboardHeroCard>
 
   <HeroCardLabel>
     Today
