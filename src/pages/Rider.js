@@ -1069,6 +1069,9 @@ export default function Rider(){
 
   const [activeSection, setActiveSection] = useState("dashboard");
 
+  const [activeRiderCard,setActiveRiderCard] =
+  useState("");
+
   const [
   selectedProfileImage,
   setSelectedProfileImage
@@ -1117,6 +1120,11 @@ const [orders, setOrders] =
 
       o.rider ===
       user?._id
+  );
+
+  const pendingRequestOrders =
+  visibleOrders.filter(
+    (o)=>o.status === "pending"
   );
 
   const [
@@ -1181,6 +1189,43 @@ const [previousMessages,
 
   return user?.status || "available";
 };
+
+function getRiderCardTitle(){
+
+  if(activeRiderCard === "pending"){
+    return "Pending Requests";
+  }
+
+  if(activeRiderCard === "active"){
+    return "Active Jobs";
+  }
+
+  if(activeRiderCard === "completed"){
+    return "Completed Tasks";
+  }
+
+  return "";
+}
+
+function getRiderCardOrders(){
+
+  if(activeRiderCard === "pending"){
+    return pendingRequestOrders;
+  }
+
+  if(activeRiderCard === "active"){
+    return activeOrders;
+  }
+
+  if(activeRiderCard === "completed"){
+    return completedOrders;
+  }
+
+  return [];
+}
+
+const riderCardOrders =
+  getRiderCardOrders();
 
   const hour =
     new Date().getHours();
@@ -2646,110 +2691,386 @@ async function acceptOrder(orderId){
 
     </div>
 
+   <div
+  style={{
+    display:"grid",
+    gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",
+    gap:"12px"
+  }}
+>
+
+  <button
+    type="button"
+    onClick={()=>
+      setActiveRiderCard(
+        activeRiderCard === "pending"
+        ? ""
+        : "pending"
+      )
+    }
+    style={{
+      background:"#eff6ff",
+      border:
+        activeRiderCard === "pending"
+        ? "2px solid #2563eb"
+        : "1px solid #dbeafe",
+      borderRadius:"18px",
+      padding:"16px",
+      cursor:"pointer",
+      textAlign:"left"
+    }}
+  >
+
     <div
       style={{
-        display:"grid",
-        gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",
-        gap:"12px"
+        color:"#1d4ed8",
+        fontWeight:"900",
+        fontSize:"13px",
+        marginBottom:"8px"
+      }}
+    >
+      Pending Requests
+    </div>
+
+    <div
+      style={{
+        color:"#0f172a",
+        fontWeight:"900",
+        fontSize:"30px"
+      }}
+    >
+      {pendingRequestOrders.length}
+    </div>
+
+  </button>
+
+  <button
+    type="button"
+    onClick={()=>
+      setActiveRiderCard(
+        activeRiderCard === "active"
+        ? ""
+        : "active"
+      )
+    }
+    style={{
+      background:"#fefce8",
+      border:
+        activeRiderCard === "active"
+        ? "2px solid #f59e0b"
+        : "1px solid #fde68a",
+      borderRadius:"18px",
+      padding:"16px",
+      cursor:"pointer",
+      textAlign:"left"
+    }}
+  >
+
+    <div
+      style={{
+        color:"#92400e",
+        fontWeight:"900",
+        fontSize:"13px",
+        marginBottom:"8px"
+      }}
+    >
+      Active Jobs
+    </div>
+
+    <div
+      style={{
+        color:"#0f172a",
+        fontWeight:"900",
+        fontSize:"30px"
+      }}
+    >
+      {activeOrders.length}
+    </div>
+
+  </button>
+
+  <button
+    type="button"
+    onClick={()=>
+      setActiveRiderCard(
+        activeRiderCard === "completed"
+        ? ""
+        : "completed"
+      )
+    }
+    style={{
+      background:"#f0fdf4",
+      border:
+        activeRiderCard === "completed"
+        ? "2px solid #16a34a"
+        : "1px solid #bbf7d0",
+      borderRadius:"18px",
+      padding:"16px",
+      cursor:"pointer",
+      textAlign:"left"
+    }}
+  >
+
+    <div
+      style={{
+        color:"#166534",
+        fontWeight:"900",
+        fontSize:"13px",
+        marginBottom:"8px"
+      }}
+    >
+      Completed Tasks
+    </div>
+
+    <div
+      style={{
+        color:"#0f172a",
+        fontWeight:"900",
+        fontSize:"30px"
+      }}
+    >
+      {completedOrders.length}
+    </div>
+
+  </button>
+
+</div>
+
+{
+  activeRiderCard && (
+
+    <div
+      style={{
+        marginTop:"18px",
+        background:"#ffffff",
+        border:"1px solid #e5e7eb",
+        borderRadius:"20px",
+        padding:"16px",
+        boxShadow:"0 10px 24px rgba(15,23,42,0.05)"
       }}
     >
 
       <div
         style={{
-          background:"#eff6ff",
-          border:"1px solid #dbeafe",
-          borderRadius:"18px",
-          padding:"16px"
+          display:"flex",
+          alignItems:"center",
+          justifyContent:"space-between",
+          gap:"12px",
+          flexWrap:"wrap",
+          marginBottom:"14px"
         }}
       >
-        <div
-          style={{
-            color:"#1d4ed8",
-            fontWeight:"900",
-            fontSize:"13px",
-            marginBottom:"8px"
-          }}
-        >
-          Pending Requests
+
+        <div>
+
+          <div
+            style={{
+              color:"#0f172a",
+              fontSize:"18px",
+              fontWeight:"900"
+            }}
+          >
+            {
+              activeRiderCard === "pending"
+              ? "Pending Requests"
+              : activeRiderCard === "active"
+              ? "Active Jobs"
+              : "Completed Tasks"
+            }
+          </div>
+
+          <div
+            style={{
+              color:"#64748b",
+              fontSize:"13px",
+              fontWeight:"700",
+              marginTop:"3px"
+            }}
+          >
+  Click to view
+          </div>
+
         </div>
 
-        <div
-          style={{
-            color:"#0f172a",
-            fontWeight:"900",
-            fontSize:"30px"
-          }}
-        >
-          {
-            visibleOrders.filter(
-              (o)=>o.status === "pending"
-            ).length
+        <button
+          type="button"
+          onClick={()=>
+            setActiveRiderCard("")
           }
-        </div>
-      </div>
-
-      <div
-        style={{
-          background:"#fefce8",
-          border:"1px solid #fde68a",
-          borderRadius:"18px",
-          padding:"16px"
-        }}
-      >
-        <div
           style={{
-            color:"#92400e",
-            fontWeight:"900",
-            fontSize:"13px",
-            marginBottom:"8px"
-          }}
-        >
-          Active Jobs
-        </div>
-
-        <div
-          style={{
+            border:"none",
+            borderRadius:"12px",
+            padding:"9px 13px",
+            background:"#f1f5f9",
             color:"#0f172a",
+            fontSize:"12px",
             fontWeight:"900",
-            fontSize:"30px"
+            cursor:"pointer"
           }}
         >
-          {activeOrders.length}
-        </div>
+          Close
+        </button>
+
       </div>
 
-      <div
-        style={{
-          background:"#f0fdf4",
-          border:"1px solid #bbf7d0",
-          borderRadius:"18px",
-          padding:"16px"
-        }}
-      >
-        <div
-          style={{
-            color:"#166534",
-            fontWeight:"900",
-            fontSize:"13px",
-            marginBottom:"8px"
-          }}
-        >
-          Completed
-        </div>
+      {
+        (
+          activeRiderCard === "pending"
+          ? pendingRequestOrders
+          : activeRiderCard === "active"
+          ? activeOrders
+          : completedOrders
+        ).length === 0
+        ? (
 
-        <div
-          style={{
-            color:"#0f172a",
-            fontWeight:"900",
-            fontSize:"30px"
-          }}
-        >
-          {completedOrders.length}
-        </div>
-      </div>
+          <Empty
+            style={{
+              background:"#f8fafc",
+              border:"1px dashed #cbd5e1",
+              boxShadow:"none",
+              fontWeight:"800"
+            }}
+          >
+            No records found here.
+          </Empty>
+
+        ) : (
+
+          <div
+            style={{
+              display:"grid",
+              gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",
+              gap:"12px"
+            }}
+          >
+
+            {
+              (
+                activeRiderCard === "pending"
+                ? pendingRequestOrders
+                : activeRiderCard === "active"
+                ? activeOrders
+                : completedOrders
+              ).map((o)=>(
+
+                <div
+                  key={o._id}
+                  style={{
+                    background:"#f8fafc",
+                    border:"1px solid #e5e7eb",
+                    borderLeft:
+                      activeRiderCard === "pending"
+                      ? "4px solid #2563eb"
+                      : activeRiderCard === "active"
+                      ? "4px solid #f59e0b"
+                      : "4px solid #16a34a",
+                    borderRadius:"16px",
+                    padding:"14px"
+                  }}
+                >
+
+                  <div
+                    style={{
+                      color:"#0f172a",
+                      fontWeight:"900",
+                      fontSize:"14px",
+                      marginBottom:"8px"
+                    }}
+                  >
+                    Order ID: {String(o._id).slice(-6)}
+                  </div>
+
+                  <div
+                    style={{
+                      color:"#475569",
+                      fontSize:"13px",
+                      fontWeight:"700",
+                      lineHeight:"1.6"
+                    }}
+                  >
+                    <strong>Customer:</strong>{" "}
+                    {o.customer?.name || "Customer"}
+                    <br />
+
+                    <strong>Pickup:</strong>{" "}
+                    {o.pickupLocation || "N/A"}
+                    <br />
+
+                    <strong>Dropoff:</strong>{" "}
+                    {o.dropoffLocation || "N/A"}
+                    <br />
+
+                    <strong>Amount:</strong>{" "}
+                    ₵{o.total || 0}
+                    <br />
+
+                    <strong>Status:</strong>{" "}
+                    {o.status || "N/A"}
+                  </div>
+
+                  {
+                    activeRiderCard === "pending" && (
+
+                      <div
+                        style={{
+                          display:"flex",
+                          gap:"8px",
+                          marginTop:"12px",
+                          flexWrap:"wrap"
+                        }}
+                      >
+
+                        <button
+                          type="button"
+                          onClick={()=>
+                            acceptOrder(o._id)
+                          }
+                          style={{
+                            border:"none",
+                            borderRadius:"12px",
+                            padding:"10px 12px",
+                            background:"#16a34a",
+                            color:"white",
+                            fontWeight:"900",
+                            cursor:"pointer"
+                          }}
+                        >
+                          Accept
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={()=>
+                            rejectOrder(o._id)
+                          }
+                          style={{
+                            border:"none",
+                            borderRadius:"12px",
+                            padding:"10px 12px",
+                            background:"#fee2e2",
+                            color:"#b91c1c",
+                            fontWeight:"900",
+                            cursor:"pointer"
+                          }}
+                        >
+                          Reject
+                        </button>
+
+                      </div>
+                    )
+                  }
+
+                </div>
+              ))
+            }
+
+          </div>
+        )
+      }
 
     </div>
-
+  )
+}
   </OrderCard>
 
   <OrderCard
@@ -2830,7 +3151,7 @@ async function acceptOrder(orderId){
 
 {
 
-  orders.length === 0
+  pendingRequestOrders.length === 0
 
   ?
 
@@ -2848,7 +3169,7 @@ async function acceptOrder(orderId){
       }}
     >
 
-      No orders available right now.
+      No pending delivery requests right now.
 
     </Empty>
 
@@ -2906,9 +3227,9 @@ async function acceptOrder(orderId){
             fontSize:"12px"
           }}
         >
-          {
-            visibleOrders.length
-          } orders visible
+     {
+      pendingRequestOrders.length
+     }pending requests
         </div>
 
       </div>
@@ -2917,7 +3238,7 @@ async function acceptOrder(orderId){
 
         {
 
-          visibleOrders.map((o)=>(
+          pendingRequestOrders.map((o)=>(
 
             <OrderCard
   key={o._id}

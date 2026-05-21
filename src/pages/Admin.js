@@ -376,15 +376,22 @@ const StatCard = styled.div`
   border-radius:20px;
   padding:18px;
 
-  border:1px solid #e5e7eb;
+  border:${props =>
+    props.active
+    ? "1px solid #facc15"
+    : "1px solid #e5e7eb"};
 
-  box-shadow:
-    0 8px 22px rgba(15,23,42,0.045);
+  box-shadow:${props =>
+    props.active
+    ? "0 14px 30px rgba(250,204,21,0.18)"
+    : "0 8px 22px rgba(15,23,42,0.045)"};
 
   position:relative;
   overflow:hidden;
 
   transition:0.25s ease;
+
+  cursor:pointer;
 
   &::before{
     content:"";
@@ -393,7 +400,10 @@ const StatCard = styled.div`
     left:0;
     right:0;
     height:4px;
-    background:#facc15;
+    background:${props =>
+      props.active
+      ? "#f59e0b"
+      : "#facc15"};
   }
 
   &:hover{
@@ -530,6 +540,22 @@ const MiniText = styled.div`
   font-weight:700;
 `;
 
+const Empty = styled.div`
+  text-align:center;
+
+  padding:28px;
+
+  color:#64748b;
+
+  font-size:14px;
+  font-weight:800;
+
+  background:#f8fafc;
+
+  border:1px dashed #cbd5e1;
+  border-radius:16px;
+`;
+
 const MapBox = styled.div`
   background:white;
 
@@ -545,31 +571,6 @@ const MapBox = styled.div`
     0 8px 24px rgba(15,23,42,0.06);
 `;
 
-const Grid = styled.div`
-  display:grid;
-  grid-template-columns:
-    repeat(auto-fit,minmax(330px,1fr));
-  gap:18px;
-
-  @media(max-width:520px){
-    grid-template-columns:1fr;
-  }
-`;
-
-const Section = styled.div`
-  background:white;
-
-  border-radius:22px;
-
-  padding:18px;
-
-  margin-bottom:20px;
-
-  border:1px solid #e5e7eb;
-
-  box-shadow:
-    0 8px 24px rgba(15,23,42,0.05);
-`;
 
 const SectionTitle = styled.div`
   display:flex;
@@ -609,102 +610,6 @@ const CountBadge = styled.div`
   white-space:nowrap;
 `;
 
-const OrderCard = styled.div`
-  background:#f8fafc;
-
-  border-radius:16px;
-
-  padding:14px;
-
-  margin-bottom:14px;
-
-  border:1px solid #e5e7eb;
-  border-left:4px solid #facc15;
-`;
-
-const RiderCard = styled.div`
-  background:#f8fafc;
-
-  border-radius:16px;
-
-  padding:14px;
-
-  margin-bottom:14px;
-
-  border:1px solid #e5e7eb;
-  border-left:4px solid #2563eb;
-`;
-
-const Row = styled.div`
-  margin-bottom:8px;
-  color:#334155;
-  font-size:14px;
-  line-height:1.45;
-
-  strong{
-    color:#0f172a;
-  }
-`;
-
-const Badge = styled.div`
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-
-  padding:7px 12px;
-
-  border-radius:999px;
-
-  color:white;
-
-  font-size:11px;
-
-  font-weight:900;
-
-  text-transform:uppercase;
-
-  background:${props=>
-
-    props.status === "delivered"
-    ? "#16a34a"
-
-    : props.status === "in_progress"
-    ? "#2563eb"
-
-    : props.status === "assigned"
-    ? "#f59e0b"
-
-    : props.status === "pending"
-    ? "#dc2626"
-
-    : props.status === "accepted"
-    ? "#2563eb"
-
-    : props.status === "picked"
-    ? "#7c3aed"
-
-    : props.status === "delivering"
-    ? "#0ea5e9"
-
-    : props.status === "cancelled" ||
-      props.status === "canceled"
-    ? "#dc2626"
-
-    : "#64748b"
-  };
-`;
-
-const Empty = styled.div`
-  text-align:center;
-
-  padding:28px;
-
-  color:#64748b;
-
-  font-size:14px;
-  font-weight:700;
-`;
-
 const ActionButton = styled.button`
   border:none;
   border-radius:12px;
@@ -729,6 +634,115 @@ const ActionButton = styled.button`
   }
 `;
 
+const DetailPanel = styled.div`
+  background:white;
+
+  border:1px solid #e5e7eb;
+  border-radius:22px;
+
+  padding:18px;
+
+  margin-bottom:22px;
+
+  box-shadow:
+    0 10px 28px rgba(15,23,42,0.06);
+`;
+
+const DetailHeader = styled.div`
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+
+  margin-bottom:16px;
+
+  h3{
+    margin:0;
+    color:#0f172a;
+    font-size:18px;
+    font-weight:900;
+  }
+
+  p{
+    margin:4px 0 0;
+    color:#64748b;
+    font-size:13px;
+    font-weight:700;
+  }
+
+  @media(max-width:520px){
+    flex-direction:column;
+    align-items:flex-start;
+  }
+`;
+
+const ClosePanelButton = styled.button`
+  border:none;
+  border-radius:12px;
+
+  padding:9px 13px;
+
+  background:#f1f5f9;
+  color:#0f172a;
+
+  font-size:12px;
+  font-weight:900;
+
+  cursor:pointer;
+
+  &:hover{
+    background:#e2e8f0;
+  }
+`;
+
+const DetailGrid = styled.div`
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:12px;
+`;
+
+const DetailCard = styled.div`
+  background:#f8fafc;
+
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+
+  padding:14px;
+
+  border-left:4px solid ${props =>
+    props.warning
+    ? "#dc2626"
+    : props.success
+    ? "#16a34a"
+    : "#facc15"};
+`;
+
+const DetailTitle = styled.div`
+  color:#0f172a;
+  font-size:14px;
+  font-weight:900;
+
+  margin-bottom:8px;
+`;
+
+const DetailMeta = styled.div`
+  color:#475569;
+  font-size:13px;
+  line-height:1.55;
+
+  strong{
+    color:#0f172a;
+  }
+`;
+
+const DetailAmount = styled.div`
+  color:#0f172a;
+  font-size:26px;
+  font-weight:900;
+
+  margin-top:8px;
+`;
+
 export default function Admin(){
 
   const [orders,setOrders] =
@@ -745,6 +759,9 @@ export default function Admin(){
 
   const [liveRiders,setLiveRiders] =
     useState({});
+
+    const [activeAdminView,setActiveAdminView] =
+  useState("");
 
   useEffect(()=>{
 
@@ -1023,6 +1040,95 @@ export default function Admin(){
       )
     : 0;
 
+    const riderRevenueList =
+  Object.values(
+    deliveredOrders.reduce(
+      (summary,o)=>{
+
+        const riderId =
+          o.rider?._id ||
+          o.rider ||
+          "unassigned";
+
+        const riderName =
+          o.rider?.name ||
+          "Unassigned Rider";
+
+        const riderPhone =
+          o.rider?.phone ||
+          "N/A";
+
+        if(!summary[riderId]){
+
+          summary[riderId] = {
+            riderId,
+            riderName,
+            riderPhone,
+            totalRevenue:0,
+            deliveredCount:0
+          };
+        }
+
+        summary[riderId].totalRevenue +=
+          Number(o.total || 0);
+
+        summary[riderId].deliveredCount +=
+          1;
+
+        return summary;
+      },
+      {}
+    )
+  ).sort(
+    (a,b)=>
+      b.totalRevenue - a.totalRevenue
+  );
+
+function getSelectedOrders(){
+
+  if(activeAdminView === "total"){
+    return orders;
+  }
+
+  if(activeAdminView === "active"){
+    return activeOrders;
+  }
+
+  if(activeAdminView === "delivered"){
+    return deliveredOrders;
+  }
+
+  if(activeAdminView === "pending"){
+    return pendingOrders;
+  }
+
+  if(activeAdminView === "fraud"){
+    return fraudOrders;
+  }
+
+  return [];
+}
+
+const selectedOrders =
+  getSelectedOrders();
+
+const selectedTitle =
+  activeAdminView === "revenue"
+  ? "Total Revenue By Riders"
+  : activeAdminView === "total"
+  ? "All Orders"
+  : activeAdminView === "active"
+  ? "Active Orders"
+  : activeAdminView === "delivered"
+  ? "Delivered Orders"
+  : activeAdminView === "pending"
+  ? "Pending Orders"
+  : activeAdminView === "fraud"
+  ? "Fraud / Cancel Alerts"
+  : activeAdminView === "riders"
+  ? "Riders Activities"
+  : "";
+
   return(
 
     <Page>
@@ -1058,8 +1164,7 @@ export default function Admin(){
                 </DashboardHeroTitle>
 
                 <DashboardHeroText>
-                  Monitor orders, riders, revenue, fraud alerts,
-                  and live delivery movement from one clean admin dashboard.
+                  Monitor All Activities
                 </DashboardHeroText>
 
                 <HeroLogoutButton
@@ -1120,127 +1225,440 @@ export default function Admin(){
 
         <Stats>
 
-          <StatCard>
+  <StatCard
+    active={activeAdminView === "revenue"}
+    onClick={()=>
+      setActiveAdminView("revenue")
+    }
+  >
+
+    <StatIcon>
+      ₵
+    </StatIcon>
+
+    <StatTitle>
+      Total Revenue
+    </StatTitle>
+
+    <StatValue>
+      ₵{totalRevenue}
+    </StatValue>
+
+    <StatSmall>
+      Click to view rider revenue.
+    </StatSmall>
+
+  </StatCard>
+
+  <StatCard
+    active={activeAdminView === "total"}
+    onClick={()=>
+      setActiveAdminView("total")
+    }
+  >
+
+    <StatIcon>
+      📦
+    </StatIcon>
+
+    <StatTitle>
+      Total Orders
+    </StatTitle>
+
+    <StatValue>
+      {totalOrders}
+    </StatValue>
+
+    <StatSmall>
+      Click to view all orders.
+    </StatSmall>
+
+  </StatCard>
+
+  <StatCard
+    active={activeAdminView === "active"}
+    onClick={()=>
+      setActiveAdminView("active")
+    }
+  >
+
+    <StatIcon>
+      🛵
+    </StatIcon>
+
+    <StatTitle>
+      Active Orders
+    </StatTitle>
+
+    <StatValue>
+      {activeOrders.length}
+    </StatValue>
+
+    <StatSmall>
+      Click to view active orders.
+    </StatSmall>
+
+  </StatCard>
+
+  <StatCard
+    active={activeAdminView === "delivered"}
+    onClick={()=>
+      setActiveAdminView("delivered")
+    }
+  >
+
+    <StatIcon>
+      ✅
+    </StatIcon>
+
+    <StatTitle>
+      Delivered
+    </StatTitle>
+
+    <StatValue>
+      {deliveredOrders.length}
+    </StatValue>
+
+    <StatSmall>
+      Click to view delivered orders.
+    </StatSmall>
+
+  </StatCard>
+
+  <StatCard
+    active={activeAdminView === "pending"}
+    onClick={()=>
+      setActiveAdminView("pending")
+    }
+  >
+
+    <StatIcon>
+      ⏳
+    </StatIcon>
+
+    <StatTitle>
+      Pending Orders
+    </StatTitle>
+
+    <StatValue>
+      {pendingOrders.length}
+    </StatValue>
+
+    <StatSmall>
+      Click to view pending orders.
+    </StatSmall>
+
+  </StatCard>
+
+  <StatCard
+    active={activeAdminView === "fraud"}
+    onClick={()=>
+      setActiveAdminView("fraud")
+    }
+  >
+
+    <StatIcon>
+      ⚠️
+    </StatIcon>
+
+    <StatTitle>
+      Fraud Alerts
+    </StatTitle>
+
+    <StatValue>
+      {fraudOrders.length}
+    </StatValue>
+
+    <StatSmall>
+      Click to view cancel alerts.
+    </StatSmall>
+
+  </StatCard>
+
+  <StatCard
+  active={activeAdminView === "riders"}
+  onClick={()=>
+    setActiveAdminView("riders")
+  }
+>
 
   <StatIcon>
-    ₵
+    🧍‍♂️
   </StatIcon>
 
   <StatTitle>
-    Total Revenue
+    Riders Activities
   </StatTitle>
 
   <StatValue>
-    ₵{totalRevenue}
+    {riders.length}
   </StatValue>
 
   <StatSmall>
-    Revenue from completed deliveries.
+    Click to view all riders.
   </StatSmall>
 
 </StatCard>
 
-          <StatCard>
+</Stats>
 
-            <StatIcon>
-              📦
-            </StatIcon>
+{
+  activeAdminView && (
 
-            <StatTitle>
-              Total Orders
-            </StatTitle>
+    <DetailPanel>
 
-            <StatValue>
-              {totalOrders}
-            </StatValue>
+      <DetailHeader>
 
-            <StatSmall>
-              All orders created on MonniDrop.
-            </StatSmall>
+        <div>
 
-          </StatCard>
+          <h3>
+            {selectedTitle}
+          </h3>
 
-          <StatCard>
+        </div>
 
-            <StatIcon>
-              🛵
-            </StatIcon>
+        <ClosePanelButton
+          onClick={()=>
+            setActiveAdminView("")
+          }
+        >
+          Close
+        </ClosePanelButton>
 
-            <StatTitle>
-              Active Orders
-            </StatTitle>
+      </DetailHeader>
 
-            <StatValue>
-              {activeOrders.length}
-            </StatValue>
+      {
+  activeAdminView === "revenue"
+  ? (
 
-            <StatSmall>
-              Accepted, picked, or delivering.
-            </StatSmall>
+    riderRevenueList.length === 0
+    ? (
 
-          </StatCard>
+      <Empty>
+        No delivered rider revenue found yet.
+      </Empty>
 
-          <StatCard>
+    ) : (
 
-            <StatIcon>
-              ✅
-            </StatIcon>
+      <DetailGrid>
 
-            <StatTitle>
-              Delivered
-            </StatTitle>
+        {
+          riderRevenueList.map((rider)=>(
 
-            <StatValue>
-              {deliveredOrders.length}
-            </StatValue>
+            <DetailCard
+              key={rider.riderId}
+              success
+            >
 
-            <StatSmall>
-              Orders successfully completed.
-            </StatSmall>
+              <DetailTitle>
+                {rider.riderName}
+              </DetailTitle>
 
-          </StatCard>
+              <DetailMeta>
+                <strong>Phone:</strong>{" "}
+                {rider.riderPhone}
+                <br />
 
-          <StatCard>
+                <strong>Delivered Orders:</strong>{" "}
+                {rider.deliveredCount}
+              </DetailMeta>
 
-            <StatIcon>
-              ⏳
-            </StatIcon>
+              <DetailAmount>
+                ₵{rider.totalRevenue}
+              </DetailAmount>
 
-            <StatTitle>
-              Pending Orders
-            </StatTitle>
+            </DetailCard>
+          ))
+        }
 
-            <StatValue>
-              {pendingOrders.length}
-            </StatValue>
+      </DetailGrid>
+    )
 
-            <StatSmall>
-              Orders waiting for riders.
-            </StatSmall>
+  ) : activeAdminView === "riders"
+  ? (
 
-          </StatCard>
+    riders.length === 0
+    ? (
 
-          <StatCard>
+      <Empty>
+        No riders found.
+      </Empty>
 
-            <StatIcon>
-              ⚠️
-            </StatIcon>
+    ) : (
 
-            <StatTitle>
-              Fraud Alerts
-            </StatTitle>
+      <DetailGrid>
 
-            <StatValue>
-              {fraudOrders.length}
-            </StatValue>
+        {
+          riders.map((r)=>{
 
-            <StatSmall>
-              Suspicious cancellation activity.
-            </StatSmall>
+            const riderIsBusy =
+              orders.some(
+                (o)=>
+                  o.rider?._id === r._id &&
+                  [
+                    "accepted",
+                    "picked",
+                    "delivering"
+                  ].includes(o.status)
+              );
 
-          </StatCard>
+            return(
 
-        </Stats>
+              <DetailCard
+                key={r._id}
+                success={
+                  r.status !== "suspended" &&
+                  !riderIsBusy
+                }
+                warning={
+                  r.status === "suspended"
+                }
+              >
+
+                <DetailTitle>
+                  {r.name || "Unnamed Rider"}
+                </DetailTitle>
+
+                <DetailMeta>
+                  <strong>Phone:</strong>{" "}
+                  {r.phone || "N/A"}
+                  <br />
+
+                  <strong>Status:</strong>{" "}
+                  {
+                    r.status === "suspended"
+                    ? "Suspended"
+                    : riderIsBusy
+                    ? "Busy on delivery"
+                    : "Available"
+                  }
+                  <br />
+
+                  <strong>Current Order:</strong>{" "}
+                  {
+                    r.currentOrder
+                    ? "Busy on delivery"
+                    : "No active order"
+                  }
+                </DetailMeta>
+
+                <div
+                  style={{
+                    marginTop:"12px"
+                  }}
+                >
+
+                  {
+                    r.status === "suspended"
+                    ? (
+
+                      <ActionButton
+                        green
+                        onClick={()=>
+                          unsuspendRider(
+                            r._id
+                          )
+                        }
+                      >
+                        Reactivate Rider
+                      </ActionButton>
+
+                    ) : (
+
+                      <ActionButton
+                        onClick={()=>
+                          suspendRider(
+                            r._id
+                          )
+                        }
+                      >
+                        Suspend Rider
+                      </ActionButton>
+                    )
+                  }
+
+                </div>
+
+              </DetailCard>
+            );
+          })
+        }
+
+      </DetailGrid>
+    )
+
+  ) : (
+
+    selectedOrders.length === 0
+    ? (
+
+      <Empty>
+        No records found for this view.
+      </Empty>
+
+    ) : (
+
+      <DetailGrid>
+
+        {
+          selectedOrders.map((o)=>(
+
+            <DetailCard
+              key={o._id}
+              warning={activeAdminView === "fraud"}
+              success={activeAdminView === "delivered"}
+            >
+
+              <DetailTitle>
+                {o.customer?.name || "Unknown Customer"}
+              </DetailTitle>
+
+              <DetailMeta>
+                <strong>Pickup:</strong>{" "}
+                {o.pickupLocation || "N/A"}
+                <br />
+
+                <strong>Dropoff:</strong>{" "}
+                {o.dropoffLocation || "N/A"}
+                <br />
+
+                <strong>Rider:</strong>{" "}
+                {
+                  o.rider?.name ||
+                  "Waiting..."
+                }
+                <br />
+
+                <strong>Status:</strong>{" "}
+                {o.status || "N/A"}
+                <br />
+
+                <strong>Amount:</strong>{" "}
+                ₵{o.total || 0}
+
+                {
+                  activeAdminView === "fraud" && (
+                    <>
+                      <br />
+                      <strong>Cancel Reason:</strong>{" "}
+                      {o.cancelReason || "No reason provided"}
+                    </>
+                  )
+                }
+              </DetailMeta>
+
+            </DetailCard>
+          ))
+        }
+
+      </DetailGrid>
+    )
+  )
+}
+
+    </DetailPanel>
+  )
+}
 
         <AnalyticsGrid>
 
@@ -1355,16 +1773,17 @@ export default function Admin(){
           >
 
             <MapContainer
-              center={[
-                5.6037,
-                -0.1870
-              ]}
-              zoom={11}
-              style={{
-                height:"420px",
-                width:"100%"
-              }}
-            >
+  center={[
+    7.9465,
+    -1.0232
+  ]}
+  zoom={7}
+  minZoom={6}
+  style={{
+    height:"420px",
+    width:"100%"
+  }}
+>
 
               <TileLayer
                 attribution='&copy; OpenStreetMap contributors'
@@ -1396,321 +1815,6 @@ export default function Admin(){
           </div>
 
         </MapBox>
-
-        <Grid>
-
-          <Section>
-
-            <SectionTitle>
-
-              <h3>
-                Fraud / Cancel Monitoring
-              </h3>
-
-              <CountBadge>
-                {fraudOrders.length} Alerts
-              </CountBadge>
-
-            </SectionTitle>
-
-            {
-              fraudOrders.length === 0
-              ? (
-
-                <Empty>
-                  No suspicious cancellations found
-                </Empty>
-
-              ) : (
-
-                fraudOrders.map((o)=>(
-
-                  <OrderCard key={o._id}>
-
-                    <Row>
-                      <strong>Customer:</strong>{" "}
-                      {o.customer?.name || "Unknown"}
-                    </Row>
-
-                    <Row>
-                      <strong>Phone:</strong>{" "}
-                      {o.customer?.phone || "N/A"}
-                    </Row>
-
-                    <Row>
-                      <strong>Pickup:</strong>{" "}
-                      {o.pickupLocation}
-                    </Row>
-
-                    <Row>
-                      <strong>Dropoff:</strong>{" "}
-                      {o.dropoffLocation}
-                    </Row>
-
-                    <Row>
-                      <strong>Cancel Count:</strong>{" "}
-                      {
-                        o.cancelCount ||
-                        o.customerCancelCount ||
-                        o.riderCancelCount ||
-                        1
-                      }
-                    </Row>
-
-                    <Row>
-                      <strong>Reason:</strong>{" "}
-                      {o.cancelReason || "No reason provided"}
-                    </Row>
-
-                    <Badge status="pending">
-                      Suspicious Cancel
-                    </Badge>
-
-                  </OrderCard>
-                ))
-              )
-            }
-
-          </Section>
-
-          <Section>
-
-            <SectionTitle>
-
-              <h3>
-                Riders Activity
-              </h3>
-
-              <CountBadge>
-                {riders.length} Riders
-              </CountBadge>
-
-            </SectionTitle>
-
-            {
-              riders.length === 0
-              ? (
-
-                <Empty>
-                  No riders found
-                </Empty>
-
-              ) : (
-
-                riders.map((r)=>(
-
-                  <RiderCard
-                    key={r._id}
-                  >
-
-                    <Row>
-                      <strong>
-                        Rider:
-                      </strong>{" "}
-                      {r.name}
-                    </Row>
-
-                    <Row>
-                      <strong>
-                        Phone:
-                      </strong>{" "}
-                      {r.phone}
-                    </Row>
-
-                    <Row>
-                      <strong>
-                        Current Order:
-                      </strong>{" "}
-
-                      {
-                        r.currentOrder
-                        ? "Busy on delivery"
-                        : "No active order"
-                      }
-
-                    </Row>
-
-                    <Badge
-                      status={
-                        orders.some(
-                          (o)=>
-                            o.rider?._id === r._id &&
-                            [
-                              "accepted",
-                              "picked",
-                              "delivering"
-                            ].includes(o.status)
-                        )
-                        ? "assigned"
-                        : r.status === "suspended"
-                        ? "pending"
-                        : "delivered"
-                      }
-                    >
-                      {
-                        orders.some(
-                          (o)=>
-                            o.rider?._id === r._id &&
-                            [
-                              "accepted",
-                              "picked",
-                              "delivering"
-                            ].includes(o.status)
-                        )
-                        ? "busy"
-                        : r.status
-                      }
-                    </Badge>
-
-                    <div
-                      style={{
-                        marginTop:"14px",
-                        display:"flex",
-                        gap:"10px",
-                        flexWrap:"wrap"
-                      }}
-                    >
-
-                      {
-                        r.status === "suspended"
-
-                        ?
-
-                        <ActionButton
-                          green
-                          onClick={()=>
-                            unsuspendRider(
-                              r._id
-                            )
-                          }
-                        >
-                          Reactivate Rider
-                        </ActionButton>
-
-                        :
-
-                        <ActionButton
-                          onClick={()=>
-                            suspendRider(
-                              r._id
-                            )
-                          }
-                        >
-                          Suspend Rider
-                        </ActionButton>
-                      }
-
-                    </div>
-
-                  </RiderCard>
-                ))
-              )
-            }
-
-          </Section>
-
-          <Section>
-
-            <SectionTitle>
-
-              <h3>
-                Orders Monitoring
-              </h3>
-
-              <CountBadge>
-                {orders.length} Orders
-              </CountBadge>
-
-            </SectionTitle>
-
-            {
-              orders.length === 0
-              ? (
-
-                <Empty>
-                  No orders yet
-                </Empty>
-
-              ) : (
-
-                orders.map((o)=>(
-
-                  <OrderCard
-                    key={o._id}
-                  >
-
-                    <Row>
-                      <strong>
-                        Customer:
-                      </strong>{" "}
-                      {
-                        o.customer?.name || "Unknown"
-                      }
-                    </Row>
-
-                    <Row>
-                      <strong>
-                        Pickup:
-                      </strong>{" "}
-                      {
-                        o.pickupLocation
-                      }
-                    </Row>
-
-                    <Row>
-                      <strong>
-                        Dropoff:
-                      </strong>{" "}
-                      {
-                        o.dropoffLocation
-                      }
-                    </Row>
-
-                    <Row>
-                      <strong>
-                        Distance:
-                      </strong>{" "}
-                      {
-                        o.distance
-                      } km
-                    </Row>
-
-                    <Row>
-                      <strong>
-                        Amount:
-                      </strong>{" "}
-                      ₵{
-                        o.total
-                      }
-                    </Row>
-
-                    <Row>
-                      <strong>
-                        Rider:
-                      </strong>{" "}
-
-                      {
-                        o.rider
-                        ? o.rider.name
-                        : "Waiting..."
-                      }
-
-                    </Row>
-
-                    <Badge
-                      status={o.status}
-                    >
-                      {o.status}
-                    </Badge>
-
-                  </OrderCard>
-                ))
-              )
-            }
-
-          </Section>
-
-        </Grid>
 
       </Wrapper>
 
