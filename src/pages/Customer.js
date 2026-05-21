@@ -2973,6 +2973,28 @@ useEffect(()=>{
 
 },[]);
 
+useEffect(()=>{
+
+  const customerId =
+    user?._id ||
+    user?.id;
+
+  if(!customerId){
+    return;
+  }
+
+  socket.emit(
+    "userOnline",
+    {
+      userId:customerId,
+      name:user?.name || "Customer",
+      phone:user?.phone || "N/A",
+      role:"customer"
+    }
+  );
+
+},[user]);
+
 
   useEffect(()=>{
 

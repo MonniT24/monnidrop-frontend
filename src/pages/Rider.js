@@ -1104,23 +1104,38 @@ const [riderEmergency,setRiderEmergency] =
 const [orders, setOrders] =
   useState([]);
 
-  const visibleOrders =
-  orders.filter(
+const riderIsBlocked =
+  user?.status === "suspended" ||
+  user?.riderAccountStatus === "temporary_suspended" ||
+  user?.riderAccountStatus === "permanent_suspended";
 
-    (o)=>
+const riderBlockedTitle =
+  user?.riderAccountStatus === "permanent_suspended"
+  ? "⛔ Permanently Suspended"
+  : "⏳ Temporarily Suspended";
 
-      o.status === "pending"
+const riderBlockedMessage =
+  "You can login to your account, but you cannot view, accept, or manage delivery orders right now.";
 
-      ||
+const visibleOrders =
+  riderIsBlocked
+  ? []
+  : orders.filter(
 
-      o.rider?._id ===
-      user?._id
+      (o)=>
 
-      ||
+        o.status === "pending"
 
-      o.rider ===
-      user?._id
-  );
+        ||
+
+        o.rider?._id ===
+        user?._id
+
+        ||
+
+        o.rider ===
+        user?._id
+    );
 
   const pendingRequestOrders =
   visibleOrders.filter(
@@ -1179,6 +1194,11 @@ const [previousMessages,
     const getGreeting = () => {
 
       const getRiderDisplayStatus = () => {
+
+  if(riderIsBlocked){
+
+    return "suspended";
+  }
 
   if(
     activeOrders.length > 0
@@ -1341,6 +1361,28 @@ useEffect(() => {
 
 }, [user]);
 
+useEffect(()=>{
+
+  const riderId =
+    user?._id ||
+    user?.id;
+
+  if(!riderId){
+    return;
+  }
+
+  socket.emit(
+    "userOnline",
+    {
+      userId:riderId,
+      name:user?.name || "Rider",
+      phone:user?.phone || "N/A",
+      role:"rider"
+    }
+  );
+
+},[user]);
+
 useEffect(() => {
 
   socket.on(
@@ -1360,71 +1402,68 @@ useEffect(() => {
 
 }, []);
 
-useEffect(() => {
+useEffect(()=>{
 
   socket.on(
-    "newMessage",
-    (data) => {
-
-      console.log(
-        "New message received:",
-        data
-      );
-
-      if(data.type === "message"){
-
-        setMessageInbox(
-          (prev) => [
-            {
-              orderId:data.orderId,
-              text:data.message || data.text,
-              sender:data.sender,
-              time:new Date()
-                .toLocaleTimeString()
-            },
-            ...prev
-          ]
-        );
-
-        playNotification();
-
-        fetchOrders();
-
-        return;
-      }
+    "newNotification",
+    (note)=>{
 
       setNotifications(
-        (prev) => [
+        (prev)=>[
           {
             text:
-              data.message || data.text,
+              note.message || "New notification",
+
+            title:
+              note.title || "MonniDrop Notice",
 
             sender:
-              data.sender || "MonniDrop",
+              "MonniDrop Admin",
 
             time:
-              new Date()
-                .toLocaleTimeString()
+              note.createdAt
+              ? new Date(note.createdAt)
+                .toLocaleString()
+              : new Date()
+                .toLocaleString()
           },
-
           ...prev
         ]
       );
 
+      setUser(
+        (prev)=>{
+
+          if(!prev){
+            return prev;
+          }
+
+          return {
+            ...prev,
+            notifications:[
+              note,
+              ...(prev.notifications || [])
+            ]
+          };
+        }
+      );
+
       playNotification();
+
+      fetchMe();
 
       fetchOrders();
     }
   );
 
-  return () => {
+  return ()=>{
 
     socket.off(
-      "newMessage"
+      "newNotification"
     );
   };
 
-}, []);
+},[]);
 
 useEffect(()=>{
 
@@ -1754,6 +1793,15 @@ async function acceptOrder(orderId){
 
   try{
 
+    if(riderIsBlocked){
+
+  alert(
+    riderBlockedMessage
+  );
+
+  return;
+}
+
     if(!user){
 
       alert("Rider not loaded");
@@ -1828,6 +1876,15 @@ async function acceptOrder(orderId){
 
   try{
 
+    if(riderIsBlocked){
+
+  alert(
+    riderBlockedMessage
+  );
+
+  return;
+}
+
     await API.put(
 
       `/orders/${orderId}`,
@@ -1862,6 +1919,15 @@ async function acceptOrder(orderId){
 
     try{
 
+      if(riderIsBlocked){
+
+  alert(
+    riderBlockedMessage
+  );
+
+  return;
+}
+
       await API.put(
 
         `/orders/${orderId}`,
@@ -1891,6 +1957,15 @@ async function acceptOrder(orderId){
 
     try{
 
+      if(riderIsBlocked){
+
+  alert(
+    riderBlockedMessage
+  );
+
+  return;
+}
+
       await API.put(
 
         `/orders/${orderId}`,
@@ -1919,6 +1994,15 @@ async function acceptOrder(orderId){
   ){
 
     try{
+
+      if(riderIsBlocked){
+
+  alert(
+    riderBlockedMessage
+  );
+
+  return;
+}
 
       const deliveryCode =
         deliveryCodes[orderId];
@@ -2320,7 +2404,54 @@ async function acceptOrder(orderId){
 </MobileMenuButton>
 
     {activeSection === "dashboard" && (
+
   <>
+{
+  riderIsBlocked && (
+
+    <OrderCard
+      style={{
+        border:"1px solid #fecaca",
+        borderLeft:"6px solid #dc2626",
+        background:
+          "linear-gradient(135deg, #fff1f2, #ffffff)",
+        marginBottom:"18px"
+      }}
+    >
+
+      <h3
+        style={{
+          marginTop:0,
+          marginBottom:"10px",
+          color:"#991b1b",
+          fontSize:"22px",
+          fontWeight:"900"
+        }}
+      >
+        {riderBlockedTitle}
+      </h3>
+
+      <Row>
+        {riderBlockedMessage}
+      </Row>
+
+      <Row>
+        <strong>Reason:</strong>{" "}
+        {user?.riderStatusReason || "No reason provided by admin."}
+      </Row>
+
+      <StatusBadge
+        style={{
+          background:"#fee2e2",
+          color:"#b91c1c"
+        }}
+      >
+        Orders Hidden
+      </StatusBadge>
+
+    </OrderCard>
+  )
+}
 
     <DashboardHero>
 
@@ -2887,7 +3018,7 @@ async function acceptOrder(orderId){
               marginTop:"3px"
             }}
           >
-  Click to view
+          Click to view
           </div>
 
         </div>
@@ -5100,6 +5231,68 @@ user?.status !== "busy" && (
       </DashboardHeroContent>
 
     </DashboardHero>
+
+    {
+  user?.notifications?.length > 0 && (
+
+    <OrderCard
+      style={{
+        marginBottom:"18px",
+        background:
+          "linear-gradient(135deg, #ffffff, #f8fafc)"
+      }}
+    >
+
+      <h3
+        style={{
+          marginTop:0,
+          color:"#0f172a",
+          fontWeight:"900"
+        }}
+      >
+        Admin Account Notices
+      </h3>
+
+      <OrdersGrid>
+
+        {
+          user.notifications.map((note,index)=>(
+
+            <OrderCard
+              key={index}
+              style={{
+                borderLeft:"5px solid #2563eb"
+              }}
+            >
+
+              <Row>
+                <strong>
+                  {note.title || "MonniDrop Notice"}
+                </strong>
+              </Row>
+
+              <Row>
+                {note.message || "No message provided"}
+              </Row>
+
+              <StatusBadge>
+                {
+                  note.createdAt
+                  ? new Date(note.createdAt)
+                    .toLocaleString()
+                  : "System notice"
+                }
+              </StatusBadge>
+
+            </OrderCard>
+          ))
+        }
+
+      </OrdersGrid>
+
+    </OrderCard>
+  )
+}
 
     <OrderCard
       style={{

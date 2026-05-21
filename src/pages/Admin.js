@@ -377,12 +377,12 @@ const StatCard = styled.div`
   padding:18px;
 
   border:${props =>
-    props.active
+    props.$active
     ? "1px solid #facc15"
     : "1px solid #e5e7eb"};
 
   box-shadow:${props =>
-    props.active
+    props.$active
     ? "0 14px 30px rgba(250,204,21,0.18)"
     : "0 8px 22px rgba(15,23,42,0.045)"};
 
@@ -423,8 +423,19 @@ const StatIcon = styled.div`
   align-items:center;
   justify-content:center;
 
-  background:#eff6ff;
-  color:#1d4ed8;
+  background:${props =>
+    props.$online === true
+    ? "#dcfce7"
+    : props.$online === false
+    ? "#f1f5f9"
+    : "#eff6ff"};
+
+  color:${props =>
+    props.$online === true
+    ? "#16a34a"
+    : props.$online === false
+    ? "#94a3b8"
+    : "#1d4ed8"};
 
   font-size:20px;
   font-weight:900;
@@ -433,6 +444,31 @@ const StatIcon = styled.div`
 
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.8);
+
+  animation:${props =>
+    props.$online === true
+    ? "onlineBlink 1s ease-in-out infinite"
+    : "none"};
+
+  @keyframes onlineBlink{
+    0%{
+      transform:scale(1);
+      box-shadow:
+        0 0 0 0 rgba(34,197,94,0.45);
+    }
+
+    50%{
+      transform:scale(1.08);
+      box-shadow:
+        0 0 0 8px rgba(34,197,94,0.12);
+    }
+
+    100%{
+      transform:scale(1);
+      box-shadow:
+        0 0 0 0 rgba(34,197,94,0);
+    }
+  }
 `;
 
 const StatTitle = styled.div`
@@ -556,6 +592,110 @@ const Empty = styled.div`
   border-radius:16px;
 `;
 
+const OnlinePeopleGrid = styled.div`
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:16px;
+  margin-bottom:24px;
+`;
+
+const OnlinePeopleCard = styled.div`
+  background:white;
+
+  border:1px solid #e5e7eb;
+  border-radius:22px;
+
+  padding:18px;
+
+  box-shadow:
+    0 8px 24px rgba(15,23,42,0.05);
+`;
+
+const OnlinePeopleHeader = styled.div`
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+
+  margin-bottom:14px;
+
+  h3{
+    margin:0;
+    color:#0f172a;
+    font-size:17px;
+    font-weight:900;
+  }
+`;
+
+const OnlineCount = styled.div`
+  background:#dcfce7;
+  color:#166534;
+
+  padding:6px 11px;
+  border-radius:999px;
+
+  font-size:12px;
+  font-weight:900;
+`;
+
+const OnlinePersonRow = styled.div`
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+
+  padding:12px 0;
+
+  border-bottom:1px solid #f1f5f9;
+
+  &:last-child{
+    border-bottom:none;
+  }
+`;
+
+const OnlinePersonLeft = styled.div`
+  display:flex;
+  align-items:center;
+  gap:10px;
+`;
+
+const OnlineDot = styled.div`
+  width:10px;
+  height:10px;
+
+  border-radius:50%;
+
+  background:#22c55e;
+
+  box-shadow:
+    0 0 0 4px rgba(34,197,94,0.14);
+`;
+
+const OnlinePersonName = styled.div`
+  color:#0f172a;
+  font-size:14px;
+  font-weight:900;
+`;
+
+const OnlinePersonPhone = styled.div`
+  color:#64748b;
+  font-size:12px;
+  font-weight:700;
+  margin-top:2px;
+`;
+
+const OnlineRoleBadge = styled.div`
+  background:#eff6ff;
+  color:#1d4ed8;
+
+  padding:6px 10px;
+  border-radius:999px;
+
+  font-size:11px;
+  font-weight:900;
+  text-transform:uppercase;
+`;
+
 const MapBox = styled.div`
   background:white;
 
@@ -632,6 +772,177 @@ const ActionButton = styled.button`
     transform:translateY(-1px);
     opacity:0.92;
   }
+`;
+
+const ModalOverlay = styled.div`
+  position:fixed;
+  inset:0;
+
+  background:rgba(15,23,42,0.58);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:18px;
+
+  z-index:99999;
+`;
+
+const ModalCard = styled.div`
+  width:100%;
+  max-width:620px;
+
+  background:white;
+
+  border-radius:26px;
+
+  padding:24px;
+
+  box-shadow:
+    0 28px 80px rgba(15,23,42,0.32);
+`;
+
+const ModalTitle = styled.h3`
+  margin:0;
+
+  color:#0f172a;
+
+  font-size:24px;
+  font-weight:900;
+`;
+
+const ModalText = styled.p`
+  margin:8px 0 18px;
+
+  color:#64748b;
+
+  font-size:13px;
+  font-weight:700;
+  line-height:1.5;
+`;
+
+const StatusOptionGrid = styled.div`
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:12px;
+
+  margin-bottom:16px;
+`;
+
+const StatusOption = styled.button`
+  border:${props =>
+    props.$active
+    ? "2px solid #2563eb"
+    : "1px solid #e5e7eb"};
+
+  background:${props =>
+    props.$active
+    ? "#eff6ff"
+    : "white"};
+
+  border-radius:18px;
+
+  padding:14px;
+
+  text-align:left;
+
+  cursor:pointer;
+
+  transition:0.2s ease;
+
+  &:hover{
+    border-color:#2563eb;
+    background:#eff6ff;
+    transform:translateY(-1px);
+  }
+`;
+
+const StatusOptionIcon = styled.div`
+  font-size:25px;
+  margin-bottom:8px;
+`;
+
+const StatusOptionTitle = styled.div`
+  color:#0f172a;
+
+  font-size:14px;
+  font-weight:900;
+`;
+
+const StatusOptionText = styled.div`
+  color:#64748b;
+
+  font-size:12px;
+  font-weight:700;
+
+  margin-top:5px;
+  line-height:1.45;
+`;
+
+const ReasonBox = styled.textarea`
+  width:100%;
+  min-height:120px;
+
+  border:1px solid #e5e7eb;
+  border-radius:18px;
+
+  padding:14px;
+
+  resize:vertical;
+  outline:none;
+
+  font-size:14px;
+  font-weight:700;
+
+  color:#0f172a;
+
+  box-sizing:border-box;
+
+  &:focus{
+    border-color:#2563eb;
+
+    box-shadow:
+      0 0 0 4px rgba(37,99,235,0.08);
+  }
+`;
+
+const ModalActions = styled.div`
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+
+  margin-top:16px;
+`;
+
+const CancelButton = styled.button`
+  border:none;
+  border-radius:14px;
+
+  padding:11px 15px;
+
+  background:#f1f5f9;
+  color:#0f172a;
+
+  font-size:13px;
+  font-weight:900;
+
+  cursor:pointer;
+`;
+
+const SaveStatusButton = styled.button`
+  border:none;
+  border-radius:14px;
+
+  padding:11px 15px;
+
+  background:#2563eb;
+  color:white;
+
+  font-size:13px;
+  font-weight:900;
+
+  cursor:pointer;
 `;
 
 const DetailPanel = styled.div`
@@ -763,6 +1074,21 @@ export default function Admin(){
     const [activeAdminView,setActiveAdminView] =
   useState("");
 
+  const [onlineUsers,setOnlineUsers] =
+  useState([]);
+
+  const [riderStatusModal,setRiderStatusModal] =
+  useState(false);
+
+const [selectedRider,setSelectedRider] =
+  useState(null);
+
+const [selectedRiderStatus,setSelectedRiderStatus] =
+  useState("temporary_suspended");
+
+const [riderStatusReason,setRiderStatusReason] =
+  useState("");
+
   useEffect(()=>{
 
     fetchUser();
@@ -831,6 +1157,7 @@ export default function Admin(){
       }
     );
 
+
     return ()=>{
 
       socket.off(
@@ -839,6 +1166,33 @@ export default function Admin(){
     };
 
   },[]);
+
+  useEffect(()=>{
+
+  socket.emit(
+    "requestOnlineUsers"
+  );
+
+  socket.on(
+    "onlineUsersUpdate",
+    (users)=>{
+
+      setOnlineUsers(
+        Array.isArray(users)
+        ? users
+        : []
+      );
+    }
+  );
+
+  return ()=>{
+
+    socket.off(
+      "onlineUsersUpdate"
+    );
+  };
+
+},[]);
 
   async function fetchUser(){
 
@@ -957,6 +1311,94 @@ export default function Admin(){
     }
   }
 
+  function openRiderStatusModal(rider){
+
+  setSelectedRider(rider);
+
+  setSelectedRiderStatus(
+    rider.riderAccountStatus ||
+    (
+      rider.status === "suspended"
+      ? "temporary_suspended"
+      : "active"
+    )
+  );
+
+  setRiderStatusReason(
+    rider.riderStatusReason || ""
+  );
+
+  setRiderStatusModal(true);
+}
+
+function getRiderAccountLabel(status){
+
+  if(status === "temporary_suspended"){
+    return "⏳ Temporary Suspended";
+  }
+
+  if(status === "permanent_suspended"){
+    return "⛔ Permanent Suspended";
+  }
+
+  if(status === "reinstated"){
+    return "🔄 Reinstated";
+  }
+
+  return "✅ Active Rider";
+}
+
+async function updateRiderAccountStatus(){
+
+  try{
+
+    if(!selectedRider){
+      return;
+    }
+
+    if(
+      !riderStatusReason ||
+      riderStatusReason.trim() === ""
+    ){
+
+      alert(
+        "Please enter the reason for this rider status."
+      );
+
+      return;
+    }
+
+    await API.put(
+      `/admin/riders/${selectedRider._id}/account-status`,
+      {
+        accountStatus:selectedRiderStatus,
+        reason:riderStatusReason.trim()
+      }
+    );
+
+    alert(
+      "Rider status updated and notification sent."
+    );
+
+    setRiderStatusModal(false);
+
+    setSelectedRider(null);
+
+    setRiderStatusReason("");
+
+    fetchRiders();
+
+  }catch(err){
+
+    console.log(err);
+
+    alert(
+      err.response?.data?.message ||
+      "Failed to update rider status"
+    );
+  }
+}
+
   function logout(){
 
     localStorage.clear();
@@ -1039,6 +1481,16 @@ export default function Admin(){
         (activeOrders.length / totalOrders) * 100
       )
     : 0;
+
+    const onlineRiders =
+  onlineUsers.filter(
+    (u)=>u.role === "rider"
+  );
+
+const onlineCustomers =
+  onlineUsers.filter(
+    (u)=>u.role === "customer"
+  );
 
     const riderRevenueList =
   Object.values(
@@ -1127,6 +1579,10 @@ const selectedTitle =
   ? "Fraud / Cancel Alerts"
   : activeAdminView === "riders"
   ? "Riders Activities"
+  : activeAdminView === "onlineRiders"
+  ? "Online Riders"
+  : activeAdminView === "onlineCustomers"
+  ? "Logged-in Customers"
   : "";
 
   return(
@@ -1226,11 +1682,12 @@ const selectedTitle =
         <Stats>
 
   <StatCard
-    active={activeAdminView === "revenue"}
-    onClick={()=>
-      setActiveAdminView("revenue")
-    }
-  >
+  
+  $active={activeAdminView === "revenue"}
+  onClick={()=>
+    setActiveAdminView("revenue")
+  }
+>
 
     <StatIcon>
       ₵
@@ -1249,9 +1706,8 @@ const selectedTitle =
     </StatSmall>
 
   </StatCard>
-
   <StatCard
-    active={activeAdminView === "total"}
+    $active={activeAdminView === "total"}
     onClick={()=>
       setActiveAdminView("total")
     }
@@ -1276,7 +1732,7 @@ const selectedTitle =
   </StatCard>
 
   <StatCard
-    active={activeAdminView === "active"}
+    $active={activeAdminView === "active"}
     onClick={()=>
       setActiveAdminView("active")
     }
@@ -1301,7 +1757,7 @@ const selectedTitle =
   </StatCard>
 
   <StatCard
-    active={activeAdminView === "delivered"}
+    $active={activeAdminView === "delivered"}
     onClick={()=>
       setActiveAdminView("delivered")
     }
@@ -1326,7 +1782,7 @@ const selectedTitle =
   </StatCard>
 
   <StatCard
-    active={activeAdminView === "pending"}
+    $active={activeAdminView === "pending"}
     onClick={()=>
       setActiveAdminView("pending")
     }
@@ -1351,7 +1807,7 @@ const selectedTitle =
   </StatCard>
 
   <StatCard
-    active={activeAdminView === "fraud"}
+    $active={activeAdminView === "fraud"}
     onClick={()=>
       setActiveAdminView("fraud")
     }
@@ -1376,15 +1832,16 @@ const selectedTitle =
   </StatCard>
 
   <StatCard
-  active={activeAdminView === "riders"}
+
+  $active={activeAdminView === "riders"}
   onClick={()=>
     setActiveAdminView("riders")
   }
 >
 
   <StatIcon>
-    🧍‍♂️
-  </StatIcon>
+  🏍️
+</StatIcon>
 
   <StatTitle>
     Riders Activities
@@ -1396,6 +1853,60 @@ const selectedTitle =
 
   <StatSmall>
     Click to view all riders.
+  </StatSmall>
+
+</StatCard>
+
+<StatCard
+  $active={activeAdminView === "onlineRiders"}
+  onClick={()=>
+    setActiveAdminView("onlineRiders")
+  }
+>
+
+  <StatIcon
+  $online={onlineRiders.length > 0}
+>
+  ●
+</StatIcon>
+
+  <StatTitle>
+    Online Riders
+  </StatTitle>
+
+  <StatValue>
+    {onlineRiders.length}
+  </StatValue>
+
+  <StatSmall>
+    Click to view online riders.
+  </StatSmall>
+
+</StatCard>
+
+<StatCard
+  $active={activeAdminView === "onlineCustomers"}
+  onClick={()=>
+    setActiveAdminView("onlineCustomers")
+  }
+>
+
+  <StatIcon
+  $online={onlineCustomers.length > 0}
+>
+  ●
+</StatIcon>
+
+  <StatTitle>
+    Logged-in Customers
+  </StatTitle>
+
+  <StatValue>
+    {onlineCustomers.length}
+  </StatValue>
+
+  <StatSmall>
+    Click to view logged-in customers.
   </StatSmall>
 
 </StatCard>
@@ -1520,27 +2031,23 @@ const selectedTitle =
                 </DetailTitle>
 
                 <DetailMeta>
-                  <strong>Phone:</strong>{" "}
-                  {r.phone || "N/A"}
-                  <br />
+  <strong>Phone:</strong>{" "}
+  {r.phone || "N/A"}
+  <br />
 
-                  <strong>Status:</strong>{" "}
-                  {
-                    r.status === "suspended"
-                    ? "Suspended"
-                    : riderIsBusy
-                    ? "Busy on delivery"
-                    : "Available"
-                  }
-                  <br />
+  <strong>Live Status:</strong>{" "}
+  {r.status || "N/A"}
+  <br />
 
-                  <strong>Current Order:</strong>{" "}
-                  {
-                    r.currentOrder
-                    ? "Busy on delivery"
-                    : "No active order"
-                  }
-                </DetailMeta>
+  <strong>Account Status:</strong>{" "}
+  {getRiderAccountLabel(
+    r.riderAccountStatus
+  )}
+  <br />
+
+  <strong>Reason:</strong>{" "}
+  {r.riderStatusReason || "No reason recorded"}
+</DetailMeta>
 
                 <div
                   style={{
@@ -1548,40 +2055,95 @@ const selectedTitle =
                   }}
                 >
 
-                  {
-                    r.status === "suspended"
-                    ? (
-
-                      <ActionButton
-                        green
-                        onClick={()=>
-                          unsuspendRider(
-                            r._id
-                          )
-                        }
-                      >
-                        Reactivate Rider
-                      </ActionButton>
-
-                    ) : (
-
-                      <ActionButton
-                        onClick={()=>
-                          suspendRider(
-                            r._id
-                          )
-                        }
-                      >
-                        Suspend Rider
-                      </ActionButton>
-                    )
-                  }
+                 <ActionButton
+  green
+  onClick={()=>
+    openRiderStatusModal(r)
+  }
+>
+  Manage Rider Status
+</ActionButton>
 
                 </div>
 
               </DetailCard>
             );
           })
+        }
+
+      </DetailGrid>
+    )
+
+   ) : activeAdminView === "onlineRiders"
+  ? (
+
+    onlineRiders.length === 0
+    ? (
+
+      <Empty>
+        No rider is online right now.
+      </Empty>
+
+    ) : (
+
+      <DetailGrid>
+
+        {
+          onlineRiders.map((rider)=>(
+
+            <DetailCard
+              key={rider.socketId}
+              success
+            >
+
+              <DetailTitle>
+                {rider.name || "Unknown Rider"}
+              </DetailTitle>
+
+            </DetailCard>
+          ))
+        }
+
+      </DetailGrid>
+    )
+
+  ) : activeAdminView === "onlineCustomers"
+  ? (
+
+    onlineCustomers.length === 0
+    ? (
+
+      <Empty>
+        No customer is logged in right now.
+      </Empty>
+
+    ) : (
+
+      <DetailGrid>
+
+        {
+          onlineCustomers.map((customer)=>(
+
+            <DetailCard
+              key={customer.socketId}
+              success
+            >
+
+              <DetailTitle>
+                {customer.name || "Unknown Customer"}
+              </DetailTitle>
+
+              <DetailMeta>
+                <strong>Phone:</strong>{" "}
+                {customer.phone || "N/A"}
+                <br />
+
+                <strong>Status:</strong>{" "}
+                Logged in
+              </DetailMeta>
+
+            </DetailCard>
+          ))
         }
 
       </DetailGrid>
@@ -1815,6 +2377,155 @@ const selectedTitle =
           </div>
 
         </MapBox>
+
+        {
+  riderStatusModal && selectedRider && (
+
+    <ModalOverlay>
+
+      <ModalCard>
+
+        <ModalTitle>
+          Manage Rider Status
+        </ModalTitle>
+
+        <ModalText>
+          Update account status for{" "}
+          <strong>
+            {selectedRider.name}
+          </strong>
+          . The reason will be sent automatically to the rider notification inbox.
+        </ModalText>
+
+        <StatusOptionGrid>
+
+          <StatusOption
+            type="button"
+            active={selectedRiderStatus === "active"}
+            onClick={()=>
+              setSelectedRiderStatus("active")
+            }
+          >
+
+            <StatusOptionIcon>
+              ✅
+            </StatusOptionIcon>
+
+            <StatusOptionTitle>
+              Active Rider
+            </StatusOptionTitle>
+
+            <StatusOptionText>
+              Rider can receive and manage delivery orders.
+            </StatusOptionText>
+
+          </StatusOption>
+
+          <StatusOption
+            type="button"
+            active={selectedRiderStatus === "temporary_suspended"}
+            onClick={()=>
+              setSelectedRiderStatus("temporary_suspended")
+            }
+          >
+
+            <StatusOptionIcon>
+              ⏳
+            </StatusOptionIcon>
+
+            <StatusOptionTitle>
+              Temporary Suspended
+            </StatusOptionTitle>
+
+            <StatusOptionText>
+              Rider can login but cannot see or accept orders.
+            </StatusOptionText>
+
+          </StatusOption>
+
+          <StatusOption
+            type="button"
+            active={selectedRiderStatus === "permanent_suspended"}
+            onClick={()=>
+              setSelectedRiderStatus("permanent_suspended")
+            }
+          >
+
+            <StatusOptionIcon>
+              ⛔
+            </StatusOptionIcon>
+
+            <StatusOptionTitle>
+              Permanent Suspended
+            </StatusOptionTitle>
+
+            <StatusOptionText>
+              Rider can login but is blocked from delivery orders.
+            </StatusOptionText>
+
+          </StatusOption>
+
+          <StatusOption
+            type="button"
+            active={selectedRiderStatus === "reinstated"}
+            onClick={()=>
+              setSelectedRiderStatus("reinstated")
+            }
+          >
+
+            <StatusOptionIcon>
+              🔄
+            </StatusOptionIcon>
+
+            <StatusOptionTitle>
+              Reinstated
+            </StatusOptionTitle>
+
+            <StatusOptionText>
+              Rider is restored after suspension.
+            </StatusOptionText>
+
+          </StatusOption>
+
+        </StatusOptionGrid>
+
+        <ReasonBox
+          placeholder="Write the reason. Example: Temporary suspension for repeated cancelled deliveries without valid explanation."
+          value={riderStatusReason}
+          onChange={(e)=>
+            setRiderStatusReason(
+              e.target.value
+            )
+          }
+        />
+
+        <ModalActions>
+
+          <CancelButton
+            type="button"
+            onClick={()=>{
+              setRiderStatusModal(false);
+              setSelectedRider(null);
+              setRiderStatusReason("");
+            }}
+          >
+            Cancel
+          </CancelButton>
+
+          <SaveStatusButton
+            type="button"
+            onClick={updateRiderAccountStatus}
+          >
+            Send Notification
+          </SaveStatusButton>
+
+        </ModalActions>
+
+      </ModalCard>
+
+    </ModalOverlay>
+  )
+}
 
       </Wrapper>
 
