@@ -2391,6 +2391,169 @@ const DashboardTip = styled.div`
   font-weight:700;
 `;
 
+const RatingOverlay = styled.div`
+  position:fixed;
+  inset:0;
+
+  background:rgba(15,23,42,0.65);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:18px;
+
+  z-index:999999;
+`;
+
+const RatingCard = styled.div`
+  width:100%;
+  max-width:480px;
+
+  background:white;
+
+  border-radius:26px;
+  padding:24px;
+
+  box-shadow:
+    0 28px 80px rgba(15,23,42,0.35);
+
+  border:1px solid rgba(250,204,21,0.35);
+`;
+
+const RatingTitle = styled.h2`
+  margin:0 0 8px;
+
+  color:#0f172a;
+
+  font-size:25px;
+  font-weight:900;
+`;
+
+const RatingText = styled.p`
+  margin:0 0 16px;
+
+  color:#64748b;
+
+  font-size:14px;
+  font-weight:700;
+  line-height:1.5;
+`;
+
+const StarRow = styled.div`
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+
+  margin:20px 0;
+`;
+
+const StarButton = styled.button`
+  border:none;
+  background:transparent;
+
+  font-size:38px;
+  cursor:pointer;
+
+  color:${props =>
+    props.$selected
+    ? "#facc15"
+    : "#cbd5e1"};
+
+  transform:${props =>
+    props.$selected
+    ? "scale(1.08)"
+    : "scale(1)"};
+
+  transition:0.2s ease;
+
+  &:hover{
+    transform:scale(1.15);
+    color:#facc15;
+  }
+`;
+
+const RatingTextArea = styled.textarea`
+  width:100%;
+  min-height:110px;
+
+  border:1px solid #e5e7eb;
+  border-radius:18px;
+
+  padding:14px;
+
+  resize:vertical;
+  outline:none;
+
+  font-size:14px;
+  font-weight:700;
+
+  color:#0f172a;
+
+  box-sizing:border-box;
+
+  &:focus{
+    border-color:#facc15;
+
+    box-shadow:
+      0 0 0 4px rgba(250,204,21,0.18);
+  }
+`;
+
+const RatingActionRow = styled.div`
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+
+  margin-top:18px;
+
+  @media(max-width:480px){
+    flex-direction:column;
+  }
+`;
+
+const RatingCancelButton = styled.button`
+  border:none;
+  border-radius:14px;
+
+  padding:12px 16px;
+
+  background:#f1f5f9;
+  color:#0f172a;
+
+  font-size:14px;
+  font-weight:900;
+
+  cursor:pointer;
+`;
+
+const RatingSubmitButton = styled.button`
+  border:none;
+  border-radius:14px;
+
+  padding:12px 16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #1d4ed8
+    );
+
+  color:#facc15;
+
+  font-size:14px;
+  font-weight:900;
+
+  cursor:pointer;
+
+  opacity:${props =>
+    props.disabled
+    ? "0.65"
+    : "1"};
+`;
+
 const riderIcon = new L.Icon({
 
   iconUrl:
@@ -2451,6 +2614,38 @@ const [profileEmergency,setProfileEmergency] =
 
   const [orders,setOrders] =
     useState([]);
+
+    const [ratingModalOrder,setRatingModalOrder] =
+  useState(null);
+
+const [riderRating,setRiderRating] =
+  useState(5);
+
+const [riderRatingComment,setRiderRatingComment] =
+  useState("");
+
+const [submittingRiderRating,setSubmittingRiderRating] =
+  useState(false);
+
+const [postponedRatingOrderIds,setPostponedRatingOrderIds] =
+  useState([]);
+
+const [ratedOrderIds,setRatedOrderIds] =
+  useState(()=>{
+
+    try{
+
+      return JSON.parse(
+        localStorage.getItem(
+          "monnidropRatedRiderOrders"
+        ) || "[]"
+      );
+
+    }catch(err){
+
+      return [];
+    }
+  });
 
   const [notifications,setNotifications] =
     useState([]);
@@ -2975,6 +3170,52 @@ useEffect(()=>{
 
 useEffect(()=>{
 
+  if(
+    !Array.isArray(orders) ||
+    orders.length === 0
+  ){
+    return;
+  }
+
+  if(ratingModalOrder){
+    return;
+  }
+
+  const deliveredOrderToRate =
+    orders.find((order)=>{
+
+      const orderId =
+        order._id?.toString();
+
+      return (
+        orderId &&
+        order.status === "delivered" &&
+        order.rider &&
+        !ratedOrderIds.includes(orderId) &&
+        !postponedRatingOrderIds.includes(orderId)
+      );
+    });
+
+  if(deliveredOrderToRate){
+
+    setRatingModalOrder(
+      deliveredOrderToRate
+    );
+
+    setRiderRating(5);
+
+    setRiderRatingComment("");
+  }
+
+},[
+  orders,
+  ratedOrderIds,
+  postponedRatingOrderIds,
+  ratingModalOrder
+]);
+
+useEffect(()=>{
+
   const customerId =
     user?._id ||
     user?.id;
@@ -3343,6 +3584,141 @@ alert(
       alert("Cancel failed");
     }
   }
+
+  function saveRatedOrderId(orderId){
+
+  if(!orderId){
+    return;
+  }
+
+  setRatedOrderIds((prev)=>{
+
+    const updated =
+      Array.from(
+        new Set([
+          ...prev,
+          orderId.toString()
+        ])
+      );
+
+    localStorage.setItem(
+      "monnidropRatedRiderOrders",
+      JSON.stringify(updated)
+    );
+
+    return updated;
+  });
+}
+
+function closeRiderRatingModal(){
+
+  if(ratingModalOrder?._id){
+
+    setPostponedRatingOrderIds((prev)=>
+      Array.from(
+        new Set([
+          ...prev,
+          ratingModalOrder._id.toString()
+        ])
+      )
+    );
+  }
+
+  setRatingModalOrder(null);
+
+  setRiderRating(5);
+
+  setRiderRatingComment("");
+}
+
+async function submitRiderRating(){
+
+  try{
+
+    if(!ratingModalOrder){
+
+      alert(
+        "No delivered order selected for rating."
+      );
+
+      return;
+    }
+
+    if(
+      !riderRating ||
+      Number(riderRating) < 1 ||
+      Number(riderRating) > 5
+    ){
+
+      alert(
+        "Please select a rating between 1 and 5 stars."
+      );
+
+      return;
+    }
+
+    setSubmittingRiderRating(true);
+
+    await API.post(
+      "/ratings/rider",
+      {
+        orderId:ratingModalOrder._id,
+        rating:Number(riderRating),
+        comment:riderRatingComment.trim()
+      }
+    );
+
+    saveRatedOrderId(
+      ratingModalOrder._id
+    );
+
+    alert(
+      "Thank you for rating your rider."
+    );
+
+    setRatingModalOrder(null);
+
+    setRiderRating(5);
+
+    setRiderRatingComment("");
+
+    fetchOrders();
+
+  }catch(err){
+
+    console.log(
+      "RIDER RATING ERROR:",
+      err.response?.data || err.message
+    );
+
+    const message =
+      err.response?.data?.message ||
+      "Failed to submit rider rating";
+
+    if(
+      message
+      .toLowerCase()
+      .includes("already rated")
+    ){
+
+      saveRatedOrderId(
+        ratingModalOrder._id
+      );
+
+      setRatingModalOrder(null);
+
+      setRiderRating(5);
+
+      setRiderRatingComment("");
+    }
+
+    alert(message);
+
+  }finally{
+
+    setSubmittingRiderRating(false);
+  }
+}
 
   function searchLocations(
   text,
@@ -4864,6 +5240,54 @@ async function sendMessage(
  >
  {o.status}
 </StatusBadge>
+
+{
+  o.status === "delivered" &&
+  o.rider &&
+  !ratedOrderIds.includes(
+    o._id?.toString()
+  ) && (
+
+    <Button
+      onClick={()=>{
+        setRatingModalOrder(o);
+        setRiderRating(5);
+        setRiderRatingComment("");
+      }}
+      style={{
+        marginTop:"14px",
+        background:
+          "linear-gradient(135deg, #facc15, #f59e0b)",
+        color:"#0f172a",
+        fontWeight:"900"
+      }}
+    >
+      ⭐ Rate Rider
+    </Button>
+  )
+}
+
+{
+  o.status === "delivered" &&
+  ratedOrderIds.includes(
+    o._id?.toString()
+  ) && (
+
+    <div
+      style={{
+        marginTop:"14px",
+        padding:"12px",
+        borderRadius:"14px",
+        background:"#dcfce7",
+        color:"#166534",
+        fontWeight:"900",
+        textAlign:"center"
+      }}
+    >
+      ✅ Rider Rated
+    </div>
+  )
+}
 
 {
   o.deliveryCode &&
@@ -8468,6 +8892,96 @@ calculateDistance(
   </>
 
 )}
+
+{
+  ratingModalOrder && (
+
+    <RatingOverlay>
+
+      <RatingCard>
+
+        <RatingTitle>
+          Rate Your Rider
+        </RatingTitle>
+
+        <RatingText>
+          Your delivery from{" "}
+          <strong>
+            {ratingModalOrder.pickupLocation}
+          </strong>
+          {" "}to{" "}
+          <strong>
+            {ratingModalOrder.dropoffLocation}
+          </strong>
+          {" "}has been delivered.
+          Please rate{" "}
+          <strong>
+            {
+              ratingModalOrder.rider?.name ||
+              "your rider"
+            }
+          </strong>
+          .
+        </RatingText>
+
+        <StarRow>
+
+          {
+            [1,2,3,4,5].map((star)=>(
+
+              <StarButton
+                key={star}
+                type="button"
+                $selected={star <= riderRating}
+                onClick={()=>
+                  setRiderRating(star)
+                }
+              >
+                ★
+              </StarButton>
+            ))
+          }
+
+        </StarRow>
+
+        <RatingTextArea
+          placeholder="Optional comment. Example: Rider was fast, polite, and handled the item carefully."
+          value={riderRatingComment}
+          onChange={(e)=>
+            setRiderRatingComment(
+              e.target.value
+            )
+          }
+        />
+
+        <RatingActionRow>
+
+          <RatingCancelButton
+            type="button"
+            onClick={closeRiderRatingModal}
+          >
+            Later
+          </RatingCancelButton>
+
+          <RatingSubmitButton
+            type="button"
+            disabled={submittingRiderRating}
+            onClick={submitRiderRating}
+          >
+            {
+              submittingRiderRating
+              ? "Submitting..."
+              : "Submit Rating"
+            }
+          </RatingSubmitButton>
+
+        </RatingActionRow>
+
+      </RatingCard>
+
+    </RatingOverlay>
+  )
+}
 
 </Main>
 

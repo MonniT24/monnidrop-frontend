@@ -832,14 +832,14 @@ const StatusOptionGrid = styled.div`
 
 const StatusOption = styled.button`
   border:${props =>
-    props.$active
-    ? "2px solid #2563eb"
-    : "1px solid #e5e7eb"};
+  props.$active
+  ? "2px solid #2563eb"
+  : "1px solid #e5e7eb"};
 
-  background:${props =>
-    props.$active
-    ? "#eff6ff"
-    : "white"};
+background:${props =>
+  props.$active
+  ? "#eff6ff"
+  : "white"};
 
   border-radius:18px;
 
@@ -1089,6 +1089,12 @@ const [selectedRiderStatus,setSelectedRiderStatus] =
 const [riderStatusReason,setRiderStatusReason] =
   useState("");
 
+  const [riderStatusFiles,setRiderStatusFiles] =
+  useState([]);
+
+const [riderStatusFileLoading,setRiderStatusFileLoading] =
+  useState(false);
+
   useEffect(()=>{
 
     fetchUser();
@@ -1252,6 +1258,61 @@ const [riderStatusReason,setRiderStatusReason] =
     }
   }
 
+  async function fetchRiders(){
+
+  try{
+
+    const res =
+      await API.get(
+        "/rider"
+      );
+
+    setRiders(
+      res.data
+    );
+
+  }catch(err){
+
+    console.log(
+      "RIDER FETCH ERROR:",
+      err
+    );
+  }
+}
+
+async function fetchRiderStatusFile(){
+
+  try{
+
+    setRiderStatusFileLoading(true);
+
+    const res =
+      await API.get(
+        "/admin/rider-status-file"
+      );
+
+    setRiderStatusFiles(
+      res.data?.riderFiles || []
+    );
+
+  }catch(err){
+
+    console.log(
+      "RIDER STATUS FILE FETCH ERROR:",
+      err.response?.data || err.message
+    );
+
+    alert(
+      err.response?.data?.message ||
+      "Failed to load rider status file"
+    );
+
+  }finally{
+
+    setRiderStatusFileLoading(false);
+  }
+}
+
   async function suspendRider(riderId){
 
     try{
@@ -1324,21 +1385,19 @@ const [riderStatusReason,setRiderStatusReason] =
     )
   );
 
-  setRiderStatusReason(
-    rider.riderStatusReason || ""
-  );
+  setRiderStatusReason("");
 
   setRiderStatusModal(true);
 }
 
 function getRiderAccountLabel(status){
 
-  if(status === "temporary_suspended"){
-    return "⏳ Temporary Suspended";
+  if(status === "temporary_suspension"){
+    return "⏳ Temporary Suspension";
   }
 
-  if(status === "permanent_suspended"){
-    return "⛔ Permanent Suspended";
+  if(status === "permanent_suspension"){
+    return "⛔ Permanent Suspension";
   }
 
   if(status === "reinstated"){
@@ -1382,11 +1441,13 @@ async function updateRiderAccountStatus(){
 
     setRiderStatusModal(false);
 
-    setSelectedRider(null);
+setSelectedRider(null);
 
-    setRiderStatusReason("");
+setSelectedRiderStatus("temporary_suspended");
 
-    fetchRiders();
+setRiderStatusReason("");
+
+fetchRiders();
 
   }catch(err){
 
@@ -1577,8 +1638,10 @@ const selectedTitle =
   ? "Pending Orders"
   : activeAdminView === "fraud"
   ? "Fraud / Cancel Alerts"
-  : activeAdminView === "riders"
+ : activeAdminView === "riders"
   ? "Riders Activities"
+  : activeAdminView === "riderStatusFile"
+  ? "Rider Status File"
   : activeAdminView === "onlineRiders"
   ? "Online Riders"
   : activeAdminView === "onlineCustomers"
@@ -1858,6 +1921,32 @@ const selectedTitle =
 </StatCard>
 
 <StatCard
+  $active={activeAdminView === "riderStatusFile"}
+  onClick={()=>{
+    setActiveAdminView("riderStatusFile");
+    fetchRiderStatusFile();
+  }}
+>
+
+  <StatIcon>
+    📁
+  </StatIcon>
+
+  <StatTitle>
+    Rider Status File
+  </StatTitle>
+
+  <StatValue>
+    {riders.length}
+  </StatValue>
+
+  <StatSmall>
+    View suspensions, reasons, ratings, and performance.
+  </StatSmall>
+
+</StatCard>
+
+<StatCard
   $active={activeAdminView === "onlineRiders"}
   onClick={()=>
     setActiveAdminView("onlineRiders")
@@ -2073,6 +2162,212 @@ const selectedTitle =
 
       </DetailGrid>
     )
+
+    ) : activeAdminView === "riderStatusFile"
+? (
+
+  riderStatusFileLoading
+  ? (
+
+    <Empty>
+      Loading rider status file...
+    </Empty>
+
+  ) : riderStatusFiles.length === 0
+  ? (
+
+    <Empty>
+      No rider status file records found yet.
+    </Empty>
+
+  ) : (
+
+    <DetailGrid>
+
+      {
+        riderStatusFiles.map((file)=>{
+
+          const rider =
+            file.rider || {};
+
+          const recentHistory =
+            Array.isArray(file.statusHistory)
+            ? file.statusHistory.slice(0,3)
+            : [];
+
+          const recentRatings =
+            Array.isArray(file.ratings)
+            ? file.ratings.slice(0,3)
+            : [];
+
+          return(
+
+            <DetailCard
+              key={rider._id}
+            >
+
+              <DetailTitle>
+                {rider.name || "Unnamed Rider"}
+              </DetailTitle>
+
+              <DetailMeta>
+
+                <strong>Phone:</strong>{" "}
+                {rider.phone || "N/A"}
+                <br />
+
+                <strong>Current Account Status:</strong>{" "}
+                {file.currentAccountStatus || "active"}
+                <br />
+
+                <strong>Current Work Status:</strong>{" "}
+                {file.currentWorkStatus || "available"}
+                <br />
+
+                <strong>Performance:</strong>{" "}
+                {file.performanceCategory || "Not Rated Yet"}
+                <br />
+
+                <strong>Average Rating:</strong>{" "}
+                {
+                  file.averageRating > 0
+                  ? `${file.averageRating} ⭐`
+                  : "No rating yet"
+                }
+                <br />
+
+                <strong>Total Ratings:</strong>{" "}
+                {file.totalRatings || 0}
+                <br />
+
+                <strong>Suspensions:</strong>{" "}
+                {file.suspensionCount || 0}
+                <br />
+
+                <strong>Reinstated:</strong>{" "}
+                {file.reinstatedCount || 0}
+
+              </DetailMeta>
+
+              <div
+                style={{
+                  marginTop:"14px",
+                  paddingTop:"12px",
+                  borderTop:"1px solid #e5e7eb"
+                }}
+              >
+
+                <DetailTitle>
+                  Recent Status Records
+                </DetailTitle>
+
+                {
+                  recentHistory.length === 0
+                  ? (
+
+                    <DetailMeta>
+                      No suspension or status history yet.
+                    </DetailMeta>
+
+                  ) : (
+
+                    recentHistory.map((history)=>(
+
+                      <DetailMeta
+                        key={history._id}
+                        style={{
+                          marginBottom:"10px"
+                        }}
+                      >
+
+                        <strong>Status:</strong>{" "}
+                        {history.accountStatus}
+                        <br />
+
+                        <strong>Reason:</strong>{" "}
+                        {history.reason || "No reason recorded"}
+                        <br />
+
+                        <strong>Date:</strong>{" "}
+                        {
+                          history.createdAt
+                          ? new Date(history.createdAt)
+                            .toLocaleString()
+                          : "N/A"
+                        }
+
+                      </DetailMeta>
+                    ))
+                  )
+                }
+
+              </div>
+
+              <div
+                style={{
+                  marginTop:"14px",
+                  paddingTop:"12px",
+                  borderTop:"1px solid #e5e7eb"
+                }}
+              >
+
+                <DetailTitle>
+                  Recent Customer Ratings
+                </DetailTitle>
+
+                {
+                  recentRatings.length === 0
+                  ? (
+
+                    <DetailMeta>
+                      No customer ratings yet.
+                    </DetailMeta>
+
+                  ) : (
+
+                    recentRatings.map((rating)=>(
+
+                      <DetailMeta
+                        key={rating._id}
+                        style={{
+                          marginBottom:"10px"
+                        }}
+                      >
+
+                        <strong>Stars:</strong>{" "}
+                        {rating.rating} ⭐
+                        <br />
+
+                        <strong>Customer:</strong>{" "}
+                        {rating.customer?.name || "Unknown Customer"}
+                        <br />
+
+                        <strong>Comment:</strong>{" "}
+                        {rating.comment || "No comment"}
+                        <br />
+
+                        <strong>Date:</strong>{" "}
+                        {
+                          rating.createdAt
+                          ? new Date(rating.createdAt)
+                            .toLocaleString()
+                          : "N/A"
+                        }
+
+                      </DetailMeta>
+                    ))
+                  )
+                }
+
+              </div>
+
+            </DetailCard>
+          );
+        })
+      }
+
+    </DetailGrid>
+  )
 
    ) : activeAdminView === "onlineRiders"
   ? (
@@ -2401,7 +2696,7 @@ const selectedTitle =
 
           <StatusOption
             type="button"
-            active={selectedRiderStatus === "active"}
+           $active={selectedRiderStatus === "active"}
             onClick={()=>
               setSelectedRiderStatus("active")
             }
@@ -2423,7 +2718,7 @@ const selectedTitle =
 
           <StatusOption
             type="button"
-            active={selectedRiderStatus === "temporary_suspended"}
+           $active={selectedRiderStatus === "temporary_suspended"}
             onClick={()=>
               setSelectedRiderStatus("temporary_suspended")
             }
@@ -2434,7 +2729,7 @@ const selectedTitle =
             </StatusOptionIcon>
 
             <StatusOptionTitle>
-              Temporary Suspended
+              Temporary Suspension
             </StatusOptionTitle>
 
             <StatusOptionText>
@@ -2445,9 +2740,9 @@ const selectedTitle =
 
           <StatusOption
             type="button"
-            active={selectedRiderStatus === "permanent_suspended"}
+            $active={selectedRiderStatus === "permanent_suspension"}
             onClick={()=>
-              setSelectedRiderStatus("permanent_suspended")
+              setSelectedRiderStatus("permanent_suspension")
             }
           >
 
@@ -2456,7 +2751,7 @@ const selectedTitle =
             </StatusOptionIcon>
 
             <StatusOptionTitle>
-              Permanent Suspended
+              Permanent Suspension
             </StatusOptionTitle>
 
             <StatusOptionText>
@@ -2467,7 +2762,7 @@ const selectedTitle =
 
           <StatusOption
             type="button"
-            active={selectedRiderStatus === "reinstated"}
+           $active={selectedRiderStatus === "reinstated"}
             onClick={()=>
               setSelectedRiderStatus("reinstated")
             }
@@ -2502,15 +2797,16 @@ const selectedTitle =
         <ModalActions>
 
           <CancelButton
-            type="button"
-            onClick={()=>{
-              setRiderStatusModal(false);
-              setSelectedRider(null);
-              setRiderStatusReason("");
-            }}
-          >
-            Cancel
-          </CancelButton>
+  type="button"
+  onClick={()=>{
+    setRiderStatusModal(false);
+    setSelectedRider(null);
+    setSelectedRiderStatus("temporary_suspended");
+    setRiderStatusReason("");
+  }}
+>
+  Cancel
+</CancelButton>
 
           <SaveStatusButton
             type="button"
