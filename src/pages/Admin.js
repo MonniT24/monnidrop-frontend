@@ -1210,13 +1210,19 @@ const [selectedRiderStatus,setSelectedRiderStatus] =
 const [riderStatusReason,setRiderStatusReason] =
   useState("");
 
-  const [riderStatusFiles,setRiderStatusFiles] =
+const [riderStatusFiles,setRiderStatusFiles] =
   useState([]);
+
+const [paymentRecords,setPaymentRecords] =
+  useState([]);
+
+const [paymentRecordsLoading,setPaymentRecordsLoading] =
+  useState(false);
 
 const [riderStatusFileLoading,setRiderStatusFileLoading] =
   useState(false);
 
-  const [riderStatusSearch,setRiderStatusSearch] =
+ const [riderStatusSearch,setRiderStatusSearch] =
   useState("");
 
 const [riderStatusAccountFilter,setRiderStatusAccountFilter] =
@@ -1435,6 +1441,41 @@ async function fetchRiderStatusFile(){
   }finally{
 
     setRiderStatusFileLoading(false);
+  }
+}
+
+async function fetchPaymentRecords(){
+
+  try{
+
+    setPaymentRecordsLoading(true);
+
+    const res =
+      await API.get(
+        "/admin/payment-records"
+      );
+
+    setPaymentRecords(
+      Array.isArray(res.data)
+      ? res.data
+      : []
+    );
+
+  }catch(err){
+
+    console.log(
+      "PAYMENT RECORDS ERROR:",
+      err.response?.data || err.message
+    );
+
+    alert(
+      err.response?.data?.message ||
+      "Failed to load payment records"
+    );
+
+  }finally{
+
+    setPaymentRecordsLoading(false);
   }
 }
 
@@ -1935,6 +1976,8 @@ const selectedTitle =
   ? "Riders Activities"
   : activeAdminView === "riderStatusFile"
   ? "Rider Status File"
+    : activeAdminView === "paymentRecords"
+  ? "Payment Records"
   : activeAdminView === "onlineRiders"
   ? "Online Riders"
   : activeAdminView === "onlineCustomers"
@@ -2353,6 +2396,32 @@ function clearRiderStatusFilters(){
 
   <StatSmall>
     Click to view online riders.
+  </StatSmall>
+
+</StatCard>
+
+<StatCard
+  $active={activeAdminView === "paymentRecords"}
+  onClick={()=>{
+    setActiveAdminView("paymentRecords");
+    fetchPaymentRecords();
+  }}
+>
+
+  <StatIcon>
+    💰
+  </StatIcon>
+
+  <StatTitle>
+    Payment Records
+  </StatTitle>
+
+  <StatValue>
+    {deliveredOrders.length}
+  </StatValue>
+
+  <StatSmall>
+    View paid, unpaid, cash collected, and delivery payment records.
   </StatSmall>
 
 </StatCard>
@@ -2889,6 +2958,104 @@ function clearRiderStatusFilters(){
 
   </>
 )
+
+) : activeAdminView === "paymentRecords"
+? (
+
+  paymentRecordsLoading
+  ? (
+
+    <Empty>
+      Loading payment records...
+    </Empty>
+
+  ) : paymentRecords.length === 0
+  ? (
+
+    <Empty>
+      No payment records found yet.
+    </Empty>
+
+  ) : (
+
+    <DetailGrid>
+
+      {
+        paymentRecords.map((record)=>(
+
+          <DetailCard
+            key={record.orderId}
+            success={record.isPaid}
+            warning={!record.isPaid}
+          >
+
+            <DetailTitle>
+              Order #{String(record.orderId).slice(-6)}
+            </DetailTitle>
+
+            <DetailMeta>
+
+              <strong>Customer:</strong>{" "}
+              {record.customer?.name || "Unknown Customer"}
+              <br />
+
+              <strong>Customer Phone:</strong>{" "}
+              {record.customer?.phone || "N/A"}
+              <br />
+
+              <strong>Rider:</strong>{" "}
+              {record.rider?.name || "Unassigned Rider"}
+              <br />
+
+              <strong>Rider Phone:</strong>{" "}
+              {record.rider?.phone || "N/A"}
+              <br />
+
+              <strong>Route:</strong>{" "}
+              {record.pickupLocation || "N/A"}
+              {" → "}
+              {record.dropoffLocation || "N/A"}
+              <br />
+
+              <strong>Payment Method:</strong>{" "}
+              {record.paymentMethod || "N/A"}
+              <br />
+
+              <strong>Payment Status:</strong>{" "}
+              {
+                record.isPaid
+                ? "Paid"
+                : "Unpaid"
+              }
+              <br />
+
+              <strong>Cash Collected:</strong>{" "}
+              {
+                record.cashCollectedByRider
+                ? "Yes"
+                : "No"
+              }
+              <br />
+
+              <strong>Delivered At:</strong>{" "}
+              {
+                record.deliveredAt
+                ? new Date(record.deliveredAt).toLocaleString()
+                : "N/A"
+              }
+
+            </DetailMeta>
+
+            <DetailAmount>
+              ₵{record.amount || 0}
+            </DetailAmount>
+
+          </DetailCard>
+        ))
+      }
+
+    </DetailGrid>
+  )
 
    ) : activeAdminView === "onlineRiders"
   ? (
