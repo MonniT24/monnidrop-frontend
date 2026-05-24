@@ -9,6 +9,8 @@ import styled,{
 
 import API from "../api/api";
 
+import * as XLSX from "xlsx";
+
 import socket from "../socket";
 
 import logo from "../assets/logo.png";
@@ -1007,6 +1009,32 @@ const ClosePanelButton = styled.button`
   }
 `;
 
+const HeaderActions = styled.div`
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+`;
+
+const ExportExcelButton = styled.button`
+  border:none;
+  border-radius:12px;
+
+  padding:9px 13px;
+
+  background:#16a34a;
+  color:white;
+
+  font-size:12px;
+  font-weight:900;
+
+  cursor:pointer;
+
+  &:hover{
+    background:#15803d;
+  }
+`;
+
 const DetailGrid = styled.div`
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
@@ -1307,6 +1335,162 @@ async function fetchRiderStatusFile(){
 
     setRiderStatusFileLoading(false);
   }
+}
+
+function formatExcelDate(value){
+
+  if(!value){
+    return "N/A";
+  }
+
+  try{
+
+    return new Date(value).toLocaleString();
+
+  }catch(err){
+
+    return "N/A";
+  }
+}
+
+function exportRiderStatusFileToExcel(){
+
+  if(
+    !Array.isArray(riderStatusFiles) ||
+    riderStatusFiles.length === 0
+  ){
+
+    alert(
+      "No rider status file records to export. Click Rider Status File first."
+    );
+
+    return;
+  }
+
+  const summaryRows =
+    riderStatusFiles.map((file,index)=>{
+
+      const rider =
+        file.rider || {};
+
+      return {
+        "No":index + 1,
+        "Rider Name":rider.name || "Unnamed Rider",
+        "Phone":rider.phone || "N/A",
+        "Email":rider.email || "N/A",
+        "Current Account Status":file.currentAccountStatus || "active",
+        "Current Work Status":file.currentWorkStatus || "available",
+        "Performance":file.performanceCategory || "Not Rated Yet",
+        "Average Rating":file.averageRating || 0,
+        "Total Ratings":file.totalRatings || 0,
+        "Suspension Count":file.suspensionCount || 0,
+        "Reinstated Count":file.reinstatedCount || 0
+      };
+    });
+
+  const statusHistoryRows =
+    riderStatusFiles.flatMap((file)=>{
+
+      const rider =
+        file.rider || {};
+
+      const historyList =
+        Array.isArray(file.statusHistory)
+        ? file.statusHistory
+        : [];
+
+      return historyList.map((history,index)=>({
+
+        "Rider Name":rider.name || "Unnamed Rider",
+        "Phone":rider.phone || "N/A",
+        "Record No":index + 1,
+        "Account Status":history.accountStatus || "N/A",
+        "Previous Status":history.previousStatus || "N/A",
+        "New Status":history.newStatus || "N/A",
+        "Reason":history.reason || "No reason recorded",
+        "Message":history.message || "N/A",
+        "Date":formatExcelDate(history.createdAt)
+      }));
+    });
+
+  const ratingRows =
+    riderStatusFiles.flatMap((file)=>{
+
+      const rider =
+        file.rider || {};
+
+      const ratingList =
+        Array.isArray(file.ratings)
+        ? file.ratings
+        : [];
+
+      return ratingList.map((rating,index)=>({
+
+        "Rider Name":rider.name || "Unnamed Rider",
+        "Phone":rider.phone || "N/A",
+        "Rating No":index + 1,
+        "Stars":rating.rating || 0,
+        "Customer":rating.customer?.name || "Unknown Customer",
+        "Comment":rating.comment || "No comment",
+        "Date":formatExcelDate(rating.createdAt)
+      }));
+    });
+
+  const workbook =
+    XLSX.utils.book_new();
+
+  const summarySheet =
+    XLSX.utils.json_to_sheet(summaryRows);
+
+  const statusHistorySheet =
+    XLSX.utils.json_to_sheet(
+      statusHistoryRows.length > 0
+      ? statusHistoryRows
+      : [
+          {
+            "Message":"No status history records found"
+          }
+        ]
+    );
+
+  const ratingsSheet =
+    XLSX.utils.json_to_sheet(
+      ratingRows.length > 0
+      ? ratingRows
+      : [
+          {
+            "Message":"No customer ratings found"
+          }
+        ]
+    );
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    summarySheet,
+    "Rider Summary"
+  );
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    statusHistorySheet,
+    "Status History"
+  );
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    ratingsSheet,
+    "Customer Ratings"
+  );
+
+  const today =
+    new Date()
+      .toISOString()
+      .slice(0,10);
+
+  XLSX.writeFile(
+    workbook,
+    `MonniDrop_Rider_Status_File_${today}.xlsx`
+  );
 }
 
   async function suspendRider(riderId){
@@ -2025,13 +2209,29 @@ const selectedTitle =
 
         </div>
 
-        <ClosePanelButton
-          onClick={()=>
-            setActiveAdminView("")
-          }
-        >
-          Close
-        </ClosePanelButton>
+        <HeaderActions>
+
+  {
+    activeAdminView === "riderStatusFile" && (
+
+      <ExportExcelButton
+        type="button"
+        onClick={exportRiderStatusFileToExcel}
+      >
+        Export Excel
+      </ExportExcelButton>
+    )
+  }
+
+  <ClosePanelButton
+    onClick={()=>
+      setActiveAdminView("")
+    }
+  >
+    Close
+  </ClosePanelButton>
+
+</HeaderActions>
 
       </DetailHeader>
 
