@@ -1009,6 +1009,95 @@ const ClosePanelButton = styled.button`
   }
 `;
 
+const RiderStatusFilterBar = styled.div`
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:10px;
+
+  margin-bottom:16px;
+  padding:14px;
+
+  background:#f8fafc;
+
+  border:1px solid #e5e7eb;
+  border-radius:18px;
+`;
+
+const RiderStatusSearchInput = styled.input`
+  width:100%;
+
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+
+  padding:11px 12px;
+
+  font-size:13px;
+  font-weight:800;
+
+  outline:none;
+
+  box-sizing:border-box;
+
+  &:focus{
+    border-color:#2563eb;
+
+    box-shadow:
+      0 0 0 4px rgba(37,99,235,0.08);
+  }
+`;
+
+const RiderStatusSelect = styled.select`
+  width:100%;
+
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+
+  padding:11px 12px;
+
+  font-size:13px;
+  font-weight:800;
+
+  outline:none;
+  background:white;
+
+  box-sizing:border-box;
+
+  &:focus{
+    border-color:#2563eb;
+
+    box-shadow:
+      0 0 0 4px rgba(37,99,235,0.08);
+  }
+`;
+
+const ClearFiltersButton = styled.button`
+  border:none;
+  border-radius:12px;
+
+  padding:11px 12px;
+
+  background:#111827;
+  color:white;
+
+  font-size:13px;
+  font-weight:900;
+
+  cursor:pointer;
+
+  &:hover{
+    background:#0f172a;
+  }
+`;
+
+const FilterResultText = styled.div`
+  color:#64748b;
+  font-size:12px;
+  font-weight:900;
+
+  display:flex;
+  align-items:center;
+`;
+
 const HeaderActions = styled.div`
   display:flex;
   align-items:center;
@@ -1126,6 +1215,18 @@ const [riderStatusReason,setRiderStatusReason] =
 
 const [riderStatusFileLoading,setRiderStatusFileLoading] =
   useState(false);
+
+  const [riderStatusSearch,setRiderStatusSearch] =
+  useState("");
+
+const [riderStatusAccountFilter,setRiderStatusAccountFilter] =
+  useState("all");
+
+const [riderStatusPerformanceFilter,setRiderStatusPerformanceFilter] =
+  useState("all");
+
+const [riderStatusSort,setRiderStatusSort] =
+  useState("none");
 
   const fetchRiderStatusHistories = async () => {
   try {
@@ -1840,6 +1941,97 @@ const selectedTitle =
   ? "Logged-in Customers"
   : "";
 
+  const filteredRiderStatusFiles =
+  [...riderStatusFiles]
+    .filter((file)=>{
+
+      const rider =
+        file.rider || {};
+
+      const search =
+        riderStatusSearch
+          .toLowerCase()
+          .trim();
+
+      const riderName =
+        String(rider.name || "")
+          .toLowerCase();
+
+      const riderPhone =
+        String(rider.phone || "")
+          .toLowerCase();
+
+      const riderEmail =
+        String(rider.email || "")
+          .toLowerCase();
+
+      const accountStatus =
+        String(file.currentAccountStatus || "active");
+
+      const performance =
+        String(file.performanceCategory || "Not Rated Yet")
+          .toLowerCase();
+
+      const matchesSearch =
+        search === "" ||
+        riderName.includes(search) ||
+        riderPhone.includes(search) ||
+        riderEmail.includes(search);
+
+      const matchesAccount =
+        riderStatusAccountFilter === "all" ||
+        accountStatus === riderStatusAccountFilter;
+
+      const matchesPerformance =
+        riderStatusPerformanceFilter === "all" ||
+        performance === riderStatusPerformanceFilter;
+
+      return (
+        matchesSearch &&
+        matchesAccount &&
+        matchesPerformance
+      );
+    })
+    .sort((a,b)=>{
+
+      if(riderStatusSort === "highestRating"){
+
+        return Number(b.averageRating || 0) -
+          Number(a.averageRating || 0);
+      }
+
+      if(riderStatusSort === "lowestRating"){
+
+        return Number(a.averageRating || 0) -
+          Number(b.averageRating || 0);
+      }
+
+      if(riderStatusSort === "mostSuspensions"){
+
+        return Number(b.suspensionCount || 0) -
+          Number(a.suspensionCount || 0);
+      }
+
+      if(riderStatusSort === "mostRatings"){
+
+        return Number(b.totalRatings || 0) -
+          Number(a.totalRatings || 0);
+      }
+
+      return 0;
+    });
+
+function clearRiderStatusFilters(){
+
+  setRiderStatusSearch("");
+
+  setRiderStatusAccountFilter("all");
+
+  setRiderStatusPerformanceFilter("all");
+
+  setRiderStatusSort("none");
+}
+
   return(
 
     <Page>
@@ -2382,18 +2574,135 @@ const selectedTitle =
     </Empty>
 
   ) : riderStatusFiles.length === 0
-  ? (
+? (
 
-    <Empty>
-      No rider status file records found yet.
-    </Empty>
+  <Empty>
+    No rider status file records found yet.
+  </Empty>
 
-  ) : (
+) : (
 
-    <DetailGrid>
+  <>
 
-      {
-        riderStatusFiles.map((file)=>{
+    <RiderStatusFilterBar>
+
+      <RiderStatusSearchInput
+        type="text"
+        placeholder="Search rider name, phone, or email..."
+        value={riderStatusSearch}
+        onChange={(e)=>
+          setRiderStatusSearch(e.target.value)
+        }
+      />
+
+      <RiderStatusSelect
+        value={riderStatusAccountFilter}
+        onChange={(e)=>
+          setRiderStatusAccountFilter(e.target.value)
+        }
+      >
+        <option value="all">
+          All Account Status
+        </option>
+
+        <option value="active">
+          Active
+        </option>
+
+        <option value="temporary_suspended">
+          Temporary Suspended
+        </option>
+
+        <option value="permanent_suspension">
+          Permanent Suspension
+        </option>
+
+        <option value="reinstated">
+          Reinstated
+        </option>
+      </RiderStatusSelect>
+
+      <RiderStatusSelect
+        value={riderStatusPerformanceFilter}
+        onChange={(e)=>
+          setRiderStatusPerformanceFilter(e.target.value)
+        }
+      >
+        <option value="all">
+          All Performance
+        </option>
+
+        <option value="hardworking">
+          Hardworking
+        </option>
+
+        <option value="average">
+          Average
+        </option>
+
+        <option value="lazy">
+          Lazy
+        </option>
+
+        <option value="not rated yet">
+          Not Rated Yet
+        </option>
+      </RiderStatusSelect>
+
+      <RiderStatusSelect
+        value={riderStatusSort}
+        onChange={(e)=>
+          setRiderStatusSort(e.target.value)
+        }
+      >
+        <option value="none">
+          Default Sort
+        </option>
+
+        <option value="highestRating">
+          Highest Rating
+        </option>
+
+        <option value="lowestRating">
+          Lowest Rating
+        </option>
+
+        <option value="mostSuspensions">
+          Most Suspensions
+        </option>
+
+        <option value="mostRatings">
+          Most Ratings
+        </option>
+      </RiderStatusSelect>
+
+      <ClearFiltersButton
+        type="button"
+        onClick={clearRiderStatusFilters}
+      >
+        Clear Filters
+      </ClearFiltersButton>
+
+      <FilterResultText>
+        Showing {filteredRiderStatusFiles.length} of {riderStatusFiles.length} riders
+      </FilterResultText>
+
+    </RiderStatusFilterBar>
+
+    {
+      filteredRiderStatusFiles.length === 0
+      ? (
+
+        <Empty>
+          No rider matches your search or filter.
+        </Empty>
+
+      ) : (
+
+        <DetailGrid>
+
+          {
+            filteredRiderStatusFiles.map((file)=>{
 
           const rider =
             file.rider || {};
@@ -2571,11 +2880,15 @@ const selectedTitle =
 
             </DetailCard>
           );
-        })
-      }
+               })
+        }
 
-    </DetailGrid>
-  )
+        </DetailGrid>
+      )
+    }
+
+  </>
+)
 
    ) : activeAdminView === "onlineRiders"
   ? (
