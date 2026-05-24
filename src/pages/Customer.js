@@ -1524,6 +1524,68 @@ const BeautifulInput = styled.input`
   }
 `;
 
+const LocationHint = styled.div`
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+
+  margin-top:10px;
+  padding:7px 10px;
+
+  border-radius:999px;
+
+  background:#eff6ff;
+  border:1px solid #dbeafe;
+
+  color:#1d4ed8;
+
+  font-size:12px;
+  font-weight:800;
+`;
+
+const SuggestionBox = styled.div`
+  background:#ffffff;
+
+  border:1px solid rgba(29,78,216,0.14);
+  border-radius:18px;
+
+  margin-top:10px;
+  overflow:hidden;
+
+  box-shadow:
+    0 12px 26px rgba(15,23,42,0.08);
+`;
+
+const SuggestionItem = styled.button`
+  width:100%;
+
+  border:none;
+  border-bottom:1px solid #eef2ff;
+
+  background:#ffffff;
+  color:#0f172a;
+
+  padding:13px 15px;
+
+  text-align:left;
+
+  font-size:14px;
+  font-weight:800;
+
+  cursor:pointer;
+
+  transition:0.2s ease;
+
+  &:hover{
+    background:#eff6ff;
+    color:#1d4ed8;
+  }
+
+  &:last-child{
+    border-bottom:none;
+  }
+`;
+
 const FareBox = styled.div`
   background:
     linear-gradient(
@@ -2635,11 +2697,18 @@ const [ratedOrderIds,setRatedOrderIds] =
 
     try{
 
-      return JSON.parse(
-        localStorage.getItem(
-          "monnidropRatedRiderOrders"
-        ) || "[]"
-      );
+      const savedRatedOrders =
+        JSON.parse(
+          localStorage.getItem(
+            "monnidropRatedRiderOrders"
+          ) || "[]"
+        );
+
+      return Array.isArray(savedRatedOrders)
+        ? savedRatedOrders.map((id)=>
+            id.toString()
+          )
+        : [];
 
     }catch(err){
 
@@ -2706,6 +2775,8 @@ const [dropoffSuggestions,
 
 const locationCoords = {
 
+  // ADENTA / MADINA / LEGON
+
   "Adenta Commandos":{
     lat:5.7089,
     lng:-0.1668
@@ -2716,9 +2787,24 @@ const locationCoords = {
     lng:-0.1676
   },
 
+  "Adenta SDA Junction":{
+    lat:5.7068,
+    lng:-0.1695
+  },
+
+  "Adenta Frafraha":{
+    lat:5.7171,
+    lng:-0.1707
+  },
+
   "Adenta Housing Down":{
     lat:5.7009,
     lng:-0.1701
+  },
+
+  "Adenta New Legon":{
+    lat:5.7201,
+    lng:-0.1545
   },
 
   "Madina Zongo Junction":{
@@ -2731,10 +2817,72 @@ const locationCoords = {
     lng:-0.1707
   },
 
+  "Madina Market":{
+    lat:5.6819,
+    lng:-0.1638
+  },
+
+  "Madina Ritz Junction":{
+    lat:5.6762,
+    lng:-0.1714
+  },
+
+  "Madina Social Welfare":{
+    lat:5.6798,
+    lng:-0.1702
+  },
+
   "Legon Boundary":{
     lat:5.6504,
     lng:-0.1865
   },
+
+  "University of Ghana Legon":{
+    lat:5.6509,
+    lng:-0.1869
+  },
+
+  "Okponglo":{
+    lat:5.6375,
+    lng:-0.1750
+  },
+
+  "Atomic Junction":{
+    lat:5.6508,
+    lng:-0.1880
+  },
+
+  "Haatso":{
+    lat:5.6400,
+    lng:-0.2360
+  },
+
+  "Agbogba":{
+    lat:5.6687,
+    lng:-0.2158
+  },
+
+  "Wisconsin University Agbogba Road":{
+    lat:5.6665,
+    lng:-0.2174
+  },
+
+  "Ashongman":{
+    lat:5.7003,
+    lng:-0.2456
+  },
+
+  "North Legon":{
+    lat:5.6627,
+    lng:-0.2002
+  },
+
+  "West Legon":{
+    lat:5.6462,
+    lng:-0.2154
+  },
+
+  // EAST LEGON / BOTWE / SPINTEX
 
   "East Legon":{
     lat:5.6406,
@@ -2756,40 +2904,72 @@ const locationCoords = {
     lng:-0.1492
   },
 
-  "Circle Neoplan":{
-    lat:5.5701,
-    lng:-0.2157
+  "American House East Legon":{
+    lat:5.6379,
+    lng:-0.1526
   },
 
-  "Kaneshie":{
-    lat:5.5560,
-    lng:-0.2254
-  },
-
-  "Achimota Overhead":{
-    lat:5.6031,
-    lng:-0.2295
-  },
-
-  "Lapaz":{
-    lat:5.6037,
-    lng:-0.2504
-  },
-
-  "Haatso":{
-    lat:5.6400,
-    lng:-0.2360
-  },
-
-  "Atomic Junction":{
-    lat:5.6508,
-    lng:-0.1880
+  "Adjiringanor":{
+    lat:5.6486,
+    lng:-0.1380
   },
 
   "Ashaley Botwe":{
     lat:5.6602,
     lng:-0.1323
   },
+
+  "Nmai Dzorn":{
+    lat:5.6698,
+    lng:-0.1257
+  },
+
+  "Oyarifa":{
+    lat:5.7193,
+    lng:-0.1482
+  },
+
+  "Pantang":{
+    lat:5.7022,
+    lng:-0.1686
+  },
+
+  "Abokobi":{
+    lat:5.7005,
+    lng:-0.1982
+  },
+
+  "Spintex":{
+    lat:5.6258,
+    lng:-0.1067
+  },
+
+  "Manet Spintex":{
+    lat:5.6284,
+    lng:-0.1144
+  },
+
+  "Baatsona":{
+    lat:5.6357,
+    lng:-0.0928
+  },
+
+  "Lashibi":{
+    lat:5.6429,
+    lng:-0.0755
+  },
+
+  "Sakumono":{
+    lat:5.6250,
+    lng:-0.0608
+  },
+
+  "Community 18 Junction":{
+    lat:5.6351,
+    lng:-0.0732
+  },
+
+  // TSE-ADDO / TESHIE / NUNGUA / LABADI
 
   "Tse-Addo Fishing Panda":{
     lat:5.6038,
@@ -2821,49 +3001,24 @@ const locationCoords = {
     lng:-0.0964
   },
 
+  "Teshie Camp 2":{
+    lat:5.5844,
+    lng:-0.1081
+  },
+
   "Nungua Coldstore":{
     lat:5.6012,
     lng:-0.0778
   },
 
-  "Spintex":{
-    lat:5.6258,
-    lng:-0.1067
+  "Nungua Barrier":{
+    lat:5.6168,
+    lng:-0.0749
   },
 
-  "Tema Station":{
-    lat:5.5566,
-    lng:-0.1969
-  },
-
-  "Tema Community 1":{
-  lat:5.6480,
-  lng:0.0105
-},
-
-  "Tema Community 25":{
-    lat:5.7265,
-    lng:0.0031
-  },
-
-  "Ashaiman":{
-    lat:5.6991,
-    lng:-0.0297
-  },
-
-  "Kasoa New Market":{
-    lat:5.5340,
-    lng:-0.4168
-  },
-
-  "Dansoman":{
-    lat:5.5603,
-    lng:-0.2847
-  },
-
-  "Osu":{
-    lat:5.5560,
-    lng:-0.1820
+  "Nungua Junction":{
+    lat:5.6006,
+    lng:-0.0770
   },
 
   "Labadi":{
@@ -2871,19 +3026,14 @@ const locationCoords = {
     lng:-0.1510
   },
 
-  "Airport Residential":{
-    lat:5.6050,
-    lng:-0.1714
+  "La Trade Fair":{
+    lat:5.5658,
+    lng:-0.1452
   },
 
-  "Dzorwulu":{
-    lat:5.6039,
-    lng:-0.2231
-  },
-
-  "37 Military Hospital":{
-    lat:5.5718,
-    lng:-0.1907
+  "Labone":{
+    lat:5.5689,
+    lng:-0.1724
   },
 
   "Cantonments":{
@@ -2896,9 +3046,416 @@ const locationCoords = {
     lng:-0.1658
   },
 
-  "Wisconsin University Agbogba Road":{
-    lat:5.6665,
+  // OSU / AIRPORT / DZORWULU / RIDGE
+
+  "Osu":{
+    lat:5.5560,
+    lng:-0.1820
+  },
+
+  "Oxford Street Osu":{
+    lat:5.5554,
+    lng:-0.1823
+  },
+
+  "Airport Residential":{
+    lat:5.6050,
+    lng:-0.1714
+  },
+
+  "Airport Junction":{
+    lat:5.5996,
+    lng:-0.1740
+  },
+
+  "Dzorwulu":{
+    lat:5.6039,
+    lng:-0.2231
+  },
+
+  "37 Military Hospital":{
+    lat:5.5718,
+    lng:-0.1907
+  },
+
+  "Ridge":{
+    lat:5.5606,
+    lng:-0.1969
+  },
+
+  "Roman Ridge":{
+    lat:5.5918,
+    lng:-0.1936
+  },
+
+  "North Ridge":{
+    lat:5.5662,
+    lng:-0.2021
+  },
+
+  "Kanda":{
+    lat:5.5736,
+    lng:-0.2066
+  },
+
+  "Asylum Down":{
+    lat:5.5674,
+    lng:-0.2115
+  },
+
+  // CIRCLE / KANESHIE / ACHIMOTA / LAPAZ
+
+  "Circle Neoplan":{
+    lat:5.5701,
+    lng:-0.2157
+  },
+
+  "Kwame Nkrumah Circle":{
+    lat:5.5697,
+    lng:-0.2166
+  },
+
+  "Kaneshie":{
+    lat:5.5560,
+    lng:-0.2254
+  },
+
+  "Kaneshie Market":{
+    lat:5.5518,
+    lng:-0.2281
+  },
+
+  "Achimota Overhead":{
+    lat:5.6031,
+    lng:-0.2295
+  },
+
+  "Achimota Old Station":{
+    lat:5.6171,
+    lng:-0.2382
+  },
+
+  "Achimota Mall":{
+    lat:5.6210,
+    lng:-0.2388
+  },
+
+  "Lapaz":{
+    lat:5.6037,
+    lng:-0.2504
+  },
+
+  "Abeka Lapaz":{
+    lat:5.5987,
+    lng:-0.2515
+  },
+
+  "Tesano":{
+    lat:5.5995,
+    lng:-0.2252
+  },
+
+  "Abelemkpe":{
+    lat:5.6084,
+    lng:-0.2144
+  },
+
+  "Akweteyman":{
+    lat:5.6114,
+    lng:-0.2331
+  },
+
+  // ACCRA WEST / SOUTH
+
+  "Dansoman":{
+    lat:5.5603,
+    lng:-0.2847
+  },
+
+  "Dansoman Roundabout":{
+    lat:5.5539,
+    lng:-0.2747
+  },
+
+  "Mataheko":{
+    lat:5.5446,
+    lng:-0.2371
+  },
+
+  "Korle Bu":{
+    lat:5.5384,
+    lng:-0.2269
+  },
+
+  "Mamprobi":{
+    lat:5.5337,
+    lng:-0.2441
+  },
+
+  "Chorkor":{
+    lat:5.5263,
+    lng:-0.2551
+  },
+
+  "James Town":{
+    lat:5.5347,
+    lng:-0.2134
+  },
+
+  "Makola Market":{
+    lat:5.5481,
+    lng:-0.2074
+  },
+
+  "Accra Central":{
+    lat:5.5502,
     lng:-0.2174
+  },
+
+  "Tema Station":{
+    lat:5.5566,
+    lng:-0.1969
+  },
+
+  // TEMA / ASHAIMAN / PRAMPRAM
+
+  "Tema Community 1":{
+    lat:5.6480,
+    lng:0.0105
+  },
+
+  "Tema Community 2":{
+    lat:5.6508,
+    lng:0.0018
+  },
+
+  "Tema Community 4":{
+    lat:5.6626,
+    lng:0.0107
+  },
+
+  "Tema Community 7":{
+    lat:5.6698,
+    lng:0.0141
+  },
+
+  "Tema Community 8":{
+    lat:5.6752,
+    lng:0.0089
+  },
+
+  "Tema Community 9":{
+    lat:5.6832,
+    lng:0.0064
+  },
+
+  "Tema Community 11":{
+    lat:5.6875,
+    lng:0.0151
+  },
+
+  "Tema Community 18":{
+    lat:5.6351,
+    lng:-0.0732
+  },
+
+  "Tema Community 22":{
+    lat:5.7142,
+    lng:-0.0084
+  },
+
+  "Tema Community 25":{
+    lat:5.7265,
+    lng:0.0031
+  },
+
+  "Tema Harbour":{
+    lat:5.6372,
+    lng:0.0129
+  },
+
+  "Ashaiman":{
+    lat:5.6991,
+    lng:-0.0297
+  },
+
+  "Ashaiman Main Station":{
+    lat:5.6957,
+    lng:-0.0336
+  },
+
+  "Michel Camp":{
+    lat:5.7148,
+    lng:-0.0187
+  },
+
+  "Dawhenya":{
+    lat:5.7372,
+    lng:0.0413
+  },
+
+  "Prampram":{
+    lat:5.7096,
+    lng:0.1081
+  },
+
+  // KASOA / WEIJA / MALLAM
+
+  "Mallam Junction":{
+    lat:5.5710,
+    lng:-0.3002
+  },
+
+  "Odorkor":{
+    lat:5.5794,
+    lng:-0.2606
+  },
+
+  "Sakaman":{
+    lat:5.5605,
+    lng:-0.2733
+  },
+
+  "Awoshie":{
+    lat:5.5984,
+    lng:-0.2915
+  },
+
+  "Anyaa":{
+    lat:5.6074,
+    lng:-0.3141
+  },
+
+  "Pokuase":{
+    lat:5.6908,
+    lng:-0.2940
+  },
+
+  "Amasaman":{
+    lat:5.7016,
+    lng:-0.3284
+  },
+
+  "Weija":{
+    lat:5.5622,
+    lng:-0.3349
+  },
+
+  "Gbawe":{
+    lat:5.5782,
+    lng:-0.3107
+  },
+
+  "McCarthy Hill":{
+    lat:5.5592,
+    lng:-0.3079
+  },
+
+  "Kasoa New Market":{
+    lat:5.5340,
+    lng:-0.4168
+  },
+
+  "Kasoa Old Market":{
+    lat:5.5337,
+    lng:-0.4216
+  },
+
+  "Buduburam":{
+    lat:5.5432,
+    lng:-0.4620
+  },
+
+  // EASTERN / CENTRAL / OTHER MAJOR TOWNS
+
+  "Aburi":{
+    lat:5.8500,
+    lng:-0.1833
+  },
+
+  "Nsawam":{
+    lat:5.8089,
+    lng:-0.3500
+  },
+
+  "Koforidua":{
+    lat:6.0941,
+    lng:-0.2591
+  },
+
+  "Akosombo":{
+    lat:6.2969,
+    lng:0.0598
+  },
+
+  "Cape Coast":{
+    lat:5.1053,
+    lng:-1.2466
+  },
+
+  "Winneba":{
+    lat:5.3511,
+    lng:-0.6231
+  },
+
+  "Swedru":{
+    lat:5.5371,
+    lng:-0.6998
+  },
+
+  "Takoradi":{
+    lat:4.8845,
+    lng:-1.7554
+  },
+
+  "Kumasi":{
+    lat:6.6885,
+    lng:-1.6244
+  },
+
+  "Ejisu":{
+    lat:6.7293,
+    lng:-1.4757
+  },
+
+  "Obuasi":{
+    lat:6.2023,
+    lng:-1.6679
+  },
+
+  "Sunyani":{
+    lat:7.3399,
+    lng:-2.3268
+  },
+
+  "Techiman":{
+    lat:7.5842,
+    lng:-1.9382
+  },
+
+  "Tamale":{
+    lat:9.4075,
+    lng:-0.8533
+  },
+
+  "Ho":{
+    lat:6.6008,
+    lng:0.4713
+  },
+
+  "Aflao":{
+    lat:6.1198,
+    lng:1.1901
+  },
+
+  "Wa":{
+    lat:10.0607,
+    lng:-2.5019
+  },
+
+  "Bolgatanga":{
+    lat:10.7856,
+    lng:-0.8514
   }
 
 };
@@ -3182,19 +3739,36 @@ useEffect(()=>{
   }
 
   const deliveredOrderToRate =
-    orders.find((order)=>{
+  orders.find((order)=>{
 
-      const orderId =
-        order._id?.toString();
+    const orderId =
+      order._id?.toString();
 
-      return (
-        orderId &&
-        order.status === "delivered" &&
-        order.rider &&
-        !ratedOrderIds.includes(orderId) &&
-        !postponedRatingOrderIds.includes(orderId)
-      );
-    });
+    const ratedIds =
+      Array.isArray(ratedOrderIds)
+      ? ratedOrderIds.map((id)=>id.toString())
+      : [];
+
+    const postponedIds =
+      Array.isArray(postponedRatingOrderIds)
+      ? postponedRatingOrderIds.map((id)=>id.toString())
+      : [];
+
+    const alreadyRatedFromBackend =
+      order.riderRated === true ||
+      order.hasRatedRider === true ||
+      order.riderRatingSubmitted === true ||
+      order.ratingSubmitted === true;
+
+    return (
+      orderId &&
+      order.status === "delivered" &&
+      order.rider &&
+      !ratedIds.includes(orderId) &&
+      !postponedIds.includes(orderId) &&
+      !alreadyRatedFromBackend
+    );
+  });
 
   if(deliveredOrderToRate){
 
@@ -3591,13 +4165,21 @@ alert(
     return;
   }
 
+  const cleanOrderId =
+    orderId.toString();
+
   setRatedOrderIds((prev)=>{
+
+    const oldList =
+      Array.isArray(prev)
+      ? prev.map((id)=>id.toString())
+      : [];
 
     const updated =
       Array.from(
         new Set([
-          ...prev,
-          orderId.toString()
+          ...oldList,
+          cleanOrderId
         ])
       );
 
@@ -3668,22 +4250,53 @@ async function submitRiderRating(){
       }
     );
 
-    saveRatedOrderId(
-      ratingModalOrder._id
-    );
+   const ratedOrderId =
+  ratingModalOrder._id?.toString();
 
-    alert(
-      "Thank you for rating your rider."
-    );
+saveRatedOrderId(
+  ratedOrderId
+);
 
-    setRatingModalOrder(null);
+setOrders((prevOrders)=>
+  prevOrders.map((order)=>{
 
-    setRiderRating(5);
+    if(order._id?.toString() === ratedOrderId){
 
-    setRiderRatingComment("");
+      return {
+        ...order,
+        riderRated:true,
+        hasRatedRider:true,
+        riderRatingSubmitted:true
+      };
+    }
 
-    fetchOrders();
+    return order;
+  })
+);
 
+alert(
+  "Thank you for rating your rider."
+);
+
+setRatingModalOrder(null);
+
+setRiderRating(5);
+
+setRiderRatingComment("");
+
+setPostponedRatingOrderIds((prev)=>{
+
+  const oldList =
+    Array.isArray(prev)
+    ? prev.map((id)=>id.toString())
+    : [];
+
+  return oldList.filter((id)=>
+    id !== ratedOrderId
+  );
+});
+
+fetchOrders();
   }catch(err){
 
     console.log(
@@ -3695,24 +4308,46 @@ async function submitRiderRating(){
       err.response?.data?.message ||
       "Failed to submit rider rating";
 
-    if(
-      message
-      .toLowerCase()
-      .includes("already rated")
-    ){
+   if(
+  message
+    .toLowerCase()
+    .includes("already rated")
+){
 
-      saveRatedOrderId(
-        ratingModalOrder._id
-      );
+  const ratedOrderId =
+    ratingModalOrder?._id?.toString();
 
-      setRatingModalOrder(null);
+  saveRatedOrderId(
+    ratedOrderId
+  );
 
-      setRiderRating(5);
+  setOrders((prevOrders)=>
+    prevOrders.map((order)=>{
 
-      setRiderRatingComment("");
-    }
+      if(order._id?.toString() === ratedOrderId){
 
-    alert(message);
+        return {
+          ...order,
+          riderRated:true,
+          hasRatedRider:true,
+          riderRatingSubmitted:true
+        };
+      }
+
+      return order;
+    })
+  );
+
+  setRatingModalOrder(null);
+
+  setRiderRating(5);
+
+  setRiderRatingComment("");
+
+  return;
+}
+
+alert(message);
 
   }finally{
 
@@ -3720,14 +4355,19 @@ async function submitRiderRating(){
   }
 }
 
-  function searchLocations(
+ function searchLocations(
   text,
   type
 ){
 
+  const searchText =
+    text
+      .toLowerCase()
+      .trim();
+
   if(
-    !text ||
-    text.length < 1
+    !searchText ||
+    searchText.length < 1
   ){
 
     if(type === "pickup"){
@@ -3744,16 +4384,17 @@ async function submitRiderRating(){
   }
 
   const filtered =
-    accraLocations.filter(
-
-      (location)=>
+    accraLocations
+      .filter((location)=>
 
         location
-        .toLowerCase()
-        .includes(
-          text.toLowerCase()
-        )
-    );
+          .toLowerCase()
+          .includes(searchText)
+      )
+      .sort((a,b)=>
+        a.localeCompare(b)
+      )
+      .slice(0,8);
 
   if(type === "pickup"){
 
@@ -3761,7 +4402,6 @@ async function submitRiderRating(){
       filtered
     );
   }
-
 
   else{
 
@@ -3803,7 +4443,7 @@ function getDistanceKm(
   return R * c;
 }
 
-async function calculateDistance(
+  async function calculateDistance(
   pickupValue = pickupLocation,
   dropoffValue = dropoffLocation
 ){
@@ -3826,7 +4466,7 @@ async function calculateDistance(
     if(!pickup){
 
       alert(
-        "Pickup location not found"
+        "Pickup location not found. Please choose from the suggestions."
       );
 
       return;
@@ -3835,71 +4475,143 @@ async function calculateDistance(
     if(!dropoff){
 
       alert(
-        "Dropoff location not found"
+        "Dropoff location not found. Please choose from the suggestions."
       );
 
       return;
     }
 
-    setPickupCoords(pickup);
+    setPickupCoords(
+      pickup
+    );
 
-    setDropoffCoords(dropoff);
+    setDropoffCoords(
+      dropoff
+    );
 
-    const distanceInKm =
+    const straightDistance =
       getDistanceKm(
         pickup.lat,
         pickup.lng,
         dropoff.lat,
         dropoff.lng
-      ).toFixed(1);
+      );
 
-    setDistance(distanceInKm);
+    const roadDistance =
+      straightDistance * 1.2;
 
     const km =
-      parseFloat(distanceInKm);
+      Number(
+        roadDistance.toFixed(1)
+      );
 
-      let estimatedTime = "20 - 35 mins";
+    setDistance(
+      km.toFixed(1)
+    );
 
-if(km <= 5){
-  estimatedTime = "15 - 25 mins";
-}
-else if(km <= 10){
-  estimatedTime = "25 - 40 mins";
-}
-else if(km <= 20){
-  estimatedTime = "40 - 60 mins";
-}
-else{
-  estimatedTime = "60 - 90 mins";
-}
+    let deliveryEstimate =
+      "20 - 35 mins";
 
-setDeliveryTime(estimatedTime);
+    if(km <= 5){
 
-    const baseFare = 10;
+      deliveryEstimate =
+        "15 - 25 mins";
+    }
 
-    let perKmRate = 3.5;
+    else if(km <= 10){
+
+      deliveryEstimate =
+        "25 - 40 mins";
+    }
+
+    else if(km <= 20){
+
+      deliveryEstimate =
+        "40 - 60 mins";
+    }
+
+    else if(km <= 40){
+
+      deliveryEstimate =
+        "1 hr - 1 hr 40 mins";
+    }
+
+    else{
+
+      deliveryEstimate =
+        "2 hrs+";
+    }
+
+    setDeliveryTime(
+      deliveryEstimate
+    );
+
+    const baseFare =
+      7;
+
+    let perKmRate =
+      2.6;
 
     if(km > 10){
-      perKmRate = 4;
+
+      perKmRate =
+        3.8;
     }
 
     if(km > 20){
-      perKmRate = 4.5;
+
+      perKmRate =
+        4.5;
     }
 
-    const fare =
-      baseFare + (km * perKmRate);
+    if(km > 40){
+
+      perKmRate =
+        5.5;
+    }
+
+    const serviceFee =
+      1;
+
+    let longDistanceFee =
+      0;
+
+    if(km > 20){
+
+      longDistanceFee =
+        10;
+    }
+
+    if(km > 40){
+
+      longDistanceFee =
+        25;
+    }
+
+    const deliveryFee =
+      baseFare +
+      (km * perKmRate) +
+      serviceFee +
+      longDistanceFee;
+
+    const finalFee =
+      Math.ceil(
+        deliveryFee
+      );
 
     setAmount(
-      fare.toFixed(2)
+      finalFee.toFixed(2)
     );
 
   }catch(err){
 
-    console.log(err);
+    console.log(
+      "DELIVERY FEE ERROR:",
+      err
+    );
 
     alert(
-      "Error calculating distance"
+      "Error calculating delivery fee"
     );
   }
 }
