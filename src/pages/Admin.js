@@ -368,16 +368,26 @@ const HeroCardSmall = styled.div`
 
 const Stats = styled.div`
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:14px;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px;
   margin-bottom:20px;
+  width:100%;
+  overflow:hidden;
+
+  @media(max-width:768px){
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  @media(max-width:480px){
+    grid-template-columns:1fr;
+  }
 `;
 
 const StatCard = styled.div`
   background:white;
 
   border-radius:20px;
-  padding:18px;
+  padding:14px;
 
   border:${props =>
     props.$active
@@ -484,12 +494,12 @@ const StatTitle = styled.div`
 `;
 
 const StatValue = styled.div`
-  font-size:32px;
+  font-size:26px;
   font-weight:900;
   margin-top:8px;
-
   color:#0f172a;
   letter-spacing:-0.5px;
+  word-break:break-word;
 `;
 
 const StatSmall = styled.div`
@@ -2374,6 +2384,32 @@ function clearRiderStatusFilters(){
 </StatCard>
 
 <StatCard
+  $active={activeAdminView === "paymentRecords"}
+  onClick={()=>{
+    setActiveAdminView("paymentRecords");
+    fetchPaymentRecords();
+  }}
+>
+
+  <StatIcon>
+    💰
+  </StatIcon>
+
+  <StatTitle>
+    Payment Records
+  </StatTitle>
+
+  <StatValue>
+    {deliveredOrders.length}
+  </StatValue>
+
+  <StatSmall>
+    View paid, unpaid, cash collected, and delivery payment records.
+  </StatSmall>
+
+</StatCard>
+
+<StatCard
   $active={activeAdminView === "onlineRiders"}
   onClick={()=>
     setActiveAdminView("onlineRiders")
@@ -2396,32 +2432,6 @@ function clearRiderStatusFilters(){
 
   <StatSmall>
     Click to view online riders.
-  </StatSmall>
-
-</StatCard>
-
-<StatCard
-  $active={activeAdminView === "paymentRecords"}
-  onClick={()=>{
-    setActiveAdminView("paymentRecords");
-    fetchPaymentRecords();
-  }}
->
-
-  <StatIcon>
-    💰
-  </StatIcon>
-
-  <StatTitle>
-    Payment Records
-  </StatTitle>
-
-  <StatValue>
-    {deliveredOrders.length}
-  </StatValue>
-
-  <StatSmall>
-    View paid, unpaid, cash collected, and delivery payment records.
   </StatSmall>
 
 </StatCard>
