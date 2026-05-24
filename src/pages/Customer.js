@@ -3739,36 +3739,40 @@ useEffect(()=>{
   }
 
   const deliveredOrderToRate =
-  orders.find((order)=>{
+    orders.find((order)=>{
 
-    const orderId =
-      order._id?.toString();
+      const orderId =
+        order._id?.toString();
 
-    const ratedIds =
-      Array.isArray(ratedOrderIds)
-      ? ratedOrderIds.map((id)=>id.toString())
-      : [];
+      const ratedIds =
+        Array.isArray(ratedOrderIds)
+        ? ratedOrderIds.map((id)=>
+            id.toString()
+          )
+        : [];
 
-    const postponedIds =
-      Array.isArray(postponedRatingOrderIds)
-      ? postponedRatingOrderIds.map((id)=>id.toString())
-      : [];
+      const postponedIds =
+        Array.isArray(postponedRatingOrderIds)
+        ? postponedRatingOrderIds.map((id)=>
+            id.toString()
+          )
+        : [];
 
-    const alreadyRatedFromBackend =
-      order.riderRated === true ||
-      order.hasRatedRider === true ||
-      order.riderRatingSubmitted === true ||
-      order.ratingSubmitted === true;
+      const alreadyRatedFromBackend =
+        order.riderRated === true ||
+        order.hasRatedRider === true ||
+        order.riderRatingSubmitted === true ||
+        order.ratingSubmitted === true;
 
-    return (
-      orderId &&
-      order.status === "delivered" &&
-      order.rider &&
-      !ratedIds.includes(orderId) &&
-      !postponedIds.includes(orderId) &&
-      !alreadyRatedFromBackend
-    );
-  });
+      return (
+        orderId &&
+        order.status === "delivered" &&
+        order.rider &&
+        !ratedIds.includes(orderId) &&
+        !postponedIds.includes(orderId) &&
+        !alreadyRatedFromBackend
+      );
+    });
 
   if(deliveredOrderToRate){
 
@@ -4498,7 +4502,7 @@ function getDistanceKm(
       );
 
     const roadDistance =
-      straightDistance * 1.2;
+      straightDistance * 1.3;
 
     const km =
       Number(
