@@ -8,6 +8,7 @@ import styled,{
 } from "styled-components";
 
 import API from "../api/api";
+
 import socket from "../socket";
 
 import logo from "../assets/logo.png";
@@ -508,12 +509,12 @@ const AnalyticsGrid = styled.div`
 
 const AnalyticsCard = styled.div`
   background:${props =>
-    props.light
+    props.$light
     ? "white"
     : "linear-gradient(135deg,#111827,#1e293b)"};
 
   color:${props =>
-    props.light
+    props.$light
     ? "#0f172a"
     : "white"};
 
@@ -521,7 +522,7 @@ const AnalyticsCard = styled.div`
   padding:22px;
 
   border:${props =>
-    props.light
+    props.$light
     ? "1px solid #e5e7eb"
     : "1px solid rgba(250,204,21,0.18)"};
 
@@ -532,7 +533,7 @@ const AnalyticsCard = styled.div`
 const AnalyticsLabel = styled.div`
   font-size:13px;
   color:${props =>
-    props.light
+    props.$light
     ? "#64748b"
     : "#cbd5e1"};
 
@@ -550,7 +551,7 @@ const ProgressTrack = styled.div`
   height:10px;
   width:100%;
   background:${props =>
-    props.light
+    props.$light
     ? "#e5e7eb"
     : "rgba(255,255,255,0.18)"};
 
@@ -569,7 +570,7 @@ const MiniText = styled.div`
   margin-top:10px;
   font-size:12px;
   color:${props =>
-    props.light
+    props.$light
     ? "#64748b"
     : "#e2e8f0"};
 
@@ -1062,6 +1063,9 @@ export default function Admin(){
   const [riders,setRiders] =
     useState([]);
 
+    const [riderStatusHistories, setRiderStatusHistories] = 
+    useState([]);
+
   const [user,setUser] =
     useState(null);
 
@@ -1095,6 +1099,18 @@ const [riderStatusReason,setRiderStatusReason] =
 const [riderStatusFileLoading,setRiderStatusFileLoading] =
   useState(false);
 
+  const fetchRiderStatusHistories = async () => {
+  try {
+    const res = await API.get("/rider-status-histories");
+
+    console.log("Rider status histories:", res.data);
+
+    setRiderStatusHistories(res.data);
+  } catch (error) {
+    console.error("Fetch rider status histories error:", error);
+  }
+};
+
   useEffect(()=>{
 
     fetchUser();
@@ -1102,6 +1118,8 @@ const [riderStatusFileLoading,setRiderStatusFileLoading] =
     fetchOrders();
 
     fetchRiders();
+
+    fetchRiderStatusHistories();
 
     const interval =
       setInterval(()=>{
@@ -2519,9 +2537,9 @@ const selectedTitle =
 
         <AnalyticsGrid>
 
-         <AnalyticsCard light>
+         <AnalyticsCard $light>
 
-  <AnalyticsLabel light>
+  <AnalyticsLabel $light>
     Delivered Orders
   </AnalyticsLabel>
 
@@ -2529,7 +2547,7 @@ const selectedTitle =
     {deliveredPercent}%
   </AnalyticsValue>
 
-  <ProgressTrack light>
+  <ProgressTrack $light>
 
     <ProgressFill
       width={`${deliveredPercent}%`}
@@ -2538,7 +2556,7 @@ const selectedTitle =
 
   </ProgressTrack>
 
-  <MiniText light>
+  <MiniText $light>
 
     {deliveredOrders.length}
     {" "}of{" "}
@@ -2549,9 +2567,9 @@ const selectedTitle =
 
 </AnalyticsCard>
 
-          <AnalyticsCard light>
+          <AnalyticsCard $light>
 
-            <AnalyticsLabel light>
+            <AnalyticsLabel $light>
               Active Deliveries
             </AnalyticsLabel>
 
@@ -2559,7 +2577,7 @@ const selectedTitle =
               {activePercent}%
             </AnalyticsValue>
 
-            <ProgressTrack light>
+            <ProgressTrack $light>
 
               <ProgressFill
                 width={`${activePercent}%`}
@@ -2568,7 +2586,7 @@ const selectedTitle =
 
             </ProgressTrack>
 
-            <MiniText light>
+            <MiniText $light>
 
               {activeOrders.length}
               {" "}orders currently moving
@@ -2577,9 +2595,9 @@ const selectedTitle =
 
           </AnalyticsCard>
 
-          <AnalyticsCard light>
+          <AnalyticsCard $light>
 
-            <AnalyticsLabel light>
+            <AnalyticsLabel $light>
               Pending Orders
             </AnalyticsLabel>
 
@@ -2587,7 +2605,7 @@ const selectedTitle =
               {pendingPercent}%
             </AnalyticsValue>
 
-            <ProgressTrack light>
+            <ProgressTrack $light>
 
               <ProgressFill
                 width={`${pendingPercent}%`}
@@ -2596,7 +2614,7 @@ const selectedTitle =
 
             </ProgressTrack>
 
-            <MiniText light>
+            <MiniText $light>
 
               {pendingOrders.length}
               {" "}orders waiting for riders
