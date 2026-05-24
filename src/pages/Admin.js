@@ -758,7 +758,7 @@ const ActionButton = styled.button`
   padding:10px 14px;
 
   background:${props =>
-    props.green
+    props.$green
     ? "#16a34a"
     : "#dc2626"};
 
@@ -1256,28 +1256,6 @@ const [riderStatusFileLoading,setRiderStatusFileLoading] =
 
   async function fetchRiders(){
 
-    try{
-
-      const res =
-        await API.get(
-          "/rider"
-        );
-
-      setRiders(
-        res.data
-      );
-
-    }catch(err){
-
-      console.log(
-        "RIDER FETCH ERROR:",
-        err
-      );
-    }
-  }
-
-  async function fetchRiders(){
-
   try{
 
     const res =
@@ -1410,7 +1388,7 @@ async function fetchRiderStatusFile(){
 
 function getRiderAccountLabel(status){
 
-  if(status === "temporary_suspension"){
+  if(status === "temporary_suspended"){
     return "⏳ Temporary Suspension";
   }
 
@@ -1420,6 +1398,10 @@ function getRiderAccountLabel(status){
 
   if(status === "reinstated"){
     return "🔄 Reinstated";
+  }
+
+  if(status === "active"){
+    return "✅ Active Rider";
   }
 
   return "✅ Active Rider";
@@ -1459,13 +1441,21 @@ async function updateRiderAccountStatus(){
 
     setRiderStatusModal(false);
 
-setSelectedRider(null);
+    setSelectedRider(null);
 
-setSelectedRiderStatus("temporary_suspended");
+    setSelectedRiderStatus(
+      "temporary_suspended"
+    );
 
-setRiderStatusReason("");
+    setRiderStatusReason("");
 
-fetchRiders();
+    fetchRiders();
+
+    fetchRiderStatusHistories();
+
+    if(activeAdminView === "riderStatusFile"){
+      fetchRiderStatusFile();
+    }
 
   }catch(err){
 
@@ -2162,8 +2152,8 @@ const selectedTitle =
                   }}
                 >
 
-                 <ActionButton
-  green
+                <ActionButton
+  $green
   onClick={()=>
     openRiderStatusModal(r)
   }
