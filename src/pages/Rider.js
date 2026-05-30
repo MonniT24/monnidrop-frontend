@@ -1095,14 +1095,30 @@ export default function Rider(){
 const [riderEmergency,setRiderEmergency] =
   useState("");
 
-  const [motorNumber,setMotorNumber] =
+const [motorNumber,setMotorNumber] =
   useState("");
 
-  const [riderProfileEditing,setRiderProfileEditing] =
+const [riderIdType,setRiderIdType] =
+  useState("");
+
+const [riderIdNumber,setRiderIdNumber] =
+  useState("");
+
+const [riderProfileEditing,setRiderProfileEditing] =
   useState(false);
 
 const [orders, setOrders] =
   useState([]);
+
+  const riderProfileCompleted =
+  Boolean(
+    user?.dob &&
+    user?.emergencyContact &&
+    user?.motorNumber &&
+    user?.idType &&
+    user?.idNumber &&
+    user?.profileImage
+  );
 
 const riderIsBlocked =
   user?.status === "suspended" ||
@@ -1550,8 +1566,16 @@ useEffect(()=>{
     );
 
     setMotorNumber(
-       user.motorNumber || ""
-    );
+  user.motorNumber || ""
+);
+
+setRiderIdType(
+  user.idType || ""
+);
+
+setRiderIdNumber(
+  user.idNumber || ""
+);
    }
 
 },[user]);
@@ -1810,6 +1834,26 @@ async function acceptOrder(orderId){
     }
 
     if(activeOrders.length > 0){
+
+      if(
+  !user.dob ||
+  !user.emergencyContact ||
+  !user.motorNumber ||
+  !user.idType ||
+  !user.idNumber ||
+  !user.profileImage
+){
+
+  alert(
+    "Please complete your rider profile before accepting deliveries."
+  );
+
+  setActiveSection(
+    "profile"
+  );
+
+  return;
+}
 
       alert(
         "You already have an active delivery. Complete it before accepting another order."
@@ -5599,6 +5643,30 @@ user?.status !== "busy" && (
         }}
       >
 
+        <div
+  style={{
+    background:riderProfileCompleted
+      ? "#dcfce7"
+      : "#fef3c7",
+    border:riderProfileCompleted
+      ? "1px solid #86efac"
+      : "1px solid #fde68a",
+    color:riderProfileCompleted
+      ? "#166534"
+      : "#92400e",
+    borderRadius:"18px",
+    padding:"16px",
+    marginBottom:"18px",
+    fontWeight:"900"
+  }}
+>
+  {
+    riderProfileCompleted
+    ? "🟢 VERIFIED RIDER PROFILE"
+    : "🟡 INCOMPLETE RIDER PROFILE — Complete your profile before accepting deliveries."
+  }
+</div>
+
         <ProfileImage
           src={
             selectedProfileImage ||
@@ -5670,31 +5738,87 @@ user?.status !== "busy" && (
         </div>
 
         <input
-          type="file"
-          accept="image/*"
-          onChange={(e)=>{
+  type="file"
+  accept="image/*"
+  onChange={async(e)=>{
 
-            const file =
-              e.target.files[0];
+    try{
 
-            if(file){
+      const file =
+        e.target.files[0];
 
-              setSelectedProfileImage(
-                URL.createObjectURL(file)
-              );
-            }
-          }}
-          style={{
-            width:"100%",
-            background:"rgba(255,255,255,0.12)",
-            border:"1px solid rgba(255,255,255,0.22)",
-            borderRadius:"14px",
-            padding:"10px",
-            color:"white",
-            fontWeight:"700",
-            marginBottom:"14px"
-          }}
-        />
+      if(!file){
+
+        return;
+      }
+
+      if(file.size > 5 * 1024 * 1024){
+
+        alert(
+          "Image is too large. Please choose an image below 5MB."
+        );
+
+        return;
+      }
+
+      setSelectedProfileImage(
+        URL.createObjectURL(file)
+      );
+
+      const formData =
+        new FormData();
+
+      formData.append(
+        "profileImage",
+        file
+      );
+
+      const res =
+        await API.put(
+          "/rider/profile-image",
+          formData
+        );
+
+      console.log(
+        "PROFILE IMAGE RESPONSE:",
+        res.data
+      );
+
+      const updatedUser =
+        res.data.user || res.data;
+
+      setUser(
+        updatedUser
+      );
+
+      setSelectedProfileImage(
+        updatedUser.profileImage || ""
+      );
+
+      setProfileImage(
+        updatedUser.profileImage || riderImage
+      );
+
+      fetchMe();
+
+      alert(
+        "Rider profile picture saved successfully"
+      );
+
+      e.target.value =
+        "";
+
+    }catch(err){
+
+      console.log(err);
+
+      alert(
+        err.response?.data?.message ||
+        "Rider profile picture upload failed"
+      );
+    }
+  }}
+/>
 
         <Button
           style={{
@@ -5792,14 +5916,16 @@ user?.status !== "busy" && (
                 try{
 
                   const res =
-                    await API.put(
-                      "/rider/profile",
-                      {
-                        dob:riderDOB,
-                        emergencyContact:riderEmergency,
-                        motorNumber:motorNumber
-                      }
-                    );
+  await API.put(
+    "/rider/profile",
+    {
+      dob:riderDOB,
+      emergencyContact:riderEmergency,
+      motorNumber:motorNumber,
+      idType:riderIdType,
+      idNumber:riderIdNumber
+    }
+  );
 
                   setUser(
                     res.data.user
@@ -6062,6 +6188,70 @@ user?.status !== "busy" && (
                   }}
                 />
 
+                <label>
+  ID Type
+</label>
+
+<select
+  value={riderIdType}
+  onChange={(e)=>
+    setRiderIdType(e.target.value)
+  }
+  disabled={!riderProfileEditing}
+  style={{
+    width:"100%",
+    padding:"13px",
+    borderRadius:"14px",
+    border:"1px solid #cbd5e1",
+    outline:"none",
+    fontWeight:"800",
+    marginBottom:"12px"
+  }}
+>
+  <option value="">Select ID Type</option>
+  <option value="Ghana Card">Ghana Card</option>
+  <option value="Driver's License">Driver's License</option>
+  <option value="Passport">Passport</option>
+  <option value="Voter ID">Voter ID</option>
+  <option value="Other">Other</option>
+</select>
+
+<label>
+  ID Number
+</label>
+
+<input
+  type="text"
+  value={riderIdNumber}
+  onChange={(e)=>
+    setRiderIdNumber(e.target.value)
+  }
+  disabled={
+    !riderProfileEditing ||
+    !riderIdType
+  }
+  placeholder={
+    riderIdType === "Ghana Card"
+    ? "Example: GHA-123456789-1"
+    : riderIdType === "Driver's License"
+    ? "Example: DVLA-12345678"
+    : riderIdType === "Passport"
+    ? "Example: G1234567"
+    : riderIdType === "Voter ID"
+    ? "Example: 1234567890"
+    : "Enter ID number"
+  }
+  style={{
+    width:"100%",
+    padding:"13px",
+    borderRadius:"14px",
+    border:"1px solid #cbd5e1",
+    outline:"none",
+    fontWeight:"800",
+    marginBottom:"12px"
+  }}
+/>
+
               </div>
 
             ) : (
@@ -6143,31 +6333,90 @@ user?.status !== "busy" && (
                   }}
                 >
                   <div
-                    style={{
-                      color:"#64748b",
-                      fontSize:"12px",
-                      fontWeight:"900",
-                      marginBottom:"6px"
-                    }}
-                  >
-                    MOTOR NUMBER
-                  </div>
+  style={{
+    color:"#64748b",
+    fontSize:"12px",
+    fontWeight:"900",
+    marginBottom:"6px"
+  }}
+>
+  MOTOR NUMBER
+</div>
 
-                  <div
-                    style={{
-                      color:"#0f172a",
-                      fontSize:"15px",
-                      fontWeight:"900"
-                    }}
-                  >
-                    {motorNumber || "Not added"}
-                  </div>
-                </div>
+<div
+  style={{
+    color:"#0f172a",
+    fontSize:"15px",
+    fontWeight:"900"
+  }}
+>
+  {motorNumber || "Not added"}
+</div>
+</div>
 
-              </div>
-            )
-          }
+<div
+  style={{
+    background:"#f8fafc",
+    border:"1px solid #e5e7eb",
+    borderRadius:"16px",
+    padding:"14px"
+  }}
+>
+  <div
+    style={{
+      color:"#64748b",
+      fontSize:"12px",
+      fontWeight:"900",
+      marginBottom:"6px"
+    }}
+  >
+    ID TYPE
+  </div>
 
+  <div
+    style={{
+      color:"#0f172a",
+      fontSize:"15px",
+      fontWeight:"900"
+    }}
+  >
+    {riderIdType || "Not added"}
+  </div>
+</div>
+
+<div
+  style={{
+    background:"#f8fafc",
+    border:"1px solid #e5e7eb",
+    borderRadius:"16px",
+    padding:"14px"
+  }}
+>
+  <div
+    style={{
+      color:"#64748b",
+      fontSize:"12px",
+      fontWeight:"900",
+      marginBottom:"6px"
+    }}
+  >
+    ID NUMBER
+  </div>
+
+  <div
+    style={{
+      color:"#0f172a",
+      fontSize:"15px",
+      fontWeight:"900"
+    }}
+  >
+    {riderIdNumber || "Not added"}
+  </div>
+</div>
+
+</div>
+)
+}
         </div>
 
       </OrderCard>

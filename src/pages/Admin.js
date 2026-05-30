@@ -1489,6 +1489,46 @@ async function fetchPaymentRecords(){
   }
 }
 
+async function markCashAsSettled(orderId){
+
+  try{
+
+    const note =
+      window.prompt(
+        "Enter settlement note. Example: Rider submitted cash at office."
+      );
+
+    if(note === null){
+      return;
+    }
+
+    await API.put(
+      `/admin/payment-records/${orderId}/settle-cash`,
+      {
+        note:note.trim()
+      }
+    );
+
+    alert(
+      "Cash marked as settled successfully."
+    );
+
+    fetchPaymentRecords();
+
+  }catch(err){
+
+    console.log(
+      "SETTLE CASH ERROR:",
+      err.response?.data || err.message
+    );
+
+    alert(
+      err.response?.data?.message ||
+      "Failed to mark cash as settled"
+    );
+  }
+}
+
 function formatExcelDate(value){
 
   if(!value){
@@ -3047,6 +3087,14 @@ function clearRiderStatusFilters(){
               }
               <br />
 
+              <strong>Cash Settled:</strong>{" "}
+{
+  record.cashSettledToAdmin
+  ? "Yes"
+  : "No"
+}
+<br />
+
               <strong>Delivered At:</strong>{" "}
               {
                 record.deliveredAt
@@ -3059,6 +3107,28 @@ function clearRiderStatusFilters(){
             <DetailAmount>
               ₵{record.amount || 0}
             </DetailAmount>
+
+            {
+  record.paymentMethod === "cash" &&
+  record.cashCollectedByRider === true &&
+  record.cashSettledToAdmin !== true && (
+
+    <ActionButton
+      $green
+      type="button"
+      onClick={()=>
+        markCashAsSettled(
+          record.orderId
+        )
+      }
+      style={{
+        marginTop:"12px"
+      }}
+    >
+      Mark Cash Settled
+    </ActionButton>
+  )
+}
 
           </DetailCard>
         ))
