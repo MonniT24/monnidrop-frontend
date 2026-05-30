@@ -2635,43 +2635,38 @@ const PremiumStatsGrid = styled.div`
 
 const PremiumStatCard = styled.div`
   background:white;
-  border-radius:20px;
-  padding:14px;
-  box-shadow:
-    0 7px 18px rgba(15,23,42,0.05);
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 8px 20px rgba(15,23,42,0.06);
   border:1px solid #eef2f7;
   position:relative;
   overflow:hidden;
-  min-height:150px;
+  min-height:125px;
 
-  &:before{
-    content:"";
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:3px;
-    background:${props => props.line || "#2563eb"};
+  transition:0.25s ease;
+
+  &:hover{
+    transform:translateY(-4px);
   }
 
   @media(max-width:480px){
     padding:14px;
-    border-radius:18px;
-    min-height:145px;
+    border-radius:16px;
+    min-height:120px;
   }
 `;
 
 const PremiumStatIcon = styled.div`
-  width:34px;
-  height:34px;
+  width:32px;
+  height:32px;
   border-radius:12px;
   display:flex;
   align-items:center;
   justify-content:center;
   background:${props => props.bg || "#eff6ff"};
   color:${props => props.color || "#2563eb"};
-  font-size:17px;
-  margin-bottom:10px;
+  font-size:16px;
+  margin-bottom:8px;
 `;
 
 const PremiumStatLabel = styled.div`
@@ -2682,7 +2677,7 @@ const PremiumStatLabel = styled.div`
 `;
 
 const PremiumStatValue = styled.div`
-  font-size:26px;
+  font-size:24px;
   font-weight:900;
   color:#0f172a;
   line-height:1;
@@ -2690,8 +2685,8 @@ const PremiumStatValue = styled.div`
 
 const PremiumStatNote = styled.div`
   color:#94a3b8;
-  font-size:11px;
-  line-height:1.3;
+  font-size:10px;
+  line-height:1.4;
   margin-top:8px;
 `;
 
