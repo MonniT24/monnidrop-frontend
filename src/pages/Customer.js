@@ -647,47 +647,354 @@ const SettingsHeroIcon = styled.div`
   }
 `;
 
-const ProfileDetailRow = styled.div`
+const AddressGrid = styled.div`
   display:grid;
-  grid-template-columns:130px 1fr;
-  align-items:center;
-  column-gap:16px;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;
+`;
 
+const AddressBox = styled.div`
   background:#ffffff;
+  border:1px solid #dbeafe;
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 8px 20px rgba(15,23,42,0.06);
+`;
 
-  border:1px solid rgba(29,78,216,0.10);
-  border-radius:13px;
-
-  padding:10px 14px;
-  margin-bottom:9px;
-
-  color:#334155;
+const AddressLabel = styled.div`
+  color:#1d4ed8;
   font-size:14px;
-  font-weight:700;
+  font-weight:900;
+  margin-bottom:8px;
+`;
+
+const AddressValue = styled.div`
+  color:#0f172a;
+  font-size:16px;
+  font-weight:800;
+  line-height:1.4;
+  word-break:break-word;
+`;
+
+const CustomerProfilePage = styled.div`
+  display:grid;
+  grid-template-columns:300px 1fr;
+  gap:24px;
+
+  @media(max-width:900px){
+    grid-template-columns:1fr;
+  }
+`;
+
+const CustomerProfileLeftCard = styled.div`
+  background:linear-gradient(135deg,#0f172a,#1d4ed8);
+  border-radius:24px;
+  padding:18px 16px;
+  min-height:unset;
+  align-self:start;
+  text-align:center;
+  color:white;
+  height:fit-content;
+  box-shadow:0 14px 30px rgba(15,23,42,0.16);
+`;
+
+const CustomerVerifiedBadge = styled.div`
+  background:#dcfce7;
+  color:#166534;
+  border-radius:18px;
+  padding:10px 12px;
+  font-size:12px;
+  font-weight:900;
+  margin-bottom:24px;
+
+  span{
+    display:inline-block;
+    width:11px;
+    height:11px;
+    background:#22c55e;
+    border-radius:50%;
+    margin-right:8px;
+  }
+`;
+
+const CustomerProfileMainImage = styled.img`
+  width:118px;
+  height:118px;
+  border-radius:50%;
+  object-fit:cover;
+  border:5px solid #facc15;
+  box-shadow:
+  0 0 0 6px rgba(250,204,21,0.18),
+  0 12px 24px rgba(15,23,42,0.20);
+  background:white;
+`;
+
+const CustomerProfileName = styled.h2`
+  margin:16px 0 4px;
+  font-size:20px;
+  font-weight:900;
+`;
+
+const CustomerProfileEmail = styled.p`
+  margin:0;
+  color:#dbeafe;
+  font-size:14px;
+  font-weight:800;
+`;
+
+const CustomerStatusPill = styled.div`
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+
+  margin-top:18px;
+  margin-bottom:16px;
+
+  padding:9px 18px;
+
+  border-radius:999px;
+
+  background:#dcfce7;
+  color:#166534;
+
+  font-size:14px;
+  font-weight:900;
+`;
+
+const CustomerProfileRightCard = styled.div`
+  background:white;
+  border-radius:24px;
+  padding:22px;
+  border:1px solid #e5e7eb;
+  box-shadow:0 12px 28px rgba(15,23,42,0.07);
+
+  position:relative;
+  overflow:hidden;
+
+  &::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:4px;
+
+    background:linear-gradient(
+      90deg,
+      #0f172a,
+      #1d4ed8,
+      #facc15
+    );
+  }
+`;
+
+const CustomerProfileHeader = styled.div`
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:24px;
+
+  @media(max-width:600px){
+    flex-direction:column;
+  }
+`;
+
+const CustomerProfileTitle = styled.h2`
+  margin:0;
+  color:#0f172a;
+  font-size:${props => props.small ? "20px" : "26px"};
+  font-weight:900;
+`;
+
+const CustomerProfileSubTitle = styled.p`
+  margin:5px 0 0;
+  color:#64748b;
+  font-size:14px;
+  font-weight:800;
+`;
+
+const CustomerEditButton = styled.button`
+  min-width:110px;
+
+  border:none;
+  border-radius:12px;
+
+  padding:10px 16px;
+
+  background:linear-gradient(
+    135deg,
+    #0f172a,
+    #1d4ed8
+  );
+
+  color:#facc15;
+
+  font-size:13px;
+  font-weight:800;
+
+  cursor:pointer;
+
+  transition:0.25s ease;
+
+  &:hover{
+    transform:translateY(-2px);
+  }
+`;
+
+const CustomerOnlineStatus = styled.div`
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#0f172a;
+  font-size:16px;
+  font-weight:900;
+`;
+
+const CustomerOnlineDot = styled.span`
+  width:13px;
+  height:13px;
+  border-radius:50%;
+  background:#22c55e;
 
   box-shadow:
-    0 6px 14px rgba(15,23,42,0.035);
+    0 0 0 0 rgba(34,197,94,0.7);
+
+  animation:customerOnlineBlink 1.3s infinite;
+
+  @keyframes customerOnlineBlink{
+    0%{
+      box-shadow:0 0 0 0 rgba(34,197,94,0.7);
+      opacity:1;
+    }
+
+    70%{
+      box-shadow:0 0 0 9px rgba(34,197,94,0);
+      opacity:0.55;
+    }
+
+    100%{
+      box-shadow:0 0 0 0 rgba(34,197,94,0);
+      opacity:1;
+    }
+  }
+`;
+
+const CustomerInfoBox = styled.div`
+  background:${props => props.highlight ? "#fefce8" : "#f8fafc"};
+  border:1px solid ${props => props.highlight ? "#fde68a" : "#e5e7eb"};
+  border-radius:14px;
+  padding:14px 16px;
+
+  label{
+    display:block;
+    color:${props => props.highlight ? "#92400e" : "#64748b"};
+    font-size:11px;
+    letter-spacing:0.5px;
+    font-weight:900;
+    margin-bottom:6px;
+  }
+
+  strong{
+  color:#0f172a;
+  font-size:15px;
+  font-weight:800;
+  line-height:1.3;
+  word-break:break-word;
+}
+`;
+
+const CustomerSaveButton = styled.button`
+  border:none;
+  border-radius:15px;
+  padding:13px 16px;
+  background:linear-gradient(135deg,#facc15,#f59e0b);
+  color:#0f172a;
+  font-size:14px;
+  font-weight:900;
+  cursor:pointer;
+`;
+
+const CustomerInfoGrid = styled.div`
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+
+  @media(max-width:700px){
+    grid-template-columns:1fr;
+  }
+`;
+
+const CustomerDivider = styled.div`
+  height:1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      #e5e7eb,
+      transparent
+    );
+
+  margin:22px 0;
+`;
+
+const CustomerSectionHeader = styled.div`
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  margin-bottom:18px;
+
+  color:#0f172a;
+
+  font-size:18px;
+  font-weight:900;
+
+  span{
+    font-size:20px;
+  }
+`;
+
+const CustomerEditGrid = styled.div`
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
+
+  @media(max-width:700px){
+    grid-template-columns:1fr;
+  }
+`;
+
+const ProfileDetailRow = styled.div`
+  display:grid;
+  grid-template-columns:210px 1fr;
+  align-items:center;
+  gap:12px;
+  background:#ffffff;
+  border:1px solid #e0ecff;
+  border-radius:14px;
+  padding:14px 18px;
+  margin-bottom:12px;
 
   strong{
     color:#1d4ed8;
+    font-size:15px;
     font-weight:900;
     white-space:nowrap;
   }
 
   span{
     color:#0f172a;
-    font-weight:900;
-    text-align:left;
-    justify-self:start;
+    font-size:15px;
+    font-weight:800;
+    word-break:break-word;
   }
 
-  @media(max-width:480px){
+  @media(max-width:600px){
     grid-template-columns:1fr;
-    row-gap:6px;
-
-    span{
-      text-align:left;
-    }
+    gap:6px;
   }
 `;
 
@@ -4915,18 +5222,17 @@ async function sendMessage(
   htmlFor="profileUpload"
   style={{
   display:"inline-flex",
-  alignItems:"center",
   justifyContent:"center",
-  padding:"9px 16px",
-  borderRadius:"14px",
-  background:"#2563eb",
-  color:"white",
-  fontWeight:"900",
+  alignItems:"center",
+  padding:"8px 14px",
+  borderRadius:"12px",
+  background:"#ffffff",
+  color:"#0f172a",
+  fontWeight:"800",
   cursor:"pointer",
-  marginTop:"6px",
-  marginBottom:"8px",
-  fontSize:"13px",
-  lineHeight:"1"
+  marginTop:"0",
+  fontSize:"12px",
+  border:"1px solid #e5e7eb"
 }}
 >
   Change Picture
@@ -4960,9 +5266,14 @@ async function sendMessage(
 
       const res =
         await API.put(
-          "/customer/profile-image",
-          formData
-        );
+  "/customer/profile-image",
+  formData,
+  {
+    headers:{
+      "Content-Type":"multipart/form-data"
+    }
+  }
+);
 
       setUser(
         res.data.user
@@ -7807,459 +8118,279 @@ calculateDistance(
 
         {activeSection === "My Profile" && (
 
- <OrderCard
-  style={{
-    maxWidth:"640px",
-    margin:"0 auto",
-    padding:"18px",
-    borderRadius:"22px",
-    background:
-      "linear-gradient(135deg, #ffffff, #f8fafc)",
-    border:"1px solid rgba(29,78,216,0.12)",
-    boxShadow:
-      "0 12px 28px rgba(15,23,42,0.07)"
-  }}
->
-
-    
-
-<div
-  style={{
-  display:"flex",
-  flexDirection:"column",
-  alignItems:"flex-start",
-  justifyContent:"flex-start",
-  margin:"0",
-  width:"100%"
-}}
->
-
-
- <ProfileHero>
-
-  <ProfileHeroPhoto
-  src={
-    profileImage ||
-    user?.profileImage ||
-    customerImage
-  }
-  alt="Customer Profile"
-/>
-
-  <ProfileHeroContent>
-
-    <ProfileBadge>
-      👤 Customer Profile
-    </ProfileBadge>
-
-    <ProfileHeroTitle>
-      Manage Your Account
-    </ProfileHeroTitle>
-
-    <ProfileHeroText>
-      Keep your personal details, contact information,
-      and emergency contact updated for smooth deliveries.
-    </ProfileHeroText>
-
-  </ProfileHeroContent>
-
-</ProfileHero>
-
-</div>
-    
-<HeroText
-  style={{
-    marginTop:"8px",
-    marginBottom:"18px",
-    textAlign:"center",
-    fontSize:"14px",
-    fontWeight:"700",
-    color:"#64748b"
-  }}
->
-  Manage your customer profile information.
-</HeroText>
-
-   
-   <div
-  style={{
-    display:"block",
-    width:"100%",
-    maxWidth:"540px",
-    margin:"0 auto"
-  }}
->
-
-      <div
-  style={{
-    width:"100%",
-    background:"#f8fafc",
-    padding:"18px",
-    borderRadius:"18px",
-    border:"1px solid rgba(29,78,216,0.10)"
-  }}
->
-
-     <ProfileDetailRow>
-  <strong>
-    Name:
-  </strong>
-
-  <span>
-    {
-      profileName || user?.name || "Not added"
-    }
-  </span>
-</ProfileDetailRow>
-
-        {
-  profileEditing
-
-  ?
-
-  <>
-
-    <BeautifulInput
-      type="text"
-      placeholder="Full Name"
-      value={profileName}
-      onChange={(e)=>
-        setProfileName(
-          e.target.value
-        )
-      }
-    />
-
-    <BeautifulInput
-      type="email"
-      placeholder="Email"
-      value={profileEmail}
-      onChange={(e)=>
-        setProfileEmail(
-          e.target.value
-        )
-      }
-    />
-
-    <BeautifulInput
-      type="text"
-      placeholder="Phone"
-      value={profilePhone}
-      onChange={(e)=>
-        setProfilePhone(
-          e.target.value
-        )
-      }
-    />
-
-    <BeautifulInput
-      type="text"
-      placeholder="Address"
-      value={profileAddress}
-      onChange={(e)=>
-        setProfileAddress(
-          e.target.value
-        )
-      }
-    />
-
-    <BeautifulInput
-  type="date"
-  value={profileDOB}
-  onChange={(e)=>
-    setProfileDOB(
-      e.target.value
-    )
-  }
-/>
-
-<select
-  value={profileGender}
-  onChange={(e)=>
-    setProfileGender(
-      e.target.value
-    )
-  }
-  style={{
-    width:"100%",
-    padding:"18px 20px",
-    borderRadius:"18px",
-    border:"1px solid #dbe4ee",
-    background:"white",
-    fontSize:"16px",
-    outline:"none",
-    marginTop:"12px"
-  }}
->
-  <option value="">
-    Select Gender
-  </option>
-
-  <option value="Female">
-    Female
-  </option>
-
-  <option value="Male">
-    Male
-  </option>
-
-  <option value="Prefer not to say">
-    Prefer not to say
-  </option>
-</select>
-
-<BeautifulInput
-  type="text"
-  placeholder="Emergency Contact"
-  value={profileEmergency}
-  onChange={(e)=>
-    setProfileEmergency(
-      e.target.value
-    )
-  }
-/>
-
-  </>
-
-  :
-
-  <>
-
-   <ProfileDetailRow>
-  <strong>
-    Email:
-  </strong>
-
-  <span>
-    {
-      profileEmail || "Not added"
-    }
-  </span>
-</ProfileDetailRow>
-
-<ProfileDetailRow>
-  <strong>
-    Phone:
-  </strong>
-
-  <span>
-    {
-      profilePhone || "Not added"
-    }
-  </span>
-</ProfileDetailRow>
-
-<ProfileDetailRow>
-  <strong>
-    Address:
-  </strong>
-
-  <span>
-    {
-      profileAddress || "Not added"
-    }
-  </span>
-</ProfileDetailRow>
-
-<ProfileDetailRow>
-  <strong>
-    Date of Birth:
-  </strong>
-
-  <span>
-    {
-      profileDOB || "Not added"
-    }
-  </span>
-</ProfileDetailRow>
-
-<ProfileDetailRow>
-  <strong>
-    Gender:
-  </strong>
-
-  <span>
-    {
-      profileGender || "Not added"
-    }
-  </span>
-</ProfileDetailRow>
-
-<ProfileDetailRow>
-  <strong>
-    Emergency Contact:
-  </strong>
-
-  <span>
-    {
-      profileEmergency || "Not added"
-    }
-  </span>
-</ProfileDetailRow>
-
-  </>
-}
-      </div>
-
-    </div>
-
-    <ButtonRow
-  style={{
-    marginTop:"18px",
-    justifyContent:"center"
-  }}
->
-
-  <Button
-    onClick={()=>{
-
-      if(profileEditing){
-
-        saveProfile();
-
-      }else{
-
-        setProfileEditing(true);
-      }
-
-    }}
-    style={{
-      maxWidth:"180px",
-      background:
-        profileEditing
-        ? "linear-gradient(135deg, #facc15, #f59e0b)"
-        : "linear-gradient(135deg, #0f172a, #1d4ed8)",
-      color:
-        profileEditing
-        ? "#0f172a"
-        : "#facc15",
-      fontWeight:"900",
-      border:
-        profileEditing
-        ? "1px solid rgba(15,23,42,0.15)"
-        : "1px solid rgba(250,204,21,0.35)",
-      boxShadow:
-        profileEditing
-        ? "0 10px 22px rgba(250,204,21,0.24)"
-        : "0 10px 22px rgba(29,78,216,0.20)"
-    }}
-  >
-    {
-      profileEditing
-      ? "Save Profile"
-      : "Edit Profile"
-    }
-  </Button>
-
-  {
-    profileEditing && (
-
-      <Button
-        onClick={()=>{
-
-          setProfileEditing(false);
-
-          setProfileName(
-            user?.name || ""
-          );
-
-          setProfileEmail(
-            user?.email || ""
-          );
-
-          setProfilePhone(
-            user?.phone || ""
-          );
-
-          setProfileAddress(
-            user?.address || ""
-          );
-
-          setProfileDOB(
-            user?.dob || ""
-          );
-
-          setProfileGender(
-            user?.gender || ""
-          );
-
-          setProfileEmergency(
-            user?.emergencyContact || ""
-          );
-
-        }}
+  <CustomerProfilePage>
+
+    <CustomerProfileLeftCard>
+
+      <CustomerVerifiedBadge>
+        <span></span>
+        VERIFIED CUSTOMER PROFILE
+      </CustomerVerifiedBadge>
+
+      <CustomerProfileMainImage
+        src={
+          profileImage ||
+          user?.profileImage ||
+          customerImage
+        }
+        alt="Customer"
+      />
+
+      <CustomerProfileName>
+        {profileName || user?.name || "Customer"}
+      </CustomerProfileName>
+
+      <CustomerProfileEmail>
+        {profileEmail || user?.email || "No email"}
+      </CustomerProfileEmail>
+
+      <CustomerStatusPill>
+     <CustomerOnlineDot />
+        ACTIVE
+     </CustomerStatusPill>
+
+      <label
+        htmlFor="profileUpload"
         style={{
-          maxWidth:"140px",
-          background:"#dc2626",
-          color:"white",
+          display:"inline-flex",
+          justifyContent:"center",
+          padding:"10px 16px",
+          borderRadius:"14px",
+          background:"#ffffff",
+          color:"#0f172a",
           fontWeight:"900",
-          border:"1px solid rgba(220,38,38,0.25)",
-          boxShadow:
-            "0 10px 22px rgba(220,38,38,0.16)"
+          cursor:"pointer",
+          marginTop:"0",
+          fontSize:"14px"
         }}
       >
-        Cancel
-      </Button>
-    )
-  }
+        Choose File
+      </label>
 
-</ButtonRow>
+      <input
+        id="profileUpload"
+        type="file"
+        accept="image/*"
+        style={{
+          display:"none"
+        }}
+        onChange={async(e)=>{
 
-<OrderSection
-  style={{
-    marginTop:"18px",
-    background:
-      "linear-gradient(135deg, #ffffff, #f8fafc)",
-    border:"1px solid rgba(29,78,216,0.10)",
-    borderRadius:"18px",
-    padding:"16px"
-  }}
->
+          const file =
+            e.target.files[0];
 
-  <SectionTitle
-    style={{
-      marginBottom:"14px",
-      fontSize:"18px"
-    }}
-  >
-    Saved Addresses 📍
-  </SectionTitle>
+          if(!file){
+            return;
+          }
 
-  <ProfileDetailRow>
-    <strong>
-      Home:
-    </strong>
+          const formData =
+            new FormData();
 
-    <span>
+          formData.append(
+            "profileImage",
+            file
+          );
+
+          try{
+
+            const res =
+              await API.put(
+                "/customer/profile-image",
+                formData,
+                {
+                  headers:{
+                    "Content-Type":"multipart/form-data"
+                  }
+                }
+              );
+
+            setUser(
+              res.data.user
+            );
+
+            setProfileImage(
+              res.data.user.profileImage || ""
+            );
+
+            alert(
+              "Profile image updated successfully"
+            );
+
+            e.target.value =
+              "";
+
+          }catch(err){
+
+            console.log(err);
+
+            alert(
+              err.response?.data?.message ||
+              "Image upload failed"
+            );
+          }
+        }}
+      />
+
+    </CustomerProfileLeftCard>
+
+    <CustomerProfileRightCard>
+
+      <CustomerProfileHeader>
+        <div>
+          <CustomerProfileTitle>
+            Personal Information
+          </CustomerProfileTitle>
+
+          <CustomerProfileSubTitle>
+  Manage your personal information and delivery preferences.
+</CustomerProfileSubTitle>
+        </div>
+
+        <CustomerEditButton
+          onClick={()=>
+            setProfileEditing(!profileEditing)
+          }
+        >
+          {profileEditing ? "Cancel" : "Edit"}
+        </CustomerEditButton>
+      </CustomerProfileHeader>
+
       {
-        profileAddress || "No address added"
+        profileEditing ? (
+
+          <CustomerEditGrid>
+
+            <BeautifulInput
+              placeholder="Full Name"
+              value={profileName}
+              onChange={(e)=>
+                setProfileName(e.target.value)
+              }
+            />
+
+            <BeautifulInput
+              placeholder="Email"
+              value={profileEmail}
+              onChange={(e)=>
+                setProfileEmail(e.target.value)
+              }
+            />
+
+            <BeautifulInput
+              placeholder="Phone"
+              value={profilePhone}
+              onChange={(e)=>
+                setProfilePhone(e.target.value)
+              }
+            />
+
+            <BeautifulInput
+              placeholder="Address"
+              value={profileAddress}
+              onChange={(e)=>
+                setProfileAddress(e.target.value)
+              }
+            />
+
+            <BeautifulInput
+              type="date"
+              value={profileDOB}
+              onChange={(e)=>
+                setProfileDOB(e.target.value)
+              }
+            />
+
+            <BeautifulInput
+              placeholder="Gender"
+              value={profileGender}
+              onChange={(e)=>
+                setProfileGender(e.target.value)
+              }
+            />
+
+            <BeautifulInput
+              placeholder="Emergency Contact"
+              value={profileEmergency}
+              onChange={(e)=>
+                setProfileEmergency(e.target.value)
+              }
+            />
+
+            <CustomerSaveButton
+              onClick={saveProfile}
+            >
+              Save Profile
+            </CustomerSaveButton>
+
+          </CustomerEditGrid>
+
+        ) : (
+
+          <>
+
+            <CustomerInfoGrid>
+
+              <CustomerInfoBox>
+                <label>NAME</label>
+                <strong>{profileName || "Not added"}</strong>
+              </CustomerInfoBox>
+
+              <CustomerInfoBox>
+                <label>EMAIL</label>
+                <strong>{profileEmail || "Not added"}</strong>
+              </CustomerInfoBox>
+
+              <CustomerInfoBox>
+                <label>PHONE</label>
+                <strong>{profilePhone || "Not added"}</strong>
+              </CustomerInfoBox>
+
+              <CustomerOnlineStatus>
+               <CustomerOnlineDot />
+                 Online
+               </CustomerOnlineStatus>
+
+            </CustomerInfoGrid>
+
+            <CustomerDivider />
+
+            <CustomerSectionHeader>
+             <span>📋</span>
+               Customer Details
+             </CustomerSectionHeader>
+
+            <CustomerInfoGrid>
+
+              <CustomerInfoBox>
+                <label>DATE OF BIRTH</label>
+                <strong>{profileDOB || "Not added"}</strong>
+              </CustomerInfoBox>
+
+              <CustomerInfoBox>
+                <label>GENDER</label>
+                <strong>{profileGender || "Not added"}</strong>
+              </CustomerInfoBox>
+
+              <CustomerInfoBox>
+                <label>EMERGENCY CONTACT</label>
+                <strong>{profileEmergency || "Not added"}</strong>
+              </CustomerInfoBox>
+
+              <CustomerInfoBox>
+                <label>ADDRESS</label>
+                <strong>{profileAddress || "No address added"}</strong>
+              </CustomerInfoBox>
+
+            </CustomerInfoGrid>
+
+          </>
+
+        )
       }
-    </span>
-  </ProfileDetailRow>
 
-  <ProfileDetailRow>
-    <strong>
-      Work:
-    </strong>
+    </CustomerProfileRightCard>
 
-    <span>
-      Not added
-    </span>
-  </ProfileDetailRow>
-
-  <ProfileDetailRow>
-    <strong>
-      Recent Delivery Area:
-    </strong>
-
-    <span>
-      Accra
-    </span>
-  </ProfileDetailRow>
-
-</OrderSection>
-
-  </OrderCard>
+  </CustomerProfilePage>
 
 )}
 
