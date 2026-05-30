@@ -5579,7 +5579,7 @@ async function sendMessage(
   </span>
 </Row>
 
-               <Row>
+<Row>
   <strong>
     Rider:
   </strong>
@@ -5591,13 +5591,63 @@ async function sendMessage(
 </Row>
 
                 <div
-                  style={{
-                    display:"flex",
-                    gap:"10px",
-                    flexWrap:"wrap",
-                    marginTop:"12px"
-                  }}
-                >
+  style={{
+    display:"flex",
+    gap:"10px",
+    flexWrap:"wrap",
+    marginTop:"12px"
+  }}
+>
+
+  <div
+    style={{
+      display:"flex",
+      alignItems:"center",
+      gap:"10px",
+      background:"#f8fafc",
+      border:"1px solid #e5e7eb",
+      borderRadius:"14px",
+      padding:"10px",
+      width:"100%"
+    }}
+  >
+    <img
+      src={
+        o.rider?.profileImage ||
+        "https://ui-avatars.com/api/?name=Rider&background=facc15&color=0f172a&size=128"
+      }
+      alt="Rider"
+      style={{
+        width:"48px",
+        height:"48px",
+        borderRadius:"50%",
+        objectFit:"cover",
+        border:"3px solid #facc15"
+      }}
+    />
+
+    <div>
+      <div
+        style={{
+          fontSize:"11px",
+          fontWeight:"900",
+          color:"#64748b"
+        }}
+      >
+        ASSIGNED RIDER
+      </div>
+
+      <div
+        style={{
+          fontSize:"14px",
+          fontWeight:"900",
+          color:"#0f172a"
+        }}
+      >
+        {o.rider?.name || "Waiting for rider"}
+      </div>
+    </div>
+  </div>
 
                   <StatusBadge
                     status={o.status}

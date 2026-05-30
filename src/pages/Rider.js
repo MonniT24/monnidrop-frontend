@@ -1890,21 +1890,52 @@ async function acceptOrder(orderId){
       return;
     }
 
-    await API.put(
-      `/orders/${orderId}`,
-      {
+   const acceptedOrder =
+  orders.find(
+    (order)=>order._id === orderId
+  );
+
+setOrders(
+  orders.map((order)=>
+    order._id === orderId
+    ? {
+        ...order,
         rider:user._id,
         riderId:user._id,
         status:"accepted"
       }
-    );
+    : order
+  )
+);
 
-    setUser({
-      ...user,
-      status:"busy"
-    });
+if(acceptedOrder){
 
-    fetchOrders();
+  setActiveOrders([
+    ...activeOrders,
+    {
+      ...acceptedOrder,
+      rider:user._id,
+      riderId:user._id,
+      status:"accepted"
+    }
+  ]);
+}
+
+setUser({
+  ...user,
+  status:"busy"
+});
+
+await API.put(
+  `/orders/${orderId}`,
+  {
+    rider:user._id,
+    riderId:user._id,
+    status:"accepted"
+  }
+);
+
+fetchOrders();
 
   }catch(err){
 
@@ -1942,7 +1973,11 @@ async function acceptOrder(orderId){
       "Order cancelled successfully"
     );
 
-    fetchOrders();
+    setTimeout(()=>{
+
+  fetchOrders();
+
+},800);
 
   }catch(err){
 
@@ -1981,7 +2016,11 @@ async function acceptOrder(orderId){
         }
       );
 
-      fetchOrders();
+      setTimeout(()=>{
+
+  fetchOrders();
+
+},800);
 
     }catch(err){
 
@@ -2019,7 +2058,11 @@ async function acceptOrder(orderId){
         }
       );
 
-      fetchOrders();
+      setTimeout(()=>{
+
+  fetchOrders();
+
+},800);
 
     }catch(err){
 
