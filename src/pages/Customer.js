@@ -5605,7 +5605,10 @@ async function sendMessage(
     alignItems:"center",
     gap:"10px"
   }}
+
 >
+  
+
   <img
     src={
       o.rider?.profileImage ||
@@ -5642,6 +5645,30 @@ async function sendMessage(
     >
       {o.rider?.name || "Waiting for rider"}
     </div>
+
+    <div
+  style={{
+    fontSize:"12px",
+    fontWeight:"800",
+    color:"#475569",
+    marginTop:"4px"
+  }}
+>
+  Motor Name: {o.rider?.motorName || "Not added"}
+</div>
+
+    <div
+  style={{
+    fontSize:"12px",
+    fontWeight:"800",
+    color:"#475569",
+    marginTop:"4px"
+  }}
+>
+  Motor: {o.rider?.motorNumber || "Not added"}
+
+</div>
+
   </div>
 </div>
 

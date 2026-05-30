@@ -1098,6 +1098,9 @@ const [riderEmergency,setRiderEmergency] =
 const [motorNumber,setMotorNumber] =
   useState("");
 
+  const [motorName,setMotorName] =
+  useState("");
+
 const [riderIdType,setRiderIdType] =
   useState("");
 
@@ -1567,6 +1570,10 @@ useEffect(()=>{
 
     setMotorNumber(
   user.motorNumber || ""
+);
+
+setMotorName(
+  user.motorName || ""
 );
 
 setRiderIdType(
@@ -5961,13 +5968,14 @@ user?.status !== "busy" && (
                   const res =
   await API.put(
     "/rider/profile",
-    {
-      dob:riderDOB,
-      emergencyContact:riderEmergency,
-      motorNumber:motorNumber,
-      idType:riderIdType,
-      idNumber:riderIdNumber
-    }
+   {
+  dob:riderDOB,
+  emergencyContact:riderEmergency,
+  motorNumber:motorNumber,
+  motorName:motorName,
+  idType:riderIdType,
+  idNumber:riderIdNumber
+}
   );
 
                   setUser(
@@ -6209,6 +6217,17 @@ user?.status !== "busy" && (
                     outline:"none"
                   }}
                 />
+
+                <input
+  type="text"
+  placeholder="Motor Number"
+  value={motorNumber}
+  onChange={(e)=>
+    setMotorNumber(
+      e.target.value
+    )
+  }
+/>
 
                 <input
                   type="text"
