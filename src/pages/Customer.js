@@ -4074,6 +4074,11 @@ alert(
 
     const newOrders = res.data;
 
+    console.log(
+  "CUSTOMER ORDERS:",
+  newOrders
+);
+
     setPreviousOrders((oldOrders)=>{
 
       newOrders.forEach((newOrder)=>{
@@ -5579,120 +5584,109 @@ async function sendMessage(
   </span>
 </Row>
 
-<Row>
-  <strong>
-    Rider:
-  </strong>
-  {" "}
-  {
-    o.rider?.name ||
-    "Searching for Rider"
-  }
-</Row>
-
-                <div
+ <div
   style={{
-    display:"flex",
-    gap:"10px",
-    flexWrap:"wrap",
+    display:"grid",
+    gridTemplateColumns:"1fr auto auto",
+    alignItems:"center",
+    gap:"14px",
+    width:"100%",
     marginTop:"12px"
   }}
 >
-
   <div
-  style={{
-    display:"flex",
-    alignItems:"center",
-    gap:"10px"
-  }}
-
->
-  
-
-  <img
-    src={
-      o.rider?.profileImage ||
-      "https://ui-avatars.com/api/?name=Rider&background=facc15&color=0f172a&size=128"
-    }
-    alt="Rider"
     style={{
-      width:"42px",
-      height:"42px",
-      borderRadius:"50%",
-      objectFit:"cover",
-      border:"3px solid #facc15",
-      background:"white"
+      display:"flex",
+      alignItems:"center",
+      gap:"12px",
+      minWidth:"260px"
     }}
-  />
-
-  <div>
-    <div
+  >
+    <img
+      src={
+        o.rider?.profileImage ||
+        "https://ui-avatars.com/api/?name=Rider&background=facc15&color=0f172a&size=128"
+      }
+      alt="Rider"
       style={{
-        fontSize:"11px",
-        fontWeight:"900",
-        color:"#64748b"
+        width:"52px",
+        height:"52px",
+        borderRadius:"50%",
+        objectFit:"cover",
+        border:"3px solid #facc15",
+        background:"white",
+        flexShrink:0
       }}
-    >
-      ASSIGNED RIDER
+    />
+
+    <div>
+      <div
+        style={{
+          fontSize:"11px",
+          fontWeight:"900",
+          color:"#64748b"
+        }}
+      >
+        ASSIGNED RIDER NAME
+      </div>
+
+      <div
+        style={{
+          fontSize:"15px",
+          fontWeight:"900",
+          color:"#0f172a"
+        }}
+      >
+        {o.rider?.name || "Seraching for rider"}
+      </div>
+
+      <div
+        style={{
+          fontSize:"12px",
+          fontWeight:"800",
+          color:"#475569",
+          marginTop:"3px"
+        }}
+      >
+        Motor Name: {o.rider?.motorName || "Not added"}
+      </div>
+
+      <div
+        style={{
+          fontSize:"12px",
+          fontWeight:"800",
+          color:"#475569",
+          marginTop:"2px"
+        }}
+      >
+        Motor: {o.rider?.motorNumber || "Not added"}
+      </div>
     </div>
-
-    <div
-      style={{
-        fontSize:"14px",
-        fontWeight:"900",
-        color:"#0f172a"
-      }}
-    >
-      {o.rider?.name || "Waiting for rider"}
-    </div>
-
-    <div
-  style={{
-    fontSize:"12px",
-    fontWeight:"800",
-    color:"#475569",
-    marginTop:"4px"
-  }}
->
-  Motor Name: {o.rider?.motorName || "Not added"}
-</div>
-
-    <div
-  style={{
-    fontSize:"12px",
-    fontWeight:"800",
-    color:"#475569",
-    marginTop:"4px"
-  }}
->
-  Motor: {o.rider?.motorNumber || "Not added"}
-
-</div>
-
   </div>
+
+  <StatusBadge
+    status={o.status}
+    style={{
+      marginTop:0,
+      whiteSpace:"nowrap"
+    }}
+  >
+    {o.status}
+  </StatusBadge>
+
+  <MiniStatus
+    paid={o.isPaid}
+    style={{
+      whiteSpace:"nowrap"
+    }}
+  >
+    {
+      o.isPaid
+      ? "Paid"
+      : "Not Paid"
+    }
+  </MiniStatus>
 </div>
-
-                  <StatusBadge
-                    status={o.status}
-                    style={{
-                      marginTop:0
-                    }}
-                  >
-                    {o.status}
-                  </StatusBadge>
-
-                  <MiniStatus
-                    paid={o.isPaid}
-                  >
-                    {
-                      o.isPaid
-                      ? "Paid"
-                      : "Not Paid"
-                    }
-                  </MiniStatus>
-
-                </div>
-
               </RecentOrderItem>
 
             ))
@@ -6033,12 +6027,27 @@ async function sendMessage(
 {
   o.status === "delivered" &&
   o.rider &&
+  !o.riderRated &&
+  !o.hasRatedRider &&
+  !o.riderRatingSubmitted &&
   !ratedOrderIds.includes(
     o._id?.toString()
   ) && (
 
     <Button
       onClick={()=>{
+
+        if(
+          o.riderRated ||
+          o.hasRatedRider ||
+          o.riderRatingSubmitted ||
+          ratedOrderIds.includes(
+            o._id?.toString()
+          )
+        ){
+          return;
+        }
+
         setRatingModalOrder(o);
         setRiderRating(5);
         setRiderRatingComment("");
@@ -6058,8 +6067,13 @@ async function sendMessage(
 
 {
   o.status === "delivered" &&
-  ratedOrderIds.includes(
-    o._id?.toString()
+  (
+    o.riderRated ||
+    o.hasRatedRider ||
+    o.riderRatingSubmitted ||
+    ratedOrderIds.includes(
+      o._id?.toString()
+    )
   ) && (
 
     <div

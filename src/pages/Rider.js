@@ -2660,7 +2660,7 @@ fetchOrders();
         fontWeight:"900"
       }}
     >
-      🚚
+      🛵
     </div>
 
     <div
@@ -6218,7 +6218,28 @@ user?.status !== "busy" && (
                   }}
                 />
 
-                <input
+   <input
+  type="text"
+  placeholder="Motor Name"
+  value={motorName}
+  onChange={(e)=>
+    setMotorName(
+      e.target.value
+    )
+  }
+  disabled={!riderProfileEditing}
+  style={{
+    width:"100%",
+    padding:"13px",
+    borderRadius:"14px",
+    border:"1px solid #cbd5e1",
+    outline:"none",
+    fontWeight:"800",
+    marginBottom:"12px"
+  }}
+/>
+
+<input
   type="text"
   placeholder="Motor Number"
   value={motorNumber}
@@ -6227,7 +6248,18 @@ user?.status !== "busy" && (
       e.target.value
     )
   }
+  disabled={!riderProfileEditing}
+  style={{
+    width:"100%",
+    padding:"13px",
+    borderRadius:"14px",
+    border:"1px solid #cbd5e1",
+    outline:"none",
+    fontWeight:"800",
+    marginBottom:"12px"
+  }}
 />
+
 
                 <input
                   type="text"
@@ -6386,34 +6418,64 @@ user?.status !== "busy" && (
                   </div>
                 </div>
 
-                <div
-                  style={{
-                    background:"#f8fafc",
-                    border:"1px solid #e5e7eb",
-                    borderRadius:"16px",
-                    padding:"14px"
-                  }}
-                >
-                  <div
+               <div
   style={{
-    color:"#64748b",
-    fontSize:"12px",
-    fontWeight:"900",
-    marginBottom:"6px"
+    background:"#f8fafc",
+    border:"1px solid #e5e7eb",
+    borderRadius:"16px",
+    padding:"14px"
   }}
 >
-  MOTOR NUMBER
+  <div
+    style={{
+      color:"#64748b",
+      fontSize:"12px",
+      fontWeight:"900",
+      marginBottom:"6px"
+    }}
+  >
+    MOTOR NAME
+  </div>
+
+  <div
+    style={{
+      color:"#0f172a",
+      fontSize:"15px",
+      fontWeight:"900"
+    }}
+  >
+    {motorName || "Not added"}
+  </div>
 </div>
 
 <div
   style={{
-    color:"#0f172a",
-    fontSize:"15px",
-    fontWeight:"900"
+    background:"#f8fafc",
+    border:"1px solid #e5e7eb",
+    borderRadius:"16px",
+    padding:"14px"
   }}
 >
-  {motorNumber || "Not added"}
-</div>
+  <div
+    style={{
+      color:"#64748b",
+      fontSize:"12px",
+      fontWeight:"900",
+      marginBottom:"6px"
+    }}
+  >
+    MOTOR NUMBER
+  </div>
+
+  <div
+    style={{
+      color:"#0f172a",
+      fontSize:"15px",
+      fontWeight:"900"
+    }}
+  >
+    {motorNumber || "Not added"}
+  </div>
 </div>
 
 <div
