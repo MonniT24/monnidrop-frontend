@@ -307,7 +307,12 @@ export default function Register(){
 
   const [phone,setPhone] =
     useState("");
+    
+    const [gender,setGender] =
+  useState("");
 
+const [dob,setDob] =
+  useState("");
   const [loading,setLoading] =
     useState(false);
 
@@ -462,14 +467,16 @@ const verifyOtp =
         const res =
   await API.post(
     "/auth/register",
-    {
-      name,
-      email,
-      password,
-      phone:fullPhone,
-      role,
-      phoneVerificationToken
-    }
+   {
+  name,
+  email,
+  password,
+  phone:fullPhone,
+  gender,
+  dob,
+  role,
+  phoneVerificationToken
+}
   );
 
         localStorage.setItem(
@@ -566,6 +573,43 @@ const verifyOtp =
             </option>
 
           </Select>
+
+          <Select
+  value={gender}
+  onChange={(e)=>
+    setGender(
+      e.target.value
+    )
+  }
+  required
+>
+  <option value="">
+    Select Gender
+  </option>
+
+  <option value="Male">
+    Male
+  </option>
+
+  <option value="Female">
+    Female
+  </option>
+
+  <option value="Other">
+    Other
+  </option>
+</Select>
+
+<Input
+  type="date"
+  value={dob}
+  onChange={(e)=>
+    setDob(
+      e.target.value
+    )
+  }
+  required
+/>
 
           <PasswordWrap>
 
