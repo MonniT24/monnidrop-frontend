@@ -311,6 +311,119 @@ export default function Register(){
   const [loading,setLoading] =
     useState(false);
 
+    const [otp,setOtp] =
+  useState("");
+
+const [otpSent,setOtpSent] =
+  useState(false);
+
+const [phoneVerified,
+  setPhoneVerified] =
+    useState(false);
+
+const [
+  phoneVerificationToken,
+
+  setPhoneVerificationToken
+
+] =
+  useState("");
+
+  // SEND OTP
+
+const sendOtp =
+  async()=>{
+
+    try{
+
+      if(!phone){
+
+        return alert(
+          "Enter your phone number first"
+        );
+      }
+
+      if(phone.length < 9){
+
+        return alert(
+          "Invalid phone number"
+        );
+      }
+
+      const fullPhone =
+        `+233${phone}`;
+
+      await API.post(
+        "/auth/send-registration-otp",
+        {
+          phone:fullPhone
+        }
+      );
+
+      setOtpSent(true);
+
+      alert(
+        "OTP sent to your phone"
+      );
+
+    }catch(err){
+
+      console.log(err);
+
+      alert(
+        err.response?.data?.message ||
+        "Failed to send OTP"
+      );
+    }
+  };
+
+  // VERIFY OTP
+
+const verifyOtp =
+  async()=>{
+
+    try{
+
+      if(!otp){
+
+        return alert(
+          "Enter OTP number"
+        );
+      }
+
+      const fullPhone =
+        `+233${phone}`;
+
+      const res =
+        await API.post(
+          "/auth/verify-registration-otp",
+          {
+            phone:fullPhone,
+            otp
+          }
+        );
+
+      setPhoneVerified(true);
+
+      setPhoneVerificationToken(
+        res.data.phoneVerificationToken
+      );
+
+      alert(
+        "Phone number verified successfully"
+      );
+
+    }catch(err){
+
+      console.log(err);
+
+      alert(
+        err.response?.data?.message ||
+        "OTP verification failed"
+      );
+    }
+  };
+
   // REGISTER
 
   const submitHandler =
@@ -334,22 +447,30 @@ export default function Register(){
           );
         }
 
+        if(!phoneVerified){
+
+       return alert(
+       "Please verify your phone number first"
+       );
+       }
+
         setLoading(true);
 
         const fullPhone =
           `+233${phone}`;
 
         const res =
-          await API.post(
-            "/auth/register",
-            {
-              name,
-              email,
-              password,
-              phone:fullPhone,
-              role
-            }
-          );
+  await API.post(
+    "/auth/register",
+    {
+      name,
+      email,
+      password,
+      phone:fullPhone,
+      role,
+      phoneVerificationToken
+    }
+  );
 
         localStorage.setItem(
           "token",
@@ -515,6 +636,62 @@ export default function Register(){
             />
 
           </PhoneWrap>
+
+          {!phoneVerified && (
+  <Button
+    type="button"
+    onClick={sendOtp}
+    style={{
+      marginBottom:"14px",
+      background:"#2563eb"
+    }}
+  >
+    {
+      otpSent
+      ? "Resend OTP"
+      : "Send OTP"
+    }
+  </Button>
+)}
+
+{otpSent && !phoneVerified && (
+  <>
+    <Input
+      type="text"
+      placeholder="Enter OTP number"
+      value={otp}
+      onChange={(e)=>
+        setOtp(
+          e.target.value
+        )
+      }
+    />
+
+    <Button
+      type="button"
+      onClick={verifyOtp}
+      style={{
+        marginBottom:"14px",
+        background:"#16a34a"
+      }}
+    >
+      Verify OTP
+    </Button>
+  </>
+)}
+
+{phoneVerified && (
+  <p
+    style={{
+      color:"#16a34a",
+      fontWeight:"800",
+      textAlign:"center",
+      marginBottom:"14px"
+    }}
+  >
+    Phone number verified
+  </p>
+)}
 
           <Button type="submit">
 
