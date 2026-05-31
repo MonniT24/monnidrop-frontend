@@ -2976,6 +2976,14 @@ const [profileGender,setProfileGender] =
 const [profileEmergency,setProfileEmergency] =
   useState("");
 
+  const [showCompleteProfile,
+  setShowCompleteProfile] =
+    useState(false);
+
+const [savingCompleteProfile,
+  setSavingCompleteProfile] =
+    useState(false);
+
   const [orders,setOrders] =
     useState([]);
 
@@ -4255,46 +4263,57 @@ async function saveProfile(){
       );
 
     setUser(
-  res.data.user
-);
+      res.data.user
+    );
 
-setProfileName(
-  res.data.user.name || ""
-);
+    localStorage.setItem(
+      "user",
+      JSON.stringify(
+        res.data.user
+      )
+    );
 
-setProfileEmail(
-  res.data.user.email || ""
-);
+    setProfileName(
+      res.data.user.name || ""
+    );
 
-setProfilePhone(
-  res.data.user.phone || ""
-);
+    setProfileEmail(
+      res.data.user.email || ""
+    );
 
-setProfileAddress(
-  res.data.user.address || ""
-);
+    setProfilePhone(
+      res.data.user.phone || ""
+    );
 
-setProfileDOB(
-  res.data.user.dob || ""
-);
+    setProfileAddress(
+      res.data.user.address || ""
+    );
 
-setProfileGender(
-  res.data.user.gender || ""
-);
+    setProfileDOB(
+      res.data.user.dob
+        ? res.data.user.dob.slice(0,10)
+        : ""
+    );
 
-setProfileEmergency(
-  res.data.user.emergencyContact || ""
-);
+    setProfileGender(
+      res.data.user.gender || ""
+    );
 
-setProfileImage(
-  res.data.user.profileImage || ""
-);
+    setProfileEmergency(
+      res.data.user.emergencyContact || ""
+    );
 
-alert(
-  "Profile saved successfully"
-);
+    setProfileImage(
+      res.data.user.profileImage || ""
+    );
 
-    setProfileEditing(false);
+    alert(
+      "Profile saved successfully"
+    );
+
+    setProfileEditing(
+      false
+    );
 
   }catch(err){
 
@@ -4307,7 +4326,87 @@ alert(
   }
 }
 
-  async function fetchMe(){
+
+async function saveCompleteProfile(){
+
+  try{
+
+    if(!profileAddress){
+
+      return alert(
+        "Please enter your address"
+      );
+    }
+
+    if(!profileEmergency){
+
+      return alert(
+        "Please enter your emergency contact"
+      );
+    }
+
+    setSavingCompleteProfile(
+      true
+    );
+
+    const res =
+      await API.put(
+        "/customer/profile",
+        {
+          name:profileName,
+          email:profileEmail,
+          phone:profilePhone,
+          address:profileAddress,
+          dob:profileDOB,
+          gender:profileGender,
+          emergencyContact:profileEmergency,
+          profileCompleted:true
+        }
+      );
+
+    const updatedUser =
+  {
+    ...res.data.user,
+    profileCompleted:true
+  };
+
+setUser(
+  updatedUser
+);
+
+localStorage.setItem(
+  "user",
+  JSON.stringify(
+    updatedUser
+  )
+);
+
+    setShowCompleteProfile(
+      false
+    );
+
+    alert(
+      "Profile completed successfully"
+    );
+
+  }catch(err){
+
+    console.log(err);
+
+    alert(
+      err.response?.data?.message ||
+      "Failed to complete profile"
+    );
+
+  }finally{
+
+    setSavingCompleteProfile(
+      false
+    );
+  }
+}
+
+ async function fetchMe(){
 
   try{
 
@@ -4341,7 +4440,9 @@ alert(
     );
 
     setProfileDOB(
-      loggedUser.dob || ""
+      loggedUser.dob
+        ? loggedUser.dob.slice(0,10)
+        : ""
     );
 
     setProfileGender(
@@ -4355,6 +4456,15 @@ alert(
     setProfileImage(
       loggedUser.profileImage || ""
     );
+
+    if(
+      loggedUser.profileCompleted !== true
+    ){
+
+      setShowCompleteProfile(
+        true
+      );
+    }
 
     console.log(
       "LOADED CUSTOMER IMAGE:",
@@ -5169,11 +5279,70 @@ async function sendMessage(
 
   return(
 
+  <>
+
+    {showCompleteProfile && (
+
+      <RatingOverlay>
+
+        <RatingCard>
+
+          <RatingTitle>
+            Complete Your Profile
+          </RatingTitle>
+
+          <RatingText>
+            Add your address and emergency contact so we can serve you better.
+          </RatingText>
+
+          <BeautifulInput
+            type="text"
+            placeholder="Residential Address"
+            value={profileAddress}
+            onChange={(e)=>
+              setProfileAddress(
+                e.target.value
+              )
+            }
+          />
+
+          <BeautifulInput
+            type="text"
+            placeholder="Emergency Contact"
+            value={profileEmergency}
+            onChange={(e)=>
+              setProfileEmergency(
+                e.target.value
+              )
+            }
+          />
+
+          <RatingActionRow>
+
+            <RatingSubmitButton
+              type="button"
+              onClick={saveCompleteProfile}
+              disabled={savingCompleteProfile}
+            >
+              {
+                savingCompleteProfile
+                ? "Saving..."
+                : "Save Profile"
+              }
+            </RatingSubmitButton>
+
+          </RatingActionRow>
+
+        </RatingCard>
+
+      </RatingOverlay>
+    )}
+
     <Layout
-  onClick={()=>
-    setSidebarOpen(false)
-  }
->
+      onClick={()=>
+        setSidebarOpen(false)
+      }
+    >
 
   <GlobalLeafletFix
   sidebarOpen={sidebarOpen}
@@ -9916,8 +10085,8 @@ calculateDistance(
 
 </Layout>
 
-  );
-
+  </>
+);
 }
 
 

@@ -434,11 +434,9 @@ export default function Register(){
 
         setShowWelcome(true);
 
-        setTimeout(()=>{
+setLoading(false);
 
-          navigate("/customer");
-
-        },2500);
+return;
 
       }catch(err){
 
@@ -474,17 +472,22 @@ export default function Register(){
 
           <Text>
             Your account has been created successfully.
-            You are being signed in automatically.
+            Click the button below to continue to your dashboard.
           </Text>
 
-          <Button
-            type="button"
-            onClick={()=>
-              navigate("/customer")
-            }
-          >
-            Continue to Dashboard
-          </Button>
+         <Button
+  type="button"
+  onClick={()=>
+    navigate(
+      "/customer",
+      {
+        replace:true
+      }
+    )
+  }
+>
+  Continue to Dashboard
+</Button>
 
         </Card>
 
