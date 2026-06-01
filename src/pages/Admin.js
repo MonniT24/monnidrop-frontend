@@ -1193,6 +1193,12 @@ export default function Admin(){
     const [riderStatusHistories, setRiderStatusHistories] = 
     useState([]);
 
+    const [supportMessages,setSupportMessages] =
+  useState([]);
+
+  const [supportReply,setSupportReply] =
+  useState({});
+
   const [user,setUser] =
     useState(null);
 
@@ -1258,28 +1264,76 @@ const [riderStatusSort,setRiderStatusSort] =
 
   useEffect(()=>{
 
-    fetchUser();
+  fetchUser();
 
-    fetchOrders();
+  fetchOrders();
 
-    fetchRiders();
+  fetchRiders();
 
-    fetchRiderStatusHistories();
+  fetchRiderStatusHistories();
 
-    const interval =
-      setInterval(()=>{
+  fetchSupportMessages();
 
-        fetchOrders();
+  const interval =
+    setInterval(()=>{
 
-        fetchRiders();
+      fetchOrders();
 
-      },3000);
+      fetchRiders();
 
-    return ()=>clearInterval(
-      interval
+      fetchSupportMessages();
+
+    },3000);
+
+  return ()=>clearInterval(
+    interval
+  );
+
+},[]);
+
+useEffect(()=>{
+
+  socket.on(
+    "supportMessageCreated",
+    (newMessage)=>{
+
+      setSupportMessages(
+        (oldMessages)=>[
+          newMessage,
+          ...oldMessages
+        ]
+      );
+    }
+  );
+
+  socket.on(
+    "supportMessageReplied",
+    (updatedMessage)=>{
+
+      setSupportMessages(
+        (oldMessages)=>
+          oldMessages.map(
+            (msg)=>
+              msg._id === updatedMessage._id
+              ? updatedMessage
+              : msg
+          )
+      );
+    }
+  );
+
+  return ()=>{
+
+    socket.off(
+      "supportMessageCreated"
     );
 
-  },[]);
+    socket.off(
+      "supportMessageReplied"
+    );
+  };
+
+},[]);
 
   useEffect(()=>{
 
@@ -1398,6 +1452,25 @@ const [riderStatusSort,setRiderStatusSort] =
       console.log(err);
     }
   }
+
+  async function fetchSupportMessages(){
+
+  try{
+
+    const res =
+      await API.get("/support");
+
+    setSupportMessages(res.data);
+
+  }catch(error){
+
+    console.log(
+      "FETCH SUPPORT MESSAGES ERROR:",
+      error.response?.data ||
+      error.message
+    );
+  }
+}
 
   async function fetchRiders(){
 
@@ -2031,8 +2104,10 @@ const selectedTitle =
   : activeAdminView === "onlineRiders"
   ? "Online Riders"
   : activeAdminView === "onlineCustomers"
-  ? "Logged-in Customers"
-  : "";
+? "Logged-in Customers"
+: activeAdminView === "support"
+? "Customer Support"
+: "";
 
   const filteredRiderStatusFiles =
   [...riderStatusFiles]
@@ -2270,6 +2345,31 @@ function clearRiderStatusFilters(){
     </StatSmall>
 
   </StatCard>
+
+  <StatCard
+  $active={activeAdminView === "support"}
+  onClick={()=>
+    setActiveAdminView("support")
+  }
+>
+
+  <StatIcon>
+    💬
+  </StatIcon>
+
+  <StatTitle>
+    Customer Support
+  </StatTitle>
+
+  <StatValue>
+    Support
+  </StatValue>
+
+  <StatSmall>
+    Click to view customer support messages.
+  </StatSmall>
+
+</StatCard>
 
   <StatCard
     $active={activeAdminView === "active"}
@@ -3214,69 +3314,164 @@ function clearRiderStatusFilters(){
 
   ) : (
 
-    selectedOrders.length === 0
+    activeAdminView !== "support" && selectedOrders.length === 0
     ? (
 
       <Empty>
         No records found for this view.
       </Empty>
 
-    ) : (
+    ) : activeAdminView === "support" ? (
 
-      <DetailGrid>
+  <DetailGrid>
 
-        {
-          selectedOrders.map((o)=>(
+    {
+      supportMessages.map((msg)=>(
 
-            <DetailCard
-              key={o._id}
-              warning={activeAdminView === "fraud"}
-              success={activeAdminView === "delivered"}
-            >
+        <DetailCard key={msg._id}>
 
-              <DetailTitle>
-                {o.customer?.name || "Unknown Customer"}
-              </DetailTitle>
+          <DetailTitle>
+            {msg.customer?.name || "Unknown Customer"}
+          </DetailTitle>
 
-              <DetailMeta>
-                <strong>Pickup:</strong>{" "}
-                {o.pickupLocation || "N/A"}
-                <br />
+          <DetailMeta>
+            <strong>Email:</strong>{" "}
+            {msg.customer?.email || "N/A"}
+            <br />
 
-                <strong>Dropoff:</strong>{" "}
-                {o.dropoffLocation || "N/A"}
-                <br />
+            <strong>Message:</strong>{" "}
+            {msg.message}
+            <br />
 
-                <strong>Rider:</strong>{" "}
-                {
-                  o.rider?.name ||
-                  "Waiting..."
-                }
-                <br />
+            <strong>Status:</strong>{" "}
+            {msg.status || "open"}
+            <br />
 
-                <strong>Status:</strong>{" "}
-                {o.status || "N/A"}
-                <br />
+            <strong>Reply:</strong>{" "}
+            {msg.reply || "No reply yet"}
 
-                <strong>Amount:</strong>{" "}
-                ₵{o.total || 0}
+            <br />
+<br />
 
-                {
-                  activeAdminView === "fraud" && (
-                    <>
-                      <br />
-                      <strong>Cancel Reason:</strong>{" "}
-                      {o.cancelReason || "No reason provided"}
-                    </>
-                  )
-                }
-              </DetailMeta>
+<input
+  type="text"
+  placeholder="Type admin reply..."
+  value={supportReply[msg._id] || ""}
+  onChange={(e)=>
+    setSupportReply({
+      ...supportReply,
+      [msg._id]:e.target.value
+    })
+  }
+  style={{
+    width:"100%",
+    padding:"12px 14px",
+    borderRadius:"12px",
+    border:"1px solid #dbeafe",
+    marginTop:"10px",
+    fontWeight:"700"
+  }}
+/>
 
-            </DetailCard>
-          ))
-        }
+<button
+  onClick={async()=>{
 
-      </DetailGrid>
+    if(!supportReply[msg._id]){
+      alert("Type a reply first");
+      return;
+    }
+
+    await API.put(
+      `/support/${msg._id}/reply`,
+      {
+        reply:supportReply[msg._id]
+      }
+    );
+
+    setSupportReply({
+      ...supportReply,
+      [msg._id]:""
+    });
+
+    fetchSupportMessages();
+  }}
+  style={{
+    marginTop:"10px",
+    border:"none",
+    borderRadius:"12px",
+    padding:"12px 16px",
+    background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
+    color:"#facc15",
+    fontWeight:"900",
+    cursor:"pointer"
+  }}
+>
+  Send Reply
+</button>
+          </DetailMeta>
+
+        </DetailCard>
+      ))
+    }
+
+  </DetailGrid>
+
+) : (
+
+  <DetailGrid>
+
+    {
+      selectedOrders.map((o)=>(
+
+        <DetailCard
+          key={o._id}
+          warning={activeAdminView === "fraud"}
+          success={activeAdminView === "delivered"}
+        >
+
+          <DetailTitle>
+            {o.customer?.name || "Unknown Customer"}
+          </DetailTitle>
+
+          <DetailMeta>
+            <strong>Pickup:</strong>{" "}
+            {o.pickupLocation || "N/A"}
+            <br />
+
+            <strong>Dropoff:</strong>{" "}
+            {o.dropoffLocation || "N/A"}
+            <br />
+
+            <strong>Rider:</strong>{" "}
+            {
+              o.rider?.name ||
+              "Waiting..."
+            }
+            <br />
+
+            <strong>Status:</strong>{" "}
+            {o.status || "N/A"}
+            <br />
+
+            <strong>Amount:</strong>{" "}
+            ₵{o.total || 0}
+
+            {
+              activeAdminView === "fraud" && (
+                <>
+                  <br />
+                  <strong>Cancel Reason:</strong>{" "}
+                  {o.cancelReason || "No reason provided"}
+                </>
+              )
+            }
+          </DetailMeta>
+
+        </DetailCard>
+      ))
+    }
+
+  </DetailGrid>
     )
   )
 }

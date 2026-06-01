@@ -3811,6 +3811,9 @@ const [showSupportChat,setShowSupportChat] =
 const [supportMessage,setSupportMessage] =
   useState("");
 
+  const [supportMessages,setSupportMessages] =
+  useState([]);
+
 const [
   savedAccounts,
   setSavedAccounts
@@ -4043,6 +4046,25 @@ useEffect(()=>{
   return ()=>clearInterval(
     interval
   );
+
+},[]);
+
+useEffect(()=>{
+
+  socket.on("supportMessageReplied",(updatedMessage)=>{
+
+    setSupportMessages((oldMessages)=>
+      oldMessages.map((msg)=>
+        msg._id === updatedMessage._id
+        ? updatedMessage
+        : msg
+      )
+    );
+  });
+
+  return ()=>{
+    socket.off("supportMessageReplied");
+  };
 
 },[]);
 
@@ -4567,6 +4589,25 @@ localStorage.setItem(
   }catch(err){
 
     console.log(err);
+  }
+}
+
+async function fetchSupportMessages(){
+
+  try{
+
+    const res =
+      await API.get("/support");
+
+    setSupportMessages(res.data);
+
+  }catch(error){
+
+    console.log(
+      "FETCH CUSTOMER SUPPORT ERROR:",
+      error.response?.data ||
+      error.message
+    );
   }
 }
 
@@ -9760,31 +9801,73 @@ overflowY:"auto"
         </div>
 
         <div
+  style={{
+    minHeight:"120px",
+    maxHeight:"180px",
+    overflowY:"auto",
+    background:"#f8fafc",
+    border:"1px solid #e5e7eb",
+    borderRadius:"16px",
+    padding:"12px",
+    marginBottom:"12px"
+  }}
+>
+  <div
+    style={{
+      background:"#dcfce7",
+      color:"#0f172a",
+      padding:"10px 12px",
+      borderRadius:"14px",
+      marginBottom:"8px",
+      fontSize:"14px",
+      fontWeight:"700"
+    }}
+  >
+    Hello 👋 Welcome to MonniDrop WhatsApp support. How can we help you?
+  </div>
+
+  {
+    supportMessages.map((msg)=>(
+
+      <div key={msg._id}>
+
+        <div
           style={{
-            minHeight:"120px",
-            maxHeight:"180px",
-            overflowY:"auto",
-            background:"#f8fafc",
-            border:"1px solid #e5e7eb",
-            borderRadius:"16px",
-            padding:"12px",
-            marginBottom:"12px"
+            background:"#dbeafe",
+            color:"#0f172a",
+            padding:"10px 12px",
+            borderRadius:"14px",
+            marginBottom:"8px",
+            fontSize:"14px",
+            fontWeight:"700"
           }}
         >
-          <div
-            style={{
-              background:"#dcfce7",
-              color:"#0f172a",
-              padding:"10px 12px",
-              borderRadius:"14px",
-              marginBottom:"8px",
-              fontSize:"14px",
-              fontWeight:"700"
-            }}
-          >
-            Hello 👋 Welcome to MonniDrop WhatsApp support. How can we help you?
-          </div>
+          You: {msg.message}
         </div>
+
+        {
+          msg.reply && (
+
+            <div
+              style={{
+                background:"#dcfce7",
+                color:"#0f172a",
+                padding:"10px 12px",
+                borderRadius:"14px",
+                marginBottom:"8px",
+                fontSize:"14px",
+                fontWeight:"700"
+              }}
+            >
+              Support: {msg.reply}
+            </div>
+          )
+        }
+
+      </div>
+    ))
+  }
+</div>
 
         <div
           style={{
@@ -9829,6 +9912,8 @@ overflowY:"auto"
     alert("Message sent to MonniDrop support");
 
     setSupportMessage("");
+
+    fetchSupportMessages();
 
   }catch(error){
 
