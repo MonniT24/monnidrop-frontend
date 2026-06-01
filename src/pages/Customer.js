@@ -15,7 +15,8 @@ import {
   FiLogOut,
   FiSettings,
   FiEye,
-  FiEyeOff
+  FiEyeOff,
+  FiArrowLeft
 } from "react-icons/fi";
 
 import {
@@ -23,7 +24,7 @@ import {
   TileLayer,
   Marker,
   Popup,
-  Polyline
+  Polyline,
 } from "react-leaflet";
 
 import "leaflet/dist/leaflet.css";
@@ -3800,10 +3801,20 @@ const [
   setDropoffCoords
 ] = useState(null);
 
-  const [
-  selectedSetting,
+  const [ selectedSetting,
   setSelectedSetting
 ] = useState(null);
+
+const [showSupportChat,setShowSupportChat] =
+  useState(false);
+
+const [supportMessage,setSupportMessage] =
+  useState("");
+
+const [
+  savedAccounts,
+  setSavedAccounts
+] = useState([]);
 
 const [
   phoneNumber,
@@ -5394,6 +5405,7 @@ async function sendMessage(
   color:"#0f172a",
   fontWeight:"800",
   cursor:"pointer",
+  transition:"0.25s ease",
   marginTop:"0",
   fontSize:"12px",
   border:"1px solid #e5e7eb"
@@ -6911,6 +6923,110 @@ async function sendMessage(
   )
 }    
 
+{
+  selectedSetting === "About this app" && (
+
+    <div
+      style={{
+        background:"#ffffff",
+        borderRadius:"24px",
+        overflow:"hidden",
+        border:"1px solid #e5e7eb",
+        marginBottom:"18px"
+      }}
+    >
+
+      <div
+        style={{
+          padding:"45px 20px",
+          textAlign:"center",
+          background:"#ffffff",
+          borderBottom:"12px solid #f1f1f1"
+        }}
+      >
+
+        <img
+          src="/logo.png"
+          alt="MonniDrop"
+          style={{
+            width:"110px",
+            height:"110px",
+            objectFit:"contain",
+            borderRadius:"24px",
+            marginBottom:"18px"
+          }}
+        />
+
+        <div
+          style={{
+            fontSize:"32px",
+            fontWeight:"900",
+            color:"#000",
+            marginBottom:"8px"
+          }}
+        >
+          MonniDrop
+        </div>
+
+        <div
+          style={{
+            fontSize:"20px",
+            color:"#777",
+            fontWeight:"700"
+          }}
+        >
+          App version 1.0.0
+        </div>
+
+      </div>
+
+      {[
+        "About MonniDrop",
+        "Contact us"
+      ].map((item)=>(
+
+        <div
+          key={item}
+          onClick={()=>
+            setSelectedSetting(item)
+          }
+          style={{
+            background:"#ffffff",
+            padding:"22px 24px",
+            display:"flex",
+            justifyContent:"space-between",
+            alignItems:"center",
+            borderBottom:"1px solid #e5e5e5",
+            fontSize:"22px",
+            fontWeight:"900",
+            color:"#000",
+            cursor:"pointer"
+          }}
+        >
+
+          <span>
+            {item}
+          </span>
+
+          <span
+            style={{
+              fontSize:"36px",
+              color:"#8a8a8a",
+              fontWeight:"300",
+              lineHeight:"1"
+            }}
+          >
+            ›
+          </span>
+
+        </div>
+
+      ))}
+
+    </div>
+  )
+}
+
 <ButtonRow
   style={{
     marginTop:"18px",
@@ -7314,6 +7430,7 @@ calculateDistance(
    style={{
   padding:"13px 15px",
   cursor:"pointer",
+  transition:"0.25s ease",
   borderBottom:"1px solid #eef2ff",
   fontSize:"14px",
   fontWeight:"700",
@@ -7424,6 +7541,7 @@ calculateDistance(
    style={{
   padding:"13px 15px",
   cursor:"pointer",
+  transition:"0.25s ease",
   borderBottom:"1px solid #eef2ff",
   fontSize:"14px",
   fontWeight:"700",
@@ -8324,6 +8442,7 @@ calculateDistance(
           color:"#0f172a",
           fontWeight:"900",
           cursor:"pointer",
+          transition:"0.25s ease",
           marginTop:"0",
           fontSize:"14px"
         }}
@@ -8563,788 +8682,257 @@ calculateDistance(
 
   <>
 
-    <SettingsHero>
-
-  <SettingsHeroContent>
-
-    <SettingsBadge>
-      ⚙️ Account Control Center
-    </SettingsBadge>
-
-    <SettingsTitle>
-      Manage Your MonniDrop Settings
-    </SettingsTitle>
-
-    <SettingsText>
-      Control account security, privacy, permissions,
-      payment protection, and app preferences from one clean place.
-    </SettingsText>
-
-  </SettingsHeroContent>
-
-  <SettingsHeroIcon>
-    ⚙️
-  </SettingsHeroIcon>
-
-</SettingsHero>
-
     <div
       style={{
-        display:"flex",
-        flexDirection:"column",
-        gap:"20px"
+        background:"#ffffff",
+        borderRadius:"28px",
+        padding:"26px",
+        marginBottom:"18px",
+        border:"1px solid #e5e7eb",
+        boxShadow:
+          "0 14px 34px rgba(15,23,42,0.06)"
       }}
     >
 
-      {/* ACCOUNT SECURITY */}
+      <h1
+        style={{
+          margin:"0 0 18px",
+          fontSize:"34px",
+          fontWeight:"900",
+          color:"#0f172a"
+        }}
+      >
+        Settings
+      </h1>
 
-     <OrderCard
-  style={{
-    background:
-      "linear-gradient(135deg, #ffffff, #f8fafc)",
-    border:"1px solid rgba(29,78,216,0.12)",
-    borderRadius:"24px",
-    padding:"22px",
-    boxShadow:
-      "0 14px 32px rgba(15,23,42,0.08)"
-  }}
->
+      <h2
+        style={{
+          margin:"0 0 8px",
+          fontSize:"30px",
+          fontWeight:"900",
+          color:"#15803d"
+        }}
+      >
+        Your account is protected
+      </h2>
 
-  <SectionTitle
-  style={{
-    marginBottom:"18px",
-    display:"flex",
-    alignItems:"center",
-    gap:"10px",
-    color:"#0f172a"
-  }}
->
-  <span
-    style={{
-      width:"34px",
-      height:"34px",
-      borderRadius:"12px",
-      display:"inline-flex",
-      alignItems:"center",
-      justifyContent:"center",
-      background:
-        "linear-gradient(135deg, #0f172a, #1d4ed8)",
-      color:"#facc15",
-      fontSize:"17px"
-    }}
-  >
-    🔐
-  </span>
+      <p
+        style={{
+          margin:"0",
+          fontSize:"18px",
+          fontWeight:"700",
+          color:"#64748b",
+          lineHeight:"1.5"
+        }}
+      >
+        MonniDrop protects your personal information and keeps it private,
+        safe and secure.
+      </p>
 
-  Account Security
-</SectionTitle>
-
-  <div
-    onClick={()=>
-      setSelectedSetting(
-        "Mobile Phone Number"
-      )
-    }
-   style={{
-  padding:"14px 16px",
-  border:"1px solid rgba(29,78,216,0.10)",
-  borderRadius:"16px",
-  cursor:"pointer",
-  marginBottom:"10px",
-  background:"#ffffff",
-  boxShadow:
-    "0 8px 18px rgba(15,23,42,0.04)"
-}}
-  >
-
-    <div
-      style={{
-        fontWeight:"700",
-        color:"#0f172a"
-      }}
-    >
-      Mobile Phone Number
     </div>
 
     <div
-      style={{
-        fontSize:"14px",
-        color:"#64748b",
-        marginTop:"4px"
-      }}
-    >
-      {
-        phoneNumber ||
-        "Add phone number"
-      }
-    </div>
-
-    
-
-  </div>
-
-  <div
-  onClick={()=>
-    setSelectedSetting(
-      "Email"
-    )
-  }
- style={{
-  padding:"14px 16px",
-  border:"1px solid rgba(29,78,216,0.10)",
-  borderRadius:"16px",
-  cursor:"pointer",
-  marginBottom:"10px",
-  background:"#ffffff",
-  boxShadow:
-    "0 8px 18px rgba(15,23,42,0.04)"
-}}
->
-
-  <div
-    style={{
-      fontWeight:"700",
-      color:"#0f172a"
-    }}
-  >
-    Email
-  </div>
-
-  <div
-    style={{
-      fontSize:"14px",
-      color:"#64748b",
-      marginTop:"4px"
-    }}
-  >
-    {
-      email ||
-      "Add email address"
-    }
-  </div>
-
-  <div
-  onClick={()=>
-    setSelectedSetting(
-      "Two-Factor Authentication"
-    )
-  }
- style={{
-  padding:"14px 16px",
-  border:"1px solid rgba(29,78,216,0.10)",
-  borderRadius:"16px",
-  cursor:"pointer",
-  marginBottom:"10px",
-  background:"#ffffff",
-  boxShadow:
-    "0 8px 18px rgba(15,23,42,0.04)"
-}}
->
-
-  <div
-    style={{
-      fontWeight:"700",
-      color:"#0f172a"
-    }}
-  >
-    Two-Factor Authentication
-  </div>
-
-  <div
-    style={{
-      fontSize:"14px",
-      color:
-        twoFactorEnabled
-        ? "#16a34a"
-        : "#64748b",
-      marginTop:"4px"
-    }}
-  >
-    {
-      twoFactorEnabled
-      ? "Enabled"
-      : "Disabled"
-    }
-  </div>
-  <div
-  onClick={()=>
-  setSelectedSetting(
-    "Google"
-    )
-  }
   style={{
-  padding:"14px 16px",
-  border:"1px solid rgba(29,78,216,0.10)",
-  borderRadius:"16px",
-  cursor:"pointer",
-  marginBottom:"10px",
-  background:"#ffffff",
-  boxShadow:
-    "0 8px 18px rgba(15,23,42,0.04)"
-}}
+    display:"grid",
+    gridTemplateColumns:"1fr 1fr",
+    gap:"16px",
+    marginBottom:"24px"
+  }}
 >
-
-  <div
-    style={{
-      fontWeight:"700",
-      color:"#0f172a"
-    }}
-  >
-  Google
-  </div>
-
-  <div
-    style={{
-      fontSize:"14px",
-      color:
-        googleConnected
-        ? "#16a34a"
-        : "#64748b",
-      marginTop:"4px"
-    }}
-  >
-    {
-      googleConnected
-      ? "Connected"
-      : "Not Connected"
-    }
-  </div>
-
-</div>
-<div
-  onClick={()=>
-    setSelectedSetting(
-      "Facebook"
-    )
-  }
-  style={{
-  padding:"14px 16px",
-  border:"1px solid rgba(29,78,216,0.10)",
-  borderRadius:"16px",
-  cursor:"pointer",
-  marginBottom:"10px",
-  background:"#ffffff",
-  boxShadow:
-    "0 8px 18px rgba(15,23,42,0.04)"
-}}
->
-
-  <div
-    style={{
-      fontWeight:"700",
-      color:"#0f172a"
-    }}
-  >
-    Facebook
-  </div>
-
-  <div
-    style={{
-      fontSize:"14px",
-      color:
-        facebookConnected
-        ? "#16a34a"
-        : "#64748b",
-      marginTop:"4px"
-    }}
-  >
-    {
-      facebookConnected
-      ? "Connected"
-      : "Not Connected"
-    }
-  </div>
-
-</div>
-
-<div
-  onClick={()=>
-    setSelectedSetting(
-      "Sign In Activity"
-    )
-  }
-  style={{
-  padding:"14px 16px",
-  border:"1px solid rgba(29,78,216,0.10)",
-  borderRadius:"16px",
-  cursor:"pointer",
-  marginBottom:"10px",
-  background:"#ffffff",
-  boxShadow:
-    "0 8px 18px rgba(15,23,42,0.04)"
-}}
->
-
-  <div
-    style={{
-      fontWeight:"700",
-      color:"#0f172a"
-    }}
-  >
-    Sign In Activity
-  </div>
-
-  <div
-    style={{
-      fontSize:"14px",
-      color:"#64748b",
-      marginTop:"4px"
-    }}
-  >
-    View recent account logins
-  </div>
-
-</div>
-
-</div>
-
-</div>
-
   {
     [
-      "Password",
-      "Third-Party Account",
-      "Delete Your MonniDrop Account"
-    ].map((item,index)=>(
+      "Account Security",
+      "Privacy",
+      "Permissions",
+      "Safety Center"
+    ].map((item)=>(
 
       <div
-        key={index}
+        key={item}
         onClick={()=>
           setSelectedSetting(item)
         }
         style={{
-  padding:"14px 16px",
-  border:"1px solid rgba(29,78,216,0.10)",
-  borderRadius:"16px",
-  cursor:"pointer",
-  marginBottom:"10px",
-  background:"#ffffff",
-  boxShadow:
-    "0 8px 18px rgba(15,23,42,0.04)"
-}}
+          background:"#ffffff",
+          border:"1px solid rgba(29,78,216,0.12)",
+          borderRadius:"22px",
+          padding:"22px",
+          cursor:"pointer",
+          display:"flex",
+          alignItems:"center",
+          justifyContent:"space-between",
+          boxShadow:
+            "0 8px 20px rgba(15,23,42,0.05)"
+        }}
       >
-        {item}
-      </div>
-
-    ))
-  }
-
-</OrderCard>
-
-      {/* PRIVACY */}
-
-      <OrderCard
-  style={{
-    background:
-      "linear-gradient(135deg, #ffffff, #f8fafc)",
-    border:"1px solid rgba(29,78,216,0.12)",
-    borderRadius:"24px",
-    padding:"22px",
-    boxShadow:
-      "0 14px 32px rgba(15,23,42,0.08)",
-    marginTop:"22px"
-  }}
->
-
-        <SectionTitle
-  style={{
-    marginBottom:"18px",
-    display:"flex",
-    alignItems:"center",
-    gap:"10px",
-    color:"#0f172a"
-  }}
->
-  <span
-    style={{
-      width:"34px",
-      height:"34px",
-      borderRadius:"12px",
-      display:"inline-flex",
-      alignItems:"center",
-      justifyContent:"center",
-      background:
-        "linear-gradient(135deg, #0f172a, #1d4ed8)",
-      color:"#facc15",
-      fontSize:"17px"
-    }}
-  >
-    🛡️
-  </span>
-
-  Privacy
-</SectionTitle>
-
-        {
-          [
-            "Required Cookies & Technologies",
-            "Personalized Advertised Listing",
-            "Additional Privacy Option"
-          ].map((item,index)=>(
-
-            <div
-              key={index}
-              onClick={()=>
-                setSelectedSetting(item)
-              }
-             style={{
-  padding:"14px 16px",
-  border:"1px solid rgba(29,78,216,0.10)",
-  borderRadius:"16px",
-  cursor:"pointer",
-  marginBottom:"10px",
-  background:"#ffffff",
-  fontWeight:"800",
-  boxShadow:
-    "0 8px 18px rgba(15,23,42,0.04)"
-}}
-            >
-              {item}
-            </div>
-
-          ))
-        }
-
-      </OrderCard>
-
-      {/* PERMISSIONS */}
-
-      <OrderCard>
-
-        <SectionTitle
-  style={{
-    marginBottom:"12px",
-    display:"flex",
-    alignItems:"center",
-    gap:"10px",
-    color:"#0f172a"
-  }}
->
-  <span
-    style={{
-      width:"34px",
-      height:"34px",
-      borderRadius:"12px",
-      display:"inline-flex",
-      alignItems:"center",
-      justifyContent:"center",
-      background:
-        "linear-gradient(135deg, #0f172a, #1d4ed8)",
-      color:"#facc15",
-      fontSize:"17px"
-    }}
-  >
-    🔑
-  </span>
-
-  Permissions
-</SectionTitle>
-
-        <HeroText
-  style={{
-    marginBottom:"18px",
-    color:"#64748b",
-    fontSize:"14px",
-    fontWeight:"700"
-  }}
->
-  Access certain device features with your permission.
-</HeroText>
-
-        {
-          [
-            "Camera",
-            "Notifications",
-            "Live Activities"
-          ].map((item,index)=>(
-
-            <div
-              key={index}
-              onClick={()=>
-                setSelectedSetting(item)
-              }
-              style={{
-  padding:"14px 16px",
-  border:"1px solid rgba(29,78,216,0.10)",
-  borderRadius:"16px",
-  cursor:"pointer",
-  marginBottom:"10px",
-  background:"#ffffff",
-  fontWeight:"800",
-  boxShadow:
-    "0 8px 18px rgba(15,23,42,0.04)"
-}}
-            >
-              {item}
-            </div>
-
-          ))
-        }
-
-      </OrderCard>
-
-      {/* SAFETY CENTER */}
-
-      <OrderCard>
-
-        <SectionTitle
-  style={{
-    marginBottom:"18px",
-    display:"flex",
-    alignItems:"center",
-    gap:"10px",
-    color:"#0f172a"
-  }}
->
-  <span
-    style={{
-      width:"34px",
-      height:"34px",
-      borderRadius:"12px",
-      display:"inline-flex",
-      alignItems:"center",
-      justifyContent:"center",
-      background:
-        "linear-gradient(135deg, #0f172a, #1d4ed8)",
-      color:"#facc15",
-      fontSize:"17px"
-    }}
-  >
-    🔒
-  </span>
-
-  Safety Center
-</SectionTitle>
-
-        {
-          [
-            "How Your Data Is Protected",
-            "Account Protection",
-            "Payment Protection"
-          ].map((item,index)=>(
-
-            <div
-              key={index}
-              onClick={()=>
-                setSelectedSetting(item)
-              }
-              style={{
-  padding:"14px 16px",
-  border:"1px solid rgba(29,78,216,0.10)",
-  borderRadius:"16px",
-  cursor:"pointer",
-  marginBottom:"10px",
-  background:"#ffffff",
-  fontWeight:"800",
-  boxShadow:
-    "0 8px 18px rgba(15,23,42,0.04)"
-}}
-            >
-              {item}
-            </div>
-
-          ))
-        }
-
-      </OrderCard>
-
-      {/* GENERAL SETTINGS */}
-
-      <OrderCard
-  style={{
-    background:
-      "linear-gradient(135deg, #ffffff, #f8fafc)",
-    border:"1px solid rgba(29,78,216,0.12)",
-    borderRadius:"24px",
-    padding:"22px",
-    boxShadow:
-      "0 14px 32px rgba(15,23,42,0.08)",
-    marginTop:"22px"
-  }}
->
-
-        <SectionTitle
-  style={{
-    marginBottom:"18px",
-    display:"flex",
-    alignItems:"center",
-    gap:"10px",
-    color:"#0f172a"
-  }}
->
-  <span
-    style={{
-      width:"34px",
-      height:"34px",
-      borderRadius:"12px",
-      display:"inline-flex",
-      alignItems:"center",
-      justifyContent:"center",
-      background:
-        "linear-gradient(135deg, #0f172a, #1d4ed8)",
-      color:"#facc15",
-      fontSize:"17px"
-    }}
-  >
-    🎛️
-  </span>
-
-  General
-</SectionTitle>
 
         <div
-  onClick={()=>
-    setSelectedSetting(
-      "Country & Region"
-    )
+          style={{
+            display:"flex",
+            alignItems:"center",
+            gap:"14px"
+          }}
+        >
+
+          <div
+            style={{
+              width:"48px",
+              height:"48px",
+              borderRadius:"16px",
+              background:
+                "linear-gradient(135deg,#0f172a,#1d4ed8)",
+              color:"#facc15",
+              display:"flex",
+              alignItems:"center",
+              justifyContent:"center",
+              fontSize:"22px"
+            }}
+          >
+            🛡️
+          </div>
+
+          <div
+            style={{
+              fontWeight:"900",
+              fontSize:"20px",
+              color:"#0f172a"
+            }}
+          >
+            {item}
+          </div>
+
+        </div>
+
+        <div
+          style={{
+            fontSize:"30px",
+            color:"#1d4ed8",
+            fontWeight:"900"
+          }}
+        >
+          ›
+        </div>
+
+      </div>
+    ))
   }
-  style={{
-  padding:"14px 16px",
-  border:"1px solid rgba(29,78,216,0.10)",
-  borderRadius:"16px",
-  cursor:"pointer",
-  marginBottom:"10px",
-  background:"#ffffff",
-  boxShadow:
-    "0 8px 18px rgba(15,23,42,0.04)"
+</div>
+
+<div
+style={{
+
+background:"#ffffff",
+
+borderRadius:"24px",
+
+padding:"22px",
+
+border:
+"1px solid rgba(29,78,216,0.12)",
+
+boxShadow:
+"0 10px 26px rgba(15,23,42,0.05)",
+
+marginBottom:"24px"
+
 }}
 >
 
-  <div
-    style={{
-      fontWeight:"700",
-      color:"#0f172a"
-    }}
-  >
-    Country & Region
-  </div>
+<div
+style={{
 
-  <div
-    style={{
-      fontSize:"14px",
-      color:"#64748b",
-      marginTop:"4px"
-    }}
-  >
-    {country}
-  </div>
+fontSize:"26px",
+
+fontWeight:"900",
+
+color:"#0f172a",
+
+marginBottom:"18px"
+
+}}
+>
+
+Preferences
+
+</div>
+
+{[
+  "Country & region",
+  "Language",
+  "Currency",
+  "Notifications",
+  "About this app",
+  "Legal terms & policies",
+  "Share this app",
+  "Switch account",
+  "Sign out"
+].map((item)=>(
+
+<div
+
+key={item}
+
+onClick={()=>
+setSelectedSetting(
+item
+)
+}
+
+style={{
+
+display:"flex",
+
+justifyContent:
+"space-between",
+
+alignItems:"center",
+
+padding:"18px 0",
+
+borderBottom:
+"1px solid #eef2f7",
+
+cursor:"pointer"
+
+}}
+
+>
+
+<div
+style={{
+
+fontSize:"18px",
+
+fontWeight:"800",
+
+color:"#0f172a"
+
+}}
+>
+
+{item}
 
 </div>
 
 <div
-  onClick={()=>
-    setSelectedSetting(
-      "Language"
-    )
-  }
-  style={{
-  padding:"14px 16px",
-  border:"1px solid rgba(29,78,216,0.10)",
-  borderRadius:"16px",
-  cursor:"pointer",
-  marginBottom:"10px",
-  background:"#ffffff",
-  boxShadow:
-    "0 8px 18px rgba(15,23,42,0.04)"
+style={{
+
+color:"#1d4ed8",
+
+fontSize:"26px"
+
 }}
 >
 
-  <div
-    style={{
-      fontWeight:"700",
-      color:"#0f172a"
-    }}
-  >
-    Language
-  </div>
-
-  <div
-    style={{
-      fontSize:"14px",
-      color:"#64748b",
-      marginTop:"4px"
-    }}
-  >
-    {language}
-  </div>
+›
 
 </div>
 
-<div
-  onClick={()=>
-    setSelectedSetting(
-      "Currency"
-    )
-  }
-  style={{
-  padding:"14px 16px",
-  border:"1px solid rgba(29,78,216,0.10)",
-  borderRadius:"16px",
-  cursor:"pointer",
-  marginBottom:"10px",
-  background:"#ffffff",
-  boxShadow:
-    "0 8px 18px rgba(15,23,42,0.04)"
-}}
->
-
-  <div
-    style={{
-      fontWeight:"700",
-      color:"#0f172a"
-    }}
-  >
-    Currency
-  </div>
-
-  <div
-    style={{
-      fontSize:"14px",
-      color:"#64748b",
-      marginTop:"4px"
-    }}
-  >
-    {currency}
-  </div>
-
 </div>
 
-        {
-          [
-            "Your Payment Method",
-            "Notifications",
-            "About This App",
-            "Legal Terms & Policies",
-            "Share This App",
-            "Switch Account",
-            "Sign Out"
-          ].map((item,index)=>(
+))}
 
-            <div
-              key={index}
-              onClick={()=>
-                setSelectedSetting(item)
-              }
-             style={{
-  padding:"14px 16px",
-  border:"1px solid rgba(29,78,216,0.10)",
-  borderRadius:"16px",
-  cursor:"pointer",
-  marginBottom:"10px",
-  background:"#ffffff",
-  boxShadow:
-    "0 8px 18px rgba(15,23,42,0.04)"
-}}
-            >
-              {item}
-            </div>
-
-          ))
-        }
-
-      </OrderCard>
-
-    </div>
+</div>
 
 {
   selectedSetting && (
@@ -9356,7 +8944,8 @@ calculateDistance(
         left:0,
         width:"100%",
         height:"100%",
-        background:"rgba(0,0,0,0.5)",
+        background:"rgba(15,23,42,0.72)",
+        backdropFilter:"blur(8px)",
         display:"flex",
         justifyContent:"center",
         alignItems:"center",
@@ -9365,13 +8954,30 @@ calculateDistance(
     >
 
       <div
-        style={{
-          width:"90%",
-          maxWidth:"420px",
-          background:"white",
-          borderRadius:"24px",
-          padding:"28px"
-        }}
+       style={{
+width:"92%",
+maxWidth:"520px",
+
+background:
+"linear-gradient(180deg,#ffffff,#f8fafc)",
+
+border:
+"1px solid rgba(29,78,216,0.12)",
+
+borderRadius:"30px",
+
+padding:"32px",
+
+boxShadow:
+"0 30px 80px rgba(15,23,42,0.18)",
+
+backdropFilter:
+"blur(20px)",
+
+maxHeight:"85vh",
+
+overflowY:"auto"
+}}
       >
 
         <div
@@ -9382,40 +8988,42 @@ calculateDistance(
             marginBottom:"18px"
           }}
         >
-          <span
-            style={{
-              width:"36px",
-              height:"36px",
-              borderRadius:"13px",
-              display:"inline-flex",
-              alignItems:"center",
-              justifyContent:"center",
-              background:
-                "linear-gradient(135deg, #0f172a, #1d4ed8)",
-              color:"#facc15",
-              fontWeight:"900"
-            }}
-          >
-            {
-              selectedSetting === "Sign Out"
-              ? "🚪"
-              : "⚙️"
-            }
-          </span>
+         <span
+  onClick={() => setSelectedSetting("")}
+  style={{
+    width:"36px",
+    height:"36px",
+    borderRadius:"13px",
+    display:"inline-flex",
+    alignItems:"center",
+    justifyContent:"center",
+    background:
+      "linear-gradient(135deg, #0f172a, #1d4ed8)",
+    color:"#facc15",
+    fontWeight:"900",
+    cursor:"pointer",
+    fontSize:"20px"
+  }}
+>
+  <FiArrowLeft />
+</span>
 
           <div
-            style={{
-              fontSize:"20px",
-              fontWeight:"900",
-              color:"#0f172a"
-            }}
-          >
-            {selectedSetting}
-          </div>
+  style={{
+    fontSize:"28px",
+    fontWeight:"900",
+    background:
+      "linear-gradient(135deg,#0f172a,#1d4ed8)",
+    WebkitBackgroundClip:"text",
+    WebkitTextFillColor:"transparent"
+  }}
+>
+  {selectedSetting}
+</div>
         </div>
 
         {
-          selectedSetting === "Sign Out" && (
+          selectedSetting === "Sign out" && (
 
             <div
               style={{
@@ -9818,168 +9426,601 @@ calculateDistance(
 
         {
           ![
-            "Mobile Phone Number",
-            "Email",
-            "Password",
-            "Country & Region",
-            "Language",
-            "Currency",
-            "Your Payment Method",
-            "Two-Factor Authentication",
-            "Google",
-            "Facebook",
-            "Notifications",
-            "Sign Out"
-          ].includes(selectedSetting) && (
+  "Mobile Phone Number",
+  "Email",
+  "Password",
+  "Country & Region",
+  "Language",
+  "Currency",
+  "Your Payment Method",
+  "Two-Factor Authentication",
+  "Google",
+  "Facebook",
+  "Notifications",
+  "About this app",
+  "Sign Out"
+].includes(selectedSetting) && (
 
-            <textarea
-              defaultValue={selectedSetting}
-              style={{
-                width:"100%",
-                minHeight:"120px",
-                padding:"14px",
-                borderRadius:"14px",
-                border:"1px solid rgba(29,78,216,0.18)",
-                fontWeight:"800",
-                color:"#0f172a",
-                outline:"none",
-                resize:"vertical"
-              }}
-            />
+           <div
+  style={{
+    width:"100%",
+    minHeight:"170px",
+    padding:"18px",
+    borderRadius:"20px",
+    border:"1px solid rgba(29,78,216,0.15)",
+    background:"#f8fafc",
+    color:"#0f172a",
+    fontWeight:"700",
+    lineHeight:"1.6",
+    boxSizing:"border-box"
+  }}
+>
+  {
+    selectedSetting === "How Your Data Is Protected"
+    ? "MonniDrop protects your data with secure login sessions, encrypted communication, and controlled access. Your personal details are only used to support deliveries, account access, and customer service."
+
+    : selectedSetting === "Account Protection"
+    ? "Your account is protected with password-based authentication, phone verification, secure login tokens, and account monitoring to help prevent unauthorized access."
+
+    : selectedSetting === "Payment Protection"
+    ? "MonniDrop protects payment activity by tracking payment status, separating cash and mobile money records, and allowing admins to verify settlement before closing payment records."
+
+    : selectedSetting === "Camera"
+    ? "Camera permission allows you to upload or update your profile photo. MonniDrop will only use your camera when you choose to take or upload an image."
+
+    : selectedSetting === "Notifications"
+    ? "Notification permission allows MonniDrop to send delivery updates, rider messages, payment alerts, and important account notifications."
+
+    : selectedSetting === "Live Activities"
+    ? "Live Activities help you follow active deliveries in real time, including rider movement, delivery progress, and important order updates."
+
+    : selectedSetting === "Required Cookies & Technologies"
+    ? "Required cookies and technologies help MonniDrop keep you signed in, protect your account, remember important settings, and support secure delivery activity."
+
+    : selectedSetting === "Personalized Advertised Listing"
+    ? "Personalized listings help MonniDrop show relevant delivery offers, service updates, and useful app information based on your activity and preferences."
+
+    : selectedSetting === "Additional Privacy Option"
+    ? "Additional privacy options allow you to manage how your information is used for account support, delivery improvement, communication, and app personalization."
+
+    : selectedSetting === "About this app"
+? (
+  <div>
+    <div
+      style={{
+        padding: "28px 20px",
+        background: "#ffffff",
+        textAlign: "center",
+        borderBottom: "8px solid #f1f1f1",
+        position: "relative"
+      }}
+    >
+      <div
+        onClick={() => setSelectedSetting("")}
+        style={{
+          position: "absolute",
+          top: "18px",
+          left: "18px",
+          width: "44px",
+          height: "44px",
+          borderRadius: "14px",
+          background: "linear-gradient(135deg,#0f172a,#1d4ed8)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "#facc15",
+          fontSize: "22px",
+          cursor: "pointer"
+        }}
+      >
+        <FiArrowLeft />
+      </div>
+
+      <img
+        src="/logo.png"
+        alt="MonniDrop"
+        style={{
+          width: "58px",
+          height: "58px",
+          objectFit: "contain",
+          borderRadius: "16px",
+          marginBottom: "10px"
+        }}
+      />
+
+      <div
+        style={{
+          fontSize: "22px",
+          fontWeight: "900",
+          color: "#000",
+          marginBottom: "5px"
+        }}
+      >
+        MonniDrop
+      </div>
+
+      <div
+        style={{
+          fontSize: "15px",
+          color: "#777"
+        }}
+      >
+        App version 1.0.0
+      </div>
+    </div>
+
+    {["About MonniDrop", "Contact us"].map((item) => (
+      <div
+        key={item}
+        onClick={() => setSelectedSetting(item)}
+        style={{
+          background: "#ffffff",
+          padding: "26px 32px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderBottom: "1px solid #e5e5e5",
+          fontSize: "26px",
+          fontWeight: "700",
+          color: "#000",
+          cursor: "pointer"
+        }}
+      >
+        <span>{item}</span>
+
+        <span
+          style={{
+            fontSize: "42px",
+            color: "#8a8a8a",
+            fontWeight: "300",
+            lineHeight: "1"
+          }}
+        >
+          ›
+        </span>
+      </div>
+    ))}
+  </div>
+)
+
+: selectedSetting === "About MonniDrop"
+? (
+  <div
+    style={{
+      background:"#ffffff",
+      borderRadius:"24px",
+      padding:"22px",
+      border:"1px solid #e5e7eb"
+    }}
+  >
+    <div
+      style={{
+        display:"flex",
+        alignItems:"center",
+        gap:"14px",
+        marginBottom:"18px"
+      }}
+    >
+      <div
+       onClick={() => {
+     setShowSupportChat(false);
+     setSelectedSetting("About this app");
+     }}
+        style={{
+          width:"48px",
+          height:"48px",
+          borderRadius:"16px",
+          background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
+          display:"flex",
+          alignItems:"center",
+          justifyContent:"center",
+          color:"#facc15",
+          fontSize:"24px",
+          cursor:"pointer"
+        }}
+      >
+        <FiArrowLeft />
+      </div>
+
+      <div
+        style={{
+          fontSize:"24px",
+          fontWeight:"900",
+          color:"#0f172a"
+        }}
+      >
+        About MonniDrop
+      </div>
+    </div>
+
+    <p
+      style={{
+        fontSize:"16px",
+        lineHeight:"1.7",
+        color:"#475569",
+        fontWeight:"600"
+      }}
+    >
+      MonniDrop is a delivery platform that connects customers with riders for fast, reliable, and secure deliveries.
+    </p>
+ </div>
+)
+    : selectedSetting === "Contact us"
+    ? (
+      <div
+        style={{
+          background:"#ffffff",
+          borderRadius:"24px",
+          padding:"22px",
+          border:"1px solid #e5e7eb"
+        }}
+      >
+        <div
+          style={{
+            display:"flex",
+            alignItems:"center",
+            gap:"14px",
+            marginBottom:"18px"
+          }}
+        >
+          <div
+            onClick={() => setSelectedSetting("About this app")}
+            style={{
+              width:"48px",
+              height:"48px",
+              background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
+              display:"flex",
+              alignItems:"center",
+              justifyContent:"center",
+              color:"#facc15",
+              fontSize:"24px",
+              cursor:"pointer"
+            }}
+          >
+            <FiArrowLeft />
+          </div>
+
+          <div
+            style={{
+              fontSize:"24px",
+              fontWeight:"900",
+              color:"#0f172a"
+            }}
+          >
+            Contact us
+          </div>
+        </div>
+
+      <div
+  style={{
+    fontSize:"16px",
+    lineHeight:"1.7",
+    color:"#475569",
+    fontWeight:"600"
+  }}
+>
+  <p style={{ marginTop:0 }}>
+    For support, delivery issues, payment questions, or account help, contact the MonniDrop support team.
+  </p>
+
+  <div
+    style={{
+      marginTop:"16px",
+      padding:"14px 16px",
+      borderRadius:"16px",
+      background:"#f8fafc",
+      border:"1px solid #e5e7eb"
+    }}
+  >
+    <strong style={{ color:"#0f172a" }}>Address:</strong>
+    <br />
+    Accra, Ghana
+  </div>
+
+   <button
+    type="button"
+   onClick={() => setShowSupportChat(!showSupportChat)}
+    style={{
+      marginTop:"18px",
+      width:"100%",
+      border:"none",
+      borderRadius:"16px",
+      padding:"14px 16px",
+      background:"#22c55e",
+      color:"#ffffff",
+      fontSize:"16px",
+      fontWeight:"900",
+      cursor:"pointer"
+    }}
+  >
+    WhatsApp Chat
+  </button>
+
+  {
+    showSupportChat && (
+
+      <div
+        style={{
+          marginTop:"18px",
+          padding:"16px",
+          borderRadius:"18px",
+          background:"#ffffff",
+          border:"1px solid #dbeafe"
+        }}
+      >
+        <div
+          style={{
+            fontSize:"18px",
+            fontWeight:"900",
+            color:"#0f172a",
+            marginBottom:"12px"
+          }}
+        >
+          WhatsApp Support Chat
+        </div>
+
+        <div
+          style={{
+            minHeight:"120px",
+            maxHeight:"180px",
+            overflowY:"auto",
+            background:"#f8fafc",
+            border:"1px solid #e5e7eb",
+            borderRadius:"16px",
+            padding:"12px",
+            marginBottom:"12px"
+          }}
+        >
+          <div
+            style={{
+              background:"#dcfce7",
+              color:"#0f172a",
+              padding:"10px 12px",
+              borderRadius:"14px",
+              marginBottom:"8px",
+              fontSize:"14px",
+              fontWeight:"700"
+            }}
+          >
+            Hello 👋 Welcome to MonniDrop WhatsApp support. How can we help you?
+          </div>
+        </div>
+
+        <div
+          style={{
+            display:"flex",
+            gap:"8px"
+          }}
+        >
+          <input
+            type="text"
+            placeholder="Type your message..."
+            value={supportMessage}
+            onChange={(e)=>setSupportMessage(e.target.value)}
+            style={{
+              flex:1,
+              padding:"12px 14px",
+              borderRadius:"14px",
+              border:"1px solid #dbeafe",
+              outline:"none",
+              fontSize:"14px",
+              fontWeight:"700"
+            }}
+          />
+
+          <button
+            type="button"
+            onClick={async()=>{
+
+  if(!supportMessage.trim()){
+    alert("Please type a message first");
+    return;
+  }
+
+  try{
+
+    await API.post(
+      "/support",
+      {
+        message:supportMessage
+      }
+    );
+
+    alert("Message sent to MonniDrop support");
+
+    setSupportMessage("");
+
+  }catch(error){
+
+  console.log(
+    "SUPPORT MESSAGE ERROR:",
+    error.response?.status,
+    error.response?.data,
+    error.message
+  );
+
+  alert(
+    error.response?.data?.message ||
+    "Failed to send support message"
+  );
+}
+}}
+            style={{
+              border:"none",
+              borderRadius:"14px",
+              padding:"12px 16px",
+              background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
+              color:"#facc15",
+              fontSize:"14px",
+              fontWeight:"900",
+              cursor:"pointer"
+            }}
+          >
+            Send
+          </button>
+        </div>
+      </div>
+    )
+  }
+</div>
+      </div>
+    )
+
+    : selectedSetting === "Legal Terms & Policies"
+    ? "MonniDrop terms and policies explain user responsibilities, account rules, delivery usage, payment handling, privacy practices, and platform safety requirements."
+
+    : selectedSetting === "Share This App"
+    ? "Share MonniDrop with friends, customers, and businesses that need a simple way to request deliveries and track riders in real time."
+
+    : selectedSetting === "Switch Account"
+    ? "Switch Account allows you to switch between different MonniDrop accounts without permanently removing account information from the device."
+
+    : selectedSetting
+  }
+</div>
           )
         }
 
-        <ButtonRow
-          style={{
-            marginTop:"18px"
-          }}
-        >
+        {
+selectedSetting === "About this app" && (
 
-          {
-            selectedSetting === "Sign Out"
+<div
+style={{
 
-            ?
+background:"#fff",
 
-            <>
+borderRadius:"26px",
 
-              <Button
-                onClick={logout}
-                style={{
-                  background:"#dc2626",
-                  color:"white",
-                  fontWeight:"900",
-                  border:"1px solid rgba(220,38,38,0.25)",
-                  boxShadow:
-                    "0 10px 22px rgba(220,38,38,0.18)"
-                }}
-              >
-                Yes, Sign Out
-              </Button>
+overflow:"hidden",
 
-              <Button
-                onClick={()=>
-                  setSelectedSetting(null)
-                }
-                style={{
-                  background:
-                    "linear-gradient(135deg, #0f172a, #1d4ed8)",
-                  color:"#facc15",
-                  fontWeight:"900",
-                  border:"1px solid rgba(250,204,21,0.35)"
-                }}
-              >
-                Cancel
-              </Button>
+marginBottom:"20px",
 
-            </>
+border:"1px solid #e5e7eb"
 
-            :
-
-            <>
-
-              <Button
-  onClick={async()=>{
-
-    try{
-
-      const settingsData = {
-        phoneNumber,
-        email,
-        country,
-        language,
-        currency,
-        paymentMethod,
-        twoFactorEnabled,
-        googleConnected,
-        facebookConnected
-      };
-
-      const res =
-        await API.put(
-          "/customer/settings",
-          settingsData
-        );
-
-      localStorage.setItem(
-        "monnidropCustomerSettings",
-        JSON.stringify(
-          res.data.settings || settingsData
-        )
-      );
-
-      alert(
-        `${selectedSetting} saved successfully`
-      );
-
-      setSelectedSetting(null);
-
-    }catch(err){
-
-      console.log(
-        "SAVE SETTINGS ERROR:",
-        err.response?.data || err
-      );
-
-      alert(
-        err.response?.data?.message ||
-        "Failed to save settings"
-      );
-    }
-
-  }}
-  style={{
-    background:
-      "linear-gradient(135deg, #facc15, #f59e0b)",
-    color:"#0f172a",
-    fontWeight:"900",
-    border:"1px solid rgba(15,23,42,0.12)",
-    boxShadow:
-      "0 10px 22px rgba(250,204,21,0.22)"
-  }}
+}}
 >
-  Save
-</Button>
 
-              <Button
-                onClick={()=>
-                  setSelectedSetting(null)
-                }
-                style={{
-                  background:
-                    "linear-gradient(135deg, #0f172a, #1d4ed8)",
-                  color:"#facc15",
-                  fontWeight:"900",
-                  border:"1px solid rgba(250,204,21,0.35)"
-                }}
-              >
-                Cancel
-              </Button>
+<div
+style={{
 
-            </>
-          }
+padding:"50px 20px",
 
-               </ButtonRow>
+textAlign:"center",
 
+borderBottom:
+"10px solid #f5f5f5"
+
+}}
+>
+
+<img
+src="/logo.png"
+alt="MonniDrop"
+
+style={{
+
+width:"50px",
+
+height:"50px",
+
+objectFit:"contain",
+
+marginBottom:"15px"
+
+}}
+/>
+
+<div
+style={{
+
+fontSize:"20px",
+
+fontWeight:"700",
+
+color:"#000"
+
+}}
+>
+
+MonniDrop
+
+</div>
+
+<div
+style={{
+
+marginTop:"8px",
+
+fontSize:"20px",
+
+color:"#777"
+
+}}
+>
+
+App version 1.0.0
+
+</div>
+
+</div>
+
+
+{[
+"About MonniDrop",
+"Contact us"
+].map((item)=>(
+
+<div
+
+key={item}
+
+style={{
+
+padding:"24px",
+
+display:"flex",
+
+justifyContent:"space-between",
+
+borderBottom:
+"1px solid #eee",
+
+fontWeight:"700",
+
+fontSize:"26px",
+
+cursor:"pointer"
+
+}}
+
+onClick={()=>
+setSelectedSetting(item)
+}
+
+>
+
+<span>
+
+{item}
+
+</span>
+
+<span>
+
+›
+
+</span>
+
+</div>
+
+))
+
+}
+
+</div>
+
+)
+}
       </div>
 
     </div>
