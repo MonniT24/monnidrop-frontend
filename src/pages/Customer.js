@@ -4,6 +4,11 @@ import styled,{createGlobalStyle} from "styled-components";
 import API from "../api/api";
 import socket from "../socket";
 
+import CustomerDashboard from "./customer/CustomerDashboard";
+import CustomerProfile from "./customer/CustomerProfile";
+import CustomerOrders from "./customer/CustomerOrders";
+import CustomerSettings from "./customer/CustomerSettings";
+
 import {
   FiHome,
   FiPlusCircle,
@@ -16,8 +21,17 @@ import {
   FiSettings,
   FiEye,
   FiEyeOff,
+  FiMessageCircle,
+  FiLink,
+  FiMoreHorizontal,
   FiArrowLeft
 } from "react-icons/fi";
+
+import {
+  FaWhatsapp,
+  FaFacebookF
+} from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 import {
   MapContainer,
@@ -3791,19 +3805,17 @@ const [distance,setDistance] =
 const [amount,setAmount] =
   useState("");
 
-  const [
-  pickupCoords,
-  setPickupCoords
-] = useState(null);
+  const [pickupCoords,setPickupCoords] = 
+  useState(null);
 
-const [
-  dropoffCoords,
-  setDropoffCoords
-] = useState(null);
+const [dropoffCoords, setDropoffCoords] =
+ useState(null);
 
-  const [ selectedSetting,
-  setSelectedSetting
-] = useState(null);
+  const [ selectedSetting,setSelectedSetting] = 
+  useState(null);
+
+  const [savedAccounts,setSavedAccounts] =
+  useState([]);
 
 const [showSupportChat,setShowSupportChat] =
   useState(false);
@@ -3811,13 +3823,14 @@ const [showSupportChat,setShowSupportChat] =
 const [supportMessage,setSupportMessage] =
   useState("");
 
+  const [supportImage,setSupportImage] =
+  useState(null);
+
+const [supportImagePreview,setSupportImagePreview] =
+  useState("");
+
   const [supportMessages,setSupportMessages] =
   useState([]);
-
-const [
-  savedAccounts,
-  setSavedAccounts
-] = useState([]);
 
 const [
   phoneNumber,
@@ -5696,1669 +5709,37 @@ async function sendMessage(
         </MobileMenuButton>
 
         {activeSection === "dashboard" && (
-
-  <>
-
-   <DashboardHero>
-
-  <DashboardHeroContent>
-
-    <HeroLeftBlock>
-
-      <HeroLogo
-        src="/logo.png"
-        alt="MonniDrop Logo"
-      />
-
-      <HeroTextBlock>
-
-          <HeroBadge>
-            ⚡ MonniDrop Customer Dashboard
-          </HeroBadge>
-
-          <DashboardHeroTitle>
-            Welcome/Akwaaba,
-            {" "}
-            {
-              user?.name || "Customer"
-            }
-            👋
-          </DashboardHeroTitle>
-
-          <DashboardHeroText>
-            Book deliveries, track riders, monitor payments,
-            and manage every package from one clean dashboard.
-          </DashboardHeroText>
-
-          <DashboardActions>
-
-            <DashboardActionButton
-              primary
-              onClick={()=>
-                setActiveSection("createOrder")
-              }
-            >
-              Create New Delivery
-            </DashboardActionButton>
-
-            <DashboardActionButton
-              onClick={()=>
-                setActiveSection("orders")
-              }
-            >
-              Track My Orders
-            </DashboardActionButton>
-
-                  </DashboardActions>
-
-      </HeroTextBlock>
-
-    </HeroLeftBlock>
-
-      <DashboardHeroCard>
-
-  <HeroCardLabel>
-    Today
-  </HeroCardLabel>
-
-  <HeroCardValue>
-    {
-      currentTime
-      .toLocaleDateString(
-        "en-US",
-        {
-          weekday:"short",
-          month:"long",
-          day:"numeric",
-          year:"numeric"
-        }
-      )
-    }
-  </HeroCardValue>
-
-  <HeroCardTime>
-    {
-      currentTime
-      .toLocaleTimeString(
-        "en-US",
-        {
-          hour:"2-digit",
-          minute:"2-digit",
-          second:"2-digit"
-        }
-      )
-    }
-  </HeroCardTime>
-
-  <HeroCardSmall>
-    Ready to move your next package.
-  </HeroCardSmall>
-
-</DashboardHeroCard>
-
-      </DashboardHeroContent>
-
-    </DashboardHero>
-
-    <PremiumStatsGrid>
-
-  <PremiumStatCard
-    style={{
-      background:
-        "linear-gradient(135deg, #0f172a, #1d4ed8)",
-      color:"white",
-      border:"1px solid rgba(255,255,255,0.16)",
-      boxShadow:
-        "0 18px 38px rgba(29,78,216,0.26)"
-    }}
-  >
-
-    <PremiumStatIcon
-      style={{
-        background:"rgba(250,204,21,0.18)",
-        color:"#facc15",
-        border:"1px solid rgba(250,204,21,0.35)"
-      }}
-    >
-      <FiTruck />
-    </PremiumStatIcon>
-
-    <PremiumStatLabel
-      style={{
-        color:"rgba(255,255,255,0.86)"
-      }}
-    >
-      Active Orders
-    </PremiumStatLabel>
-
-    <PremiumStatValue
-      style={{
-        color:"#facc15"
-      }}
-    >
-      {activeOrders.length}
-    </PremiumStatValue>
-
-    <PremiumStatNote
-      style={{
-        color:"rgba(255,255,255,0.72)"
-      }}
-    >
-      Orders currently moving or waiting for a rider.
-    </PremiumStatNote>
-
-  </PremiumStatCard>
-
-  <PremiumStatCard
-    style={{
-      background:
-        "linear-gradient(135deg, #facc15, #f59e0b)",
-      color:"#0f172a",
-      border:"1px solid rgba(15,23,42,0.12)",
-      boxShadow:
-        "0 18px 38px rgba(250,204,21,0.30)"
-    }}
-  >
-
-    <PremiumStatIcon
-      style={{
-        background:"rgba(15,23,42,0.12)",
-        color:"#0f172a",
-        border:"1px solid rgba(15,23,42,0.18)"
-      }}
-    >
-      <FiPackage />
-    </PremiumStatIcon>
-
-    <PremiumStatLabel
-      style={{
-        color:"#0f172a"
-      }}
-    >
-      Completed Orders
-    </PremiumStatLabel>
-
-    <PremiumStatValue
-      style={{
-        color:"#132d68"
-      }}
-    >
-      {completedOrders.length}
-    </PremiumStatValue>
-
-    <PremiumStatNote
-      style={{
-        color:"rgba(15,23,42,0.72)"
-      }}
-    >
-      Successful deliveries completed on MonniDrop.
-    </PremiumStatNote>
-
-  </PremiumStatCard>
-
-  <PremiumStatCard
-    style={{
-      background:
-        "linear-gradient(135deg, #1d4ed8, #2563eb)",
-      color:"white",
-      border:"1px solid rgba(255,255,255,0.16)",
-      boxShadow:
-        "0 18px 38px rgba(37,99,235,0.26)"
-    }}
-  >
-
-    <PremiumStatIcon
-      style={{
-        background:"rgba(255,255,255,0.16)",
-        color:"#ffffff",
-        border:"1px solid rgba(255,255,255,0.28)"
-      }}
-    >
-      <FiBell />
-    </PremiumStatIcon>
-
-    <PremiumStatLabel
-      style={{
-        color:"rgba(255,255,255,0.86)"
-      }}
-    >
-      Notifications
-    </PremiumStatLabel>
-
-    <PremiumStatValue
-      style={{
-        color:"#ffffff"
-      }}
-    >
-      {notifications.length}
-    </PremiumStatValue>
-
-    <PremiumStatNote
-      style={{
-        color:"rgba(255,255,255,0.72)"
-      }}
-    >
-      Rider updates, messages, and delivery alerts.
-    </PremiumStatNote>
-
-  </PremiumStatCard>
-
-  <PremiumStatCard
-    style={{
-      background:
-        "linear-gradient(135deg, #0f172a, #111827)",
-      color:"white",
-      border:"1px solid rgba(250,204,21,0.35)",
-      boxShadow:
-        "0 18px 38px rgba(15,23,42,0.30)"
-    }}
-  >
-
-    <PremiumStatIcon
-      style={{
-        background:"rgba(250,204,21,0.16)",
-        color:"#facc15",
-        border:"1px solid rgba(250,204,21,0.35)"
-      }}
-    >
-      <FiClock />
-    </PremiumStatIcon>
-
-    <PremiumStatLabel
-      style={{
-        color:"#facc15"
-      }}
-    >
-      Pending Orders
-    </PremiumStatLabel>
-
-    <PremiumStatValue
-      style={{
-        color:"#facc15"
-      }}
-    >
-      {
-        orders.filter(
-          (o)=>o.status === "pending"
-        ).length
-      }
-    </PremiumStatValue>
-
-    <PremiumStatNote
-      style={{
-        color:"rgba(255,255,255,0.72)"
-      }}
-    >
-      Orders waiting for rider acceptance.
-    </PremiumStatNote>
-
-  </PremiumStatCard>
-
-</PremiumStatsGrid>
-
-    <DashboardGrid>
-
-      <DashboardPanel>
-
-       <DashboardPanelTitle
-  style={{
-    display:"flex",
-    alignItems:"center",
-    gap:"10px",
-    color:"#0f172a"
-  }}
->
-  <span
-    style={{
-      width:"38px",
-      height:"38px",
-      borderRadius:"14px",
-      display:"inline-flex",
-      alignItems:"center",
-      justifyContent:"center",
-      background:
-        "linear-gradient(135deg, #0f172a, #1d4ed8)",
-      color:"#facc15",
-      boxShadow:
-        "0 10px 22px rgba(29,78,216,0.22)"
-    }}
-  >
-    <FiTruck />
-  </span>
-
-  Recent Delivery Activity
-
-</DashboardPanelTitle>
-
-        {
-          orders.length === 0
-
-          ?
-
-          (
-
-            <Empty>
-              No recent delivery yet. Create your first order.
-            </Empty>
-          )
-
-          :
-
-          (
-
-            orders.slice(0,3).map((o)=>(
-
-              <RecentOrderItem
-  key={o._id}
-  style={{
-    background:
-      "linear-gradient(135deg, #ffffff, #f8fafc)",
-    border:"1px solid rgba(29,78,216,0.12)",
-    boxShadow:
-      "0 12px 28px rgba(15,23,42,0.07)"
-  }}
->
-
-                <Row
-  style={{
-    background:"#eff6ff",
-    border:"1px solid #dbeafe",
-    borderRadius:"14px",
-    padding:"12px",
-    color:"#0f172a",
-    fontWeight:"700"
-  }}
->
-  <strong
-    style={{
-      color:"#1d4ed8"
-    }}
-  >
-    Route:
-  </strong>
-  {" "}
-  {o.pickupLocation}
-  {" "}
-  →
-  {" "}
-  {o.dropoffLocation}
-</Row>
-
-                <Row
-  style={{
-    color:"#0f172a",
-    fontWeight:"700"
-  }}
->
-  <strong
-    style={{
-      color:"#ca8a04"
-    }}
-  >
-    Amount:
-  </strong>
-  {" "}
-
-  <span
-    style={{
-      background:"#fef3c7",
-      color:"#0f172a",
-      padding:"6px 12px",
-      borderRadius:"999px",
-      fontWeight:"900"
-    }}
-  >
-    ₵{o.total}
-  </span>
-</Row>
-
- <div
-  style={{
-    display:"grid",
-    gridTemplateColumns:"1fr auto auto",
-    alignItems:"center",
-    gap:"14px",
-    width:"100%",
-    marginTop:"12px"
-  }}
->
-  <div
-    style={{
-      display:"flex",
-      alignItems:"center",
-      gap:"12px",
-      minWidth:"260px"
-    }}
-  >
-    <img
-      src={
-        o.rider?.profileImage ||
-        "https://ui-avatars.com/api/?name=Rider&background=facc15&color=0f172a&size=128"
-      }
-      alt="Rider"
-      style={{
-        width:"52px",
-        height:"52px",
-        borderRadius:"50%",
-        objectFit:"cover",
-        border:"3px solid #facc15",
-        background:"white",
-        flexShrink:0
-      }}
-    />
-
-    <div>
-      <div
-        style={{
-          fontSize:"11px",
-          fontWeight:"900",
-          color:"#64748b"
-        }}
-      >
-        ASSIGNED RIDER NAME
-      </div>
-
-      <div
-        style={{
-          fontSize:"15px",
-          fontWeight:"900",
-          color:"#0f172a"
-        }}
-      >
-        {o.rider?.name || "Seraching for rider"}
-      </div>
-
-      <div
-        style={{
-          fontSize:"12px",
-          fontWeight:"800",
-          color:"#475569",
-          marginTop:"3px"
-        }}
-      >
-        Motor Name: {o.rider?.motorName || "Not added"}
-      </div>
-
-      <div
-        style={{
-          fontSize:"12px",
-          fontWeight:"800",
-          color:"#475569",
-          marginTop:"2px"
-        }}
-      >
-        Motor: {o.rider?.motorNumber || "Not added"}
-      </div>
-    </div>
-  </div>
-
-  <StatusBadge
-    status={o.status}
-    style={{
-      marginTop:0,
-      whiteSpace:"nowrap"
-    }}
-  >
-    {o.status}
-  </StatusBadge>
-
-  <MiniStatus
-    paid={o.isPaid}
-    style={{
-      whiteSpace:"nowrap"
-    }}
-  >
-    {
-      o.isPaid
-      ? "Paid"
-      : "Not Paid"
-    }
-  </MiniStatus>
-</div>
-              </RecentOrderItem>
-
-            ))
-          )
-        }
-
-        <Button
-          onClick={()=>
-            setActiveSection("orders")
-          }
-          style={{
-            marginTop:"8px"
-          }}
-        >
-          View All Orders
-        </Button>
-
-      </DashboardPanel>
-
-     <DashboardPanel
-  style={{
-    background:
-      "linear-gradient(135deg, #0f172a, #1d4ed8)",
-    color:"white",
-    border:"1px solid rgba(250,204,21,0.22)",
-    boxShadow:
-      "0 10px 24px rgba(29,78,216,0.16)",
-    padding:"14px",
-    borderRadius:"18px",
-    alignSelf:"start"
-  }}
->
-
-
-       <DashboardPanelTitle
-  style={{
-    display:"flex",
-    alignItems:"center",
-    gap:"7px",
-    color:"white",
-    fontSize:"15px",
-    marginBottom:"10px"
-  }}
->
-  <span
-    style={{
-      width:"26px",
-      height:"26px",
-      borderRadius:"9px",
-      display:"inline-flex",
-      alignItems:"center",
-      justifyContent:"center",
-      background:"#facc15",
-      color:"#0f172a",
-      fontSize:"14px",
-      boxShadow:
-        "0 6px 14px rgba(250,204,21,0.18)"
-    }}
-  >
-    <FiPackage />
-  </span>
-
-  Smart Delivery Summary
-</DashboardPanelTitle>
-
-      <Row
-  style={{
-    background:"rgba(255,255,255,0.10)",
-    border:"1px solid rgba(255,255,255,0.16)",
-    borderRadius:"10px",
-    padding:"6px 8px",
-    color:"rgba(255,255,255,0.90)",
-    fontWeight:"700",
-    fontSize:"12px",
-    marginBottom:"6px",
-    lineHeight:"1.25"
-  }}
->
-  <strong
-    style={{
-      color:"#facc15"
-    }}
-  >
-    Payment Ready:
-  </strong>
-  {" "}
-  Mobile Money enabled
-</Row>
-
-<Row
-  style={{
-    background:"rgba(255,255,255,0.12)",
-    border:"1px solid rgba(255,255,255,0.18)",
-    borderRadius:"16px",
-    padding:"14px",
-    color:"rgba(255,255,255,0.92)",
-    fontWeight:"700"
-  }}
->
-  <strong
-    style={{
-      color:"#facc15"
-    }}
-  >
-    Test MoMo:
-  </strong>
-  {" "}
-  0551234987
-</Row>
-
-<Row
-  style={{
-    background:"rgba(255,255,255,0.12)",
-    border:"1px solid rgba(255,255,255,0.18)",
-    borderRadius:"16px",
-    padding:"14px",
-    color:"rgba(255,255,255,0.92)",
-    fontWeight:"700"
-  }}
->
-  <strong
-    style={{
-      color:"#facc15"
-    }}
-  >
-    Default Area:
-  </strong>
-  {" "}
-  Accra
-</Row>
-
-        <DashboardTip
-  style={{
-    background:"rgba(250,204,21,0.16)",
-    border:"1px solid rgba(250,204,21,0.35)",
-    color:"#fef3c7",
-    boxShadow:
-      "0 10px 24px rgba(15,23,42,0.18)"
-  }}
->
-  Tip: Use Mobile Money for faster checkout.
-  Once Paystack confirms payment, your order
-  is automatically marked as paid.
-</DashboardTip>
-
-        <Button
-  onClick={()=>
-    setActiveSection("createOrder")
-  }
-  style={{
-    marginTop:"18px",
-    background:"#facc15",
-    color:"#0f172a",
-    fontWeight:"900",
-    boxShadow:
-      "0 12px 24px rgba(250,204,21,0.26)"
-  }}
->
-  Send a Package Now
-</Button>
-
-      </DashboardPanel>
-
-    </DashboardGrid>
-
-  </>
-
+  <CustomerDashboard
+    user={user}
+    currentTime={currentTime}
+    activeOrders={activeOrders}
+    completedOrders={completedOrders}
+    orders={orders}
+    notifications={notifications}
+    setActiveSection={setActiveSection}
+  />
 )}
 
-        {activeSection === "orders" && (
-
-          <>
-
-           <OrdersPageHero>
-
-  <div>
-
-    <OrdersPageBadge>
-      📦 Customer Orders
-    </OrdersPageBadge>
-
-    <OrdersPageTitle>
-      Track Every Package
-    </OrdersPageTitle>
-
-    <OrdersPageText>
-      View your deliveries, payment status, rider details,
-      live route tracking, and order progress in one clean place.
-    </OrdersPageText>
-
-  </div>
-
-</OrdersPageHero>
-
-            {
-
-              orders.length === 0
-
-              ?
-
-              (
-
-                <Empty>
-                  No orders found.
-                </Empty>
-
-              )
-
-              :
-
-              (
-
-                <OrdersGrid>
-
-                  {
-
-                    orders.map((o)=>(
-
-                      <OrderCard
-                        key={o._id}
-                      >
-
-                        <Row
-  style={{
-    background:"#eff6ff",
-    border:"1px solid #dbeafe",
-    borderRadius:"14px",
-    padding:"12px",
-    color:"#0f172a",
-    fontWeight:"800"
-  }}
->
-  <strong
-    style={{
-      color:"#1d4ed8"
-    }}
-  >
-    Delivery Rider:
-  </strong>
-  {" "}
-
- {
-  o.rider?.name
-
-  ?
-
-  o.rider.name
-
-  :
-
-  o.status === "pending"
-
-  ?
-
-  <SearchingRiderBadge>
-    <SearchingPulse />
-
-    <span>
-      Searching for a rider 
-    </span>
-
-    <SearchingDots>
-      <i></i>
-      <i></i>
-      <i></i>
-    </SearchingDots>
-  </SearchingRiderBadge>
-
-  :
-
-  "No rider assigned"
-}
-
-</Row>
-
-                        <Row>
-                          <strong>
-                            Pickup:
-                          </strong>
-                          {" "}
-                          {o.pickupLocation}
-                        </Row>
-
-                        <Row>
-                          <strong>
-                            Dropoff:
-                          </strong>
-                          {" "}
-                          {o.dropoffLocation}
-                        </Row>
-
-                        <Row>
-                          <strong>
-                            Distance:
-                          </strong>
-                          {" "}
-                          {o.distance} km
-                        </Row>
-
-                        <Row>
-  <strong>
-    Estimated Delivery Time:
-  </strong>
-  {" "}
- {
-  o.status === "delivered"
-  ? "Delivered"
-  : o.deliveryTime || "Not available"
-}
-</Row>
-
-<Row>
- <strong>
- Amount:
- </strong>
-  {" "}
- ₵{o.total}
- </Row>
-
- <Row>
-  <strong>
-    Payment:
-  </strong>
-  {" "}
-  {
-    o.isPaid
-    ? "Paid"
-    : "Not Paid"
-  }
-</Row>
-
-<StatusBadge
- status={o.status}
- >
- {o.status}
-</StatusBadge>
-
-{
-  o.status === "delivered" &&
-  o.rider &&
-  !o.riderRated &&
-  !o.hasRatedRider &&
-  !o.riderRatingSubmitted &&
-  !ratedOrderIds.includes(
-    o._id?.toString()
-  ) && (
-
-    <Button
-      onClick={()=>{
-
-        if(
-          o.riderRated ||
-          o.hasRatedRider ||
-          o.riderRatingSubmitted ||
-          ratedOrderIds.includes(
-            o._id?.toString()
-          )
-        ){
-          return;
-        }
-
-        setRatingModalOrder(o);
-        setRiderRating(5);
-        setRiderRatingComment("");
-      }}
-      style={{
-        marginTop:"14px",
-        background:
-          "linear-gradient(135deg, #facc15, #f59e0b)",
-        color:"#0f172a",
-        fontWeight:"900"
-      }}
-    >
-      ⭐ Rate Rider
-    </Button>
-  )
-}
-
-{
-  o.status === "delivered" &&
-  (
-    o.riderRated ||
-    o.hasRatedRider ||
-    o.riderRatingSubmitted ||
-    ratedOrderIds.includes(
-      o._id?.toString()
-    )
-  ) && (
-
-    <div
-      style={{
-        marginTop:"14px",
-        padding:"12px",
-        borderRadius:"14px",
-        background:"#dcfce7",
-        color:"#166534",
-        fontWeight:"900",
-        textAlign:"center"
-      }}
-    >
-      ✅ Rider Rated
-    </div>
-  )
-}
-
-{
-  o.deliveryCode &&
-  o.status !== "delivered" &&
-  o.status !== "cancelled" && (
-
-    <div
-      style={{
-        marginTop:"18px",
-        padding:"18px",
-        borderRadius:"20px",
-        background:
-          "linear-gradient(135deg, #facc15, #f59e0b)",
-        border:"2px solid #0f172a",
-        boxShadow:
-          "0 14px 30px rgba(250,204,21,0.30)",
-        textAlign:"center"
-      }}
-    >
-
-      <div
-        style={{
-          fontSize:"13px",
-          fontWeight:"900",
-          color:"#0f172a",
-          textTransform:"uppercase",
-          letterSpacing:"0.7px",
-          marginBottom:"8px"
-        }}
-      >
-        Delivery Verification Code
-      </div>
-
-      <div
-        style={{
-          fontSize:"13px",
-          fontWeight:"800",
-          color:"#334155",
-          marginBottom:"12px",
-          lineHeight:"1.4"
-        }}
-      >
-       Give this OTP number to the rider when your package arrives.
-      </div>
-
-      <div
-        style={{
-          background:"#0f172a",
-          color:"#facc15",
-          borderRadius:"16px",
-          padding:"16px",
-          fontSize:"34px",
-          fontWeight:"900",
-          letterSpacing:"10px"
-        }}
-      >
-        {o.deliveryCode}
-      </div>
-
-    </div>
-  )
-}
-
-<Timeline>
-
-  <TimelineItem>
-
-    <TimelineDot
-      active={true}
-    />
-
-    <TimelineText>
-      Order Created
-    </TimelineText>
-
-    <TimelineTime>
-      Waiting for rider
-    </TimelineTime>
-
-  </TimelineItem>
-
-  <TimelineItem>
-
-    <TimelineDot
-      active={
-        [
-          "accepted",
-          "picked",
-          "delivering",
-          "delivered"
-        ].includes(o.status)
-      }
-    />
-
-    <TimelineText>
-      Rider Accepted
-    </TimelineText>
-
-    <TimelineTime>
-      Rider confirmed order
-    </TimelineTime>
-
-  </TimelineItem>
-
-  <TimelineItem>
-
-    <TimelineDot
-      active={
-        [
-          "picked",
-          "delivering",
-          "delivered"
-        ].includes(o.status)
-      }
-    />
-
-    <TimelineText>
-      Reached Pickup Location
-    </TimelineText>
-
-    <TimelineTime>
-      Rider arrived at pickup
-    </TimelineTime>
-
-  </TimelineItem>
-
-  <TimelineItem>
-
-    <TimelineDot
-      active={
-        [
-          "delivering",
-          "delivered"
-        ].includes(o.status)
-      }
-    />
-
-    <TimelineText>
-      Package Picked Up
-    </TimelineText>
-
-    <TimelineTime>
-      Delivery in progress
-    </TimelineTime>
-
-  </TimelineItem>
-
-  <TimelineItem>
-
-    <TimelineDot
-      active={
-        o.status === "delivered"
-      }
-    />
-
-    <TimelineText>
-      Delivered
-    </TimelineText>
-
-    <TimelineTime>
-      Order completed successfully
-    </TimelineTime>
-
-  </TimelineItem>
-
-</Timeline>
-
-  { 
-
-  !sidebarOpen &&
-  locationCoords[o.pickupLocation] &&
-  locationCoords[o.dropoffLocation] && (
-
-    <div
-  style={{
-    marginTop:"20px",
-    borderRadius:"22px",
-    overflow:"hidden",
-    border:"1px solid rgba(29,78,216,0.16)",
-    background:"#ffffff",
-    boxShadow:
-      "0 14px 30px rgba(15,23,42,0.08)"
-  }}
->
-
-  <div
-  style={{
-    display:"flex",
-    alignItems:"center",
-    justifyContent:"space-between",
-    gap:"12px",
-    padding:"12px 14px",
-    background:
-      "linear-gradient(135deg, #0f172a, #1d4ed8)",
-    color:"white"
-  }}
->
-  <div
-    style={{
-      fontWeight:"900",
-      fontSize:"14px"
-    }}
-  >
-    Live Delivery Map
-  </div>
-
-  <div
-    style={{
-      background:"#facc15",
-      color:"#0f172a",
-      padding:"6px 10px",
-      borderRadius:"999px",
-      fontSize:"12px",
-      fontWeight:"900"
-    }}
-  >
-    Tracking Active
-  </div>
-
-</div>
-
-      <MapContainer
-        center={[
-          locationCoords[o.pickupLocation].lat,
-          locationCoords[o.pickupLocation].lng
-        ]}
-        zoom={12}
-       style={{
-  height:
-    window.innerWidth <= 480
-    ? "220px"
-    : "300px",
-  width:"100%"
-}}
-      >
-
-        <TileLayer
-          attribution='&copy; OpenStreetMap contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-
-        {/* PICKUP MARKER */}
-
-        <Marker
-          position={[
-            locationCoords[o.pickupLocation].lat,
-            locationCoords[o.pickupLocation].lng
-          ]}
-          icon={customerIcon}
-        >
-
-          <Popup>
-            Pickup Location
-          </Popup>
-
-        </Marker>
-
-        {/* DROPOFF MARKER */}
-
-        <Marker
-          position={[
-            locationCoords[o.dropoffLocation].lat,
-            locationCoords[o.dropoffLocation].lng
-          ]}
-          icon={customerIcon}
-        >
-
-          <Popup>
-            Dropoff Location
-          </Popup>
-
-        </Marker>
-
-        {/* RIDER MARKER */}
-
-     {
-  riderLocation &&
-  o.rider?._id &&
-  String(riderLocation.riderId) ===
-  String(o.rider._id) && (
-
-    <Marker
-      position={[
-        riderLocation.lat,
-        riderLocation.lng
-      ]}
-      icon={riderIcon}
-    >
-
-      <Popup>
-        Rider Current Location
-      </Popup>
-
-    </Marker>
-  )
-}
-
-{
-  riderLocation &&
-  o.rider?._id &&
-  String(riderLocation.riderId) ===
-  String(o.rider._id) &&
-  locationCoords[o.dropoffLocation] && (
-
-    <Polyline
-      positions={[
-
-        [
-          riderLocation.lat,
-          riderLocation.lng
-        ],
-
-        [
-          locationCoords[o.dropoffLocation].lat,
-          locationCoords[o.dropoffLocation].lng
-        ]
-
-      ]}
-    />
-  )
-}
-        {/* ROUTE LINE */}
-
-        <Polyline
-          positions={[
-
-            [
-              locationCoords[o.pickupLocation].lat,
-              locationCoords[o.pickupLocation].lng
-            ],
-
-            [
-              locationCoords[o.dropoffLocation].lat,
-              locationCoords[o.dropoffLocation].lng
-            ]
-
-          ]}
-        />
-
-      </MapContainer>
-
-    </div>
-  )
-}    
-
-{
-  selectedSetting === "About this app" && (
-
-    <div
-      style={{
-        background:"#ffffff",
-        borderRadius:"24px",
-        overflow:"hidden",
-        border:"1px solid #e5e7eb",
-        marginBottom:"18px"
-      }}
-    >
-
-      <div
-        style={{
-          padding:"45px 20px",
-          textAlign:"center",
-          background:"#ffffff",
-          borderBottom:"12px solid #f1f1f1"
-        }}
-      >
-
-        <img
-          src="/logo.png"
-          alt="MonniDrop"
-          style={{
-            width:"110px",
-            height:"110px",
-            objectFit:"contain",
-            borderRadius:"24px",
-            marginBottom:"18px"
-          }}
-        />
-
-        <div
-          style={{
-            fontSize:"32px",
-            fontWeight:"900",
-            color:"#000",
-            marginBottom:"8px"
-          }}
-        >
-          MonniDrop
-        </div>
-
-        <div
-          style={{
-            fontSize:"20px",
-            color:"#777",
-            fontWeight:"700"
-          }}
-        >
-          App version 1.0.0
-        </div>
-
-      </div>
-
-      {[
-        "About MonniDrop",
-        "Contact us"
-      ].map((item)=>(
-
-        <div
-          key={item}
-          onClick={()=>
-            setSelectedSetting(item)
-          }
-          style={{
-            background:"#ffffff",
-            padding:"22px 24px",
-            display:"flex",
-            justifyContent:"space-between",
-            alignItems:"center",
-            borderBottom:"1px solid #e5e5e5",
-            fontSize:"22px",
-            fontWeight:"900",
-            color:"#000",
-            cursor:"pointer"
-          }}
-        >
-
-          <span>
-            {item}
-          </span>
-
-          <span
-            style={{
-              fontSize:"36px",
-              color:"#8a8a8a",
-              fontWeight:"300",
-              lineHeight:"1"
-            }}
-          >
-            ›
-          </span>
-
-        </div>
-
-      ))}
-
-    </div>
-  )
-}
-
-<ButtonRow
-  style={{
-    marginTop:"18px",
-    gap:"10px"
-  }}
->
-
-<Button
-  onClick={()=>{
-
-    setOpenChats({
-
-      ...openChats,
-
-      [o._id]:
-      !openChats[o._id]
-    });
-
-  }}
-  style={{
-    background:
-      "linear-gradient(135deg, #0f172a, #1d4ed8)",
-    color:"#facc15",
-    fontWeight:"900",
-    border:"1px solid rgba(250,204,21,0.35)",
-    boxShadow:
-      "0 10px 22px rgba(29,78,216,0.18)"
-  }}
->
-  💬 Chat Rider
-</Button>
-
-    <Button
-  onClick={()=>{
-
-    if(!o.rider?.phone){
-
-      alert("Rider phone number not available");
-
-      return;
-    }
-
-    window.location.href =
-      `tel:${o.rider.phone}`;
-
-  }}
-  style={{
-    background:
-      "linear-gradient(135deg, #facc15, #f59e0b)",
-    color:"#0f172a",
-    fontWeight:"900",
-    border:"1px solid rgba(15,23,42,0.12)",
-    boxShadow:
-      "0 10px 22px rgba(250,204,21,0.22)"
-  }}
->
-  📞 Call Rider
-</Button>
-
- {
-
- o.status === "pending" && (
-
-<Button
-  onClick={()=>
-    cancelOrder(o._id)
-  }
-  style={{
-    background:"#dc2626",
-    color:"white",
-    fontWeight:"900",
-    border:"1px solid rgba(220,38,38,0.25)",
-    boxShadow:
-      "0 10px 22px rgba(220,38,38,0.16)"
-  }}
->
-  Cancel Order
-</Button>
-
-                            )
-                          }
-
-                        </ButtonRow>
-
-                        {
-
-                          openChats[o._id] && (
-
-                            <div
-                            style={{
-                                marginTop:"15px",
-                                background:"#f8fafc",
-                                padding:"15px",
-                                borderRadius:"14px"
-                              }}
-                            >
-
-                              {
-
-                                o.messages &&
-                                o.messages.length > 0 && (
-
-                                  <div
-                                    style={{
-                                      marginBottom:"14px"
-                                    }}
-                                  >
-
-                                    {
-
-                                      o.messages.map(
-
-                                        (msg,index)=>(
-
-                                          <div
-                                            key={index}
-                                           style={{
-
-  background:
-    msg.sender === "customer"
-    ? "linear-gradient(135deg, #0f172a, #1d4ed8)"
-    : "linear-gradient(135deg, #facc15, #f59e0b)",
-
-  color:
-    msg.sender === "customer"
-    ? "#ffffff"
-    : "#0f172a",
-
-  padding:"11px 13px",
-  borderRadius:"14px",
-  marginBottom:"9px",
-  fontSize:"14px",
-  fontWeight:"700",
-  boxShadow:
-    "0 8px 18px rgba(15,23,42,0.08)"
-}}
-                                          >
-
-                                            <strong>
-
-                                              {
-
-                                                msg.sender ===
-                                                "customer"
-
-                                                ?
-
-                                                "You"
-
-                                                :
-
-                                                "Rider"
-                                              }
-
-                                              :
-
-                                            </strong>
-
-                                            {" "}
-
-                                            {msg.text}
-
-                                          </div>
-
-                                        )
-                                      )
-                                    }
-
-                                  </div>
-
-                                )
-                              }
-
-<div
-  style={{
-    marginTop:"16px",
-    background:
-      "linear-gradient(135deg, #ffffff, #f8fafc)",
-    padding:"16px",
-    borderRadius:"18px",
-    border:"1px solid rgba(29,78,216,0.12)",
-    boxShadow:
-      "0 12px 28px rgba(15,23,42,0.07)"
-  }}
->
-
-  <div
-  style={{
-    display:"flex",
-    alignItems:"center",
-    justifyContent:"space-between",
-    gap:"10px",
-    marginBottom:"14px"
-  }}
->
-  <div
-    style={{
-      fontSize:"14px",
-      fontWeight:"900",
-      color:"#0f172a"
-    }}
-  >
-    💬 Rider Chat
-  </div>
-
-  <div
-    style={{
-      fontSize:"12px",
-      fontWeight:"900",
-      color:"#1d4ed8",
-      background:"#eff6ff",
-      border:"1px solid #dbeafe",
-      padding:"6px 10px",
-      borderRadius:"999px"
-    }}
-  >
-    Live conversation
-  </div>
-</div>
-
-                                <input
-                                  type="text"
-                                  placeholder="Type message..."
-                                  value={
-                                    chatText[o._id] || ""
-                                  }
-                                  onChange={(e)=>
-
-                                    setChatText({
-
-                                      ...chatText,
-
-                                      [o._id]:
-                                        e.target.value
-                                    })
-                                  }
-
-                                 style={{
-  flex:1,
-  padding:"13px 14px",
-  borderRadius:"14px",
-  border:"1px solid rgba(29,78,216,0.18)",
-  outline:"none",
-  background:"#ffffff",
-  color:"#0f172a",
-  fontWeight:"700",
-  boxShadow:
-    "inset 0 1px 0 rgba(255,255,255,0.7)"
-}}
-                                />
-
-                                <Button
-  onClick={()=>
-
-    sendMessage(
-      o._id,
-      chatText[o._id]
-    )
-  }
-  style={{
-    background:
-      "linear-gradient(135deg, #facc15, #f59e0b)",
-    color:"#0f172a",
-    fontWeight:"900",
-    boxShadow:
-      "0 10px 22px rgba(250,204,21,0.22)"
-  }}
->
-  Send
-</Button>
-
-                              </div>
-
-                            </div>
-
-                          )
-                        }
-
-                      </OrderCard>
-
-                    ))
-                  }
-
-                </OrdersGrid>
-
-              )
-            }
-
-          </>
-
-        )}
+{activeSection === "orders" && (
+  <CustomerOrders
+    orders={orders}
+    sidebarOpen={sidebarOpen}
+    locationCoords={locationCoords}
+    customerIcon={customerIcon}
+    riderIcon={riderIcon}
+    riderLocation={riderLocation}
+    ratedOrderIds={ratedOrderIds}
+    setRatingModalOrder={setRatingModalOrder}
+    setRiderRating={setRiderRating}
+    setRiderRatingComment={setRiderRatingComment}
+    openChats={openChats}
+    setOpenChats={setOpenChats}
+    chatText={chatText}
+    setChatText={setChatText}
+    sendMessage={sendMessage}
+    cancelOrder={cancelOrder}
+  />
+)}
 
         {activeSection === "createOrder" && (
 
@@ -8440,6 +6821,32 @@ calculateDistance(
         )}
 
         {activeSection === "My Profile" && (
+  <CustomerProfile
+    user={user}
+    setUser={setUser}
+    profileEditing={profileEditing}
+    setProfileEditing={setProfileEditing}
+    profileImage={profileImage}
+    setProfileImage={setProfileImage}
+    profileName={profileName}
+    setProfileName={setProfileName}
+    profileEmail={profileEmail}
+    setProfileEmail={setProfileEmail}
+    profilePhone={profilePhone}
+    setProfilePhone={setProfilePhone}
+    profileAddress={profileAddress}
+    setProfileAddress={setProfileAddress}
+    profileDOB={profileDOB}
+    setProfileDOB={setProfileDOB}
+    profileGender={profileGender}
+    setProfileGender={setProfileGender}
+    profileEmergency={profileEmergency}
+    setProfileEmergency={setProfileEmergency}
+    saveProfile={saveProfile}
+  />
+)}
+
+        {false && activeSection === "My Profile" && (
 
   <CustomerProfilePage>
 
@@ -8997,26 +7404,22 @@ fontSize:"26px"
       <div
        style={{
 width:"92%",
-maxWidth:"520px",
-
+maxWidth:
+  selectedSetting === "Share This App" ||
+  selectedSetting === "Share this app"
+  ? "780px"
+  : "520px",
 background:
 "linear-gradient(180deg,#ffffff,#f8fafc)",
-
 border:
 "1px solid rgba(29,78,216,0.12)",
-
 borderRadius:"30px",
-
 padding:"32px",
-
 boxShadow:
 "0 30px 80px rgba(15,23,42,0.18)",
-
 backdropFilter:
 "blur(20px)",
-
 maxHeight:"85vh",
-
 overflowY:"auto"
 }}
       >
@@ -9030,7 +7433,18 @@ overflowY:"auto"
           }}
         >
          <span
-  onClick={() => setSelectedSetting("")}
+  onClick={() => {
+  if(
+    selectedSetting === "Privacy policy" ||
+    selectedSetting === "Terms of use" ||
+    selectedSetting === "Community guidelines" ||
+    selectedSetting === "Intellectual property policy"
+  ){
+    setSelectedSetting("Legal terms & policies");
+  }else{
+    setSelectedSetting("");
+  }
+}}
   style={{
     width:"36px",
     height:"36px",
@@ -9039,7 +7453,7 @@ overflowY:"auto"
     alignItems:"center",
     justifyContent:"center",
     background:
-      "linear-gradient(135deg, #0f172a, #1d4ed8)",
+    "linear-gradient(135deg, #0f172a, #1d4ed8)",
     color:"#facc15",
     fontWeight:"900",
     cursor:"pointer",
@@ -9061,26 +7475,213 @@ overflowY:"auto"
 >
   {selectedSetting}
 </div>
+
+{
+  (selectedSetting === "Switch Account" ||
+   selectedSetting === "Switch account") && (
+
+    <div style={{ marginTop:"10px" }}>
+
+      <div
+        style={{
+          border:"1px solid #e5e7eb",
+          borderRadius:"18px",
+          padding:"16px",
+          display:"flex",
+          alignItems:"center",
+          gap:"14px",
+          marginBottom:"14px",
+          background:"#ffffff"
+        }}
+      >
+        <img
+          src={user?.profileImage || "/logo.png"}
+          alt="Current account"
+          style={{
+            width:"58px",
+            height:"58px",
+            borderRadius:"50%",
+            objectFit:"cover"
+          }}
+        />
+
+        <div style={{ flex:1 }}>
+          <div
+            style={{
+              fontSize:"20px",
+              fontWeight:"900",
+              color:"#000"
+            }}
+          >
+            {user?.name || "Current User"}
+          </div>
+
+          <div
+            style={{
+              fontSize:"15px",
+              color:"#777",
+              fontWeight:"700"
+            }}
+          >
+            {user?.email || "No email"}
+          </div>
+        </div>
+
+        <div
+          style={{
+            color:"#f97316",
+            fontSize:"34px",
+            fontWeight:"900"
+          }}
+        >
+          ✓
+        </div>
+      </div>
+
+      <div
+        onClick={() => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.removeItem("user");
+
+        window.location.href = "/";
+        }}
+        style={{
+          border:"1px solid #e5e7eb",
+          borderRadius:"18px",
+          padding:"16px",
+          display:"flex",
+          alignItems:"center",
+          gap:"14px",
+          background:"#ffffff",
+          cursor:"pointer"
+        }}
+      >
+        <div
+          style={{
+            width:"58px",
+            height:"58px",
+            borderRadius:"50%",
+            background:"#f3f4f6",
+            display:"flex",
+            alignItems:"center",
+            justifyContent:"center",
+            fontSize:"34px",
+            color:"#555"
+          }}
+        >
+          +
+        </div>
+
+        <div
+          style={{
+            fontSize:"20px",
+            fontWeight:"900",
+            color:"#000"
+          }}
+        >
+          Add account
+        </div>
+      </div>
+
+    </div>
+  )
+}
         </div>
 
         {
           selectedSetting === "Sign out" && (
 
-            <div
-              style={{
-                background:"#fef2f2",
-                border:"1px solid #fecaca",
-                borderRadius:"16px",
-                padding:"16px",
-                color:"#7f1d1d",
-                fontWeight:"800",
-                lineHeight:"1.6",
-                marginBottom:"16px"
-              }}
-            >
-              Are you sure you want to sign out of your MonniDrop account?
-              You will need to log in again to access your dashboard.
-            </div>
+           <div>
+  <div
+    style={{
+      display:"flex",
+      alignItems:"center",
+      justifyContent:"space-between",
+      marginBottom:"24px"
+    }}
+  >
+    <div
+      style={{
+        flex:1,
+        textAlign:"center",
+        fontSize:"28px",
+        fontWeight:"900",
+        color:"#000"
+      }}
+    >
+      Sign Out or Switch Account?
+    </div>
+
+    <button
+      onClick={() => setSelectedSetting(null)}
+      style={{
+        border:"none",
+        background:"transparent",
+        fontSize:"42px",
+        cursor:"pointer",
+        color:"#000",
+        lineHeight:"1"
+      }}
+    >
+      ×
+    </button>
+  </div>
+
+  <div
+    style={{
+      fontSize:"22px",
+      lineHeight:"1.45",
+      color:"#000",
+      marginBottom:"32px"
+    }}
+  >
+    Do you want to sign out of the account{" "}
+    <span style={{ color:"#f97316", fontWeight:"800" }}>
+      {user?.name || "MonniDrop User"}
+    </span>{" "}
+    or switch to a different one?
+  </div>
+
+  <button
+   type="button"
+onClick={() => {
+  setSelectedSetting("Switch account");
+}}
+    style={{
+      width:"100%",
+      border:"2px solid #000",
+      borderRadius:"999px",
+      padding:"18px",
+      background:"#ffffff",
+      color:"#000",
+      fontSize:"24px",
+      fontWeight:"800",
+      cursor:"pointer",
+      marginBottom:"18px"
+    }}
+  >
+    Switch accounts
+  </button>
+
+  <button
+    type="button"
+    onClick={logout}
+    style={{
+      width:"100%",
+      border:"2px solid #000",
+      borderRadius:"999px",
+      padding:"14px",
+      background:"#ffffff",
+      color:"#000",
+      fontSize:"20px",
+      fontWeight:"600",
+      cursor:"pointer"
+    }}
+  >
+    Sign out
+  </button>
+</div>
           )
         }
 
@@ -9464,23 +8065,28 @@ overflowY:"auto"
             </div>
           )
         }
+    {
+  ![
+    "Mobile Phone Number",
+    "Email",
+    "Password",
+    "Country & Region",
+    "Language",
+    "Currency",
+    "Your Payment Method",
+    "Two-Factor Authentication",
+    "Google",
+    "Facebook",
+    "Notifications",
+    "About this app",
+    "About MonniDrop",
+    "Contact us",
+    "Switch Account",
+    "Switch account",
+    "Sign Out",
+    "Sign out"
+  ].includes(selectedSetting) && (
 
-        {
-          ![
-  "Mobile Phone Number",
-  "Email",
-  "Password",
-  "Country & Region",
-  "Language",
-  "Currency",
-  "Your Payment Method",
-  "Two-Factor Authentication",
-  "Google",
-  "Facebook",
-  "Notifications",
-  "About this app",
-  "Sign Out"
-].includes(selectedSetting) && (
 
            <div
   style={{
@@ -9497,6 +8103,145 @@ overflowY:"auto"
   }}
 >
   {
+    selectedSetting === "Privacy policy"
+? (
+  <div
+    style={{
+      background:"#ffffff",
+      borderRadius:"22px",
+      padding:"22px",
+      marginTop:"18px",
+      border:"1px solid #e5e7eb"
+    }}
+  >
+    <h2
+      style={{
+        margin:"0 0 12px",
+        fontSize:"22px",
+        fontWeight:"900",
+        color:"#0f172a"
+      }}
+    >
+      Privacy policy
+    </h2>
+
+    <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
+      MonniDrop collects basic account information such as your name, phone number,
+      email address, delivery locations, payment method, and profile details to help
+      process deliveries, secure your account, and improve customer support.
+    </p>
+
+    <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
+      Your information is used only for delivery operations, account access,
+      payment confirmation, rider assignment, support communication, safety checks,
+      and service improvement.
+    </p>
+
+    <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
+      MonniDrop does not sell your personal information. Access to your data is
+      controlled and used only by authorized platform users such as admins, support
+      staff, and assigned riders where necessary.
+    </p>
+  </div>
+)
+
+: selectedSetting === "Terms of use"
+? (
+  <div
+    style={{
+      background:"#ffffff",
+      borderRadius:"22px",
+      padding:"22px",
+      marginTop:"18px",
+      border:"1px solid #e5e7eb"
+    }}
+  >
+    <h2 style={{margin:"0 0 12px",fontSize:"22px",fontWeight:"900",color:"#0f172a"}}>
+      Terms of use
+    </h2>
+
+    <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
+      By using MonniDrop, customers agree to provide accurate delivery details,
+      correct contact information, and lawful delivery requests.
+    </p>
+
+    <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
+      Users must not misuse the platform, create false orders, harass riders,
+      attempt payment fraud, or use MonniDrop for restricted or illegal items.
+    </p>
+
+    <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
+      MonniDrop may suspend or restrict accounts that violate platform rules,
+      abuse riders, create fake orders, or attempt unsafe delivery activity.
+    </p>
+  </div>
+)
+
+: selectedSetting === "Community guidelines"
+? (
+  <div
+    style={{
+      background:"#ffffff",
+      borderRadius:"22px",
+      padding:"22px",
+      marginTop:"18px",
+      border:"1px solid #e5e7eb"
+    }}
+  >
+    <h2 style={{margin:"0 0 12px",fontSize:"22px",fontWeight:"900",color:"#0f172a"}}>
+      Community guidelines
+    </h2>
+
+    <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
+      MonniDrop expects customers, riders, and admins to communicate respectfully,
+      act honestly, and support safe delivery experiences.
+    </p>
+
+    <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
+      Harassment, threats, insults, fraud, unsafe behavior, and false reports are
+      not allowed on the platform.
+    </p>
+
+    <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
+      Riders and customers should use ratings, support chat, and order messages
+      responsibly to improve service quality.
+    </p>
+  </div>
+)
+
+: selectedSetting === "Intellectual property policy"
+? (
+  <div
+    style={{
+      background:"#ffffff",
+      borderRadius:"22px",
+      padding:"22px",
+      marginTop:"18px",
+      border:"1px solid #e5e7eb"
+    }}
+  >
+    <h2 style={{margin:"0 0 12px",fontSize:"22px",fontWeight:"900",color:"#0f172a"}}>
+      Intellectual property policy
+    </h2>
+
+    <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
+      MonniDrop name, logo, interface design, platform content, delivery workflow,
+      and system features belong to MonniDrop unless otherwise stated.
+    </p>
+
+    <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
+      Users may not copy, reproduce, misuse, sell, or present MonniDrop branding,
+      design, code, or content as their own.
+    </p>
+
+    <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
+      Any reports of intellectual property misuse can be sent through MonniDrop
+      support for review.
+    </p>
+  </div>
+)
+
+:
     selectedSetting === "How Your Data Is Protected"
     ? "MonniDrop protects your data with secure login sessions, encrypted communication, and controlled access. Your personal details are only used to support deliveries, account access, and customer service."
 
@@ -9537,37 +8282,49 @@ overflowY:"auto"
       }}
     >
       <div
-        onClick={() => setSelectedSetting("")}
-        style={{
-          position: "absolute",
-          top: "18px",
-          left: "18px",
-          width: "44px",
-          height: "44px",
-          borderRadius: "14px",
-          background: "linear-gradient(135deg,#0f172a,#1d4ed8)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "#facc15",
-          fontSize: "22px",
-          cursor: "pointer"
-        }}
-      >
-        <FiArrowLeft />
-      </div>
+        onClick={() => {
+  if(
+    selectedSetting === "Privacy policy" ||
+    selectedSetting === "Terms of use" ||
+    selectedSetting === "Community guidelines" ||
+    selectedSetting === "Intellectual property policy"
+  ){
+    setSelectedSetting("Legal terms & policies");
+  }else{
+    setSelectedSetting("");
+  }
+}}
+style={{
+position: "absolute",
+top: "18px",
+left: "18px",
+width: "44px",
+height: "44px",
+borderRadius: "14px",
+background: "linear-gradient(135deg,#0f172a,#1d4ed8)",
+display: "flex",
+alignItems: "center",
+justifyContent: "center",
+color: "#facc15",
+fontSize: "22px",
+cursor: "pointer"
+ }}
+ >
+<FiArrowLeft />
 
-      <img
-        src="/logo.png"
-        alt="MonniDrop"
-        style={{
-          width: "58px",
-          height: "58px",
-          objectFit: "contain",
-          borderRadius: "16px",
-          marginBottom: "10px"
-        }}
-      />
+</div>
+
+<img
+ src="/logo.png"
+ alt="MonniDrop"
+ style={{
+width: "58px",
+height: "58px",
+objectFit: "contain",
+borderRadius: "16px",
+marginBottom: "10px"
+}}
+ />
 
       <div
         style={{
@@ -9774,7 +8531,7 @@ overflowY:"auto"
       cursor:"pointer"
     }}
   >
-    WhatsApp Chat
+    Contact us
   </button>
 
   {
@@ -9797,7 +8554,7 @@ overflowY:"auto"
             marginBottom:"12px"
           }}
         >
-          WhatsApp Support Chat
+          Customer Support Chat
         </div>
 
         <div
@@ -9816,14 +8573,14 @@ overflowY:"auto"
     style={{
       background:"#dcfce7",
       color:"#0f172a",
-      padding:"10px 12px",
-      borderRadius:"14px",
+      padding:"10px 11px",
+      borderRadius:"12px",
       marginBottom:"8px",
-      fontSize:"14px",
+      fontSize:"12px",
       fontWeight:"700"
     }}
   >
-    Hello 👋 Welcome to MonniDrop WhatsApp support. How can we help you?
+    Hello 👋 Welcome to MonniDrop Customer support. How can we help you?
   </div>
 
   {
@@ -9875,6 +8632,99 @@ overflowY:"auto"
             gap:"8px"
           }}
         >
+
+          <input
+  id="supportPhotoUpload"
+  type="file"
+  accept="image/*"
+  style={{ display:"none" }}
+  onChange={(e)=>{
+
+    const file =
+      e.target.files[0];
+
+    if(file){
+      setSupportImage(file);
+      setSupportImagePreview(
+        URL.createObjectURL(file)
+      );
+    }
+  }}
+/>
+
+<input
+  id="supportCameraUpload"
+  type="file"
+  accept="image/*"
+  capture="environment"
+  style={{ display:"none" }}
+  onChange={(e)=>{
+
+    const file =
+      e.target.files[0];
+
+    if(file){
+      setSupportImage(file);
+      setSupportImagePreview(
+        URL.createObjectURL(file)
+      );
+    }
+  }}
+/>
+
+<button
+  type="button"
+  onClick={()=>
+    document
+      .getElementById("supportPhotoUpload")
+      .click()
+  }
+ style={{
+  width:"52px",
+  height:"52px",
+  border:"none",
+  borderRadius:"14px",
+  padding:"0",
+  background:"#f1f5f9",
+  color:"#0f172a",
+  fontSize:"20px",
+  fontWeight:"900",
+  cursor:"pointer",
+  display:"flex",
+  alignItems:"center",
+  justifyContent:"center",
+  flexShrink:0
+}}
+>
+  📎
+</button>
+
+<button
+  type="button"
+  onClick={()=>
+    document
+      .getElementById("supportCameraUpload")
+      .click()
+  }
+  style={{
+  width:"52px",
+  height:"52px",
+  border:"none",
+  borderRadius:"14px",
+  padding:"0",
+  background:"#f1f5f9",
+  color:"#0f172a",
+  fontSize:"20px",
+  fontWeight:"900",
+  cursor:"pointer",
+  display:"flex",
+  alignItems:"center",
+  justifyContent:"center",
+  flexShrink:0
+}}
+>
+  📷
+</button>
           <input
             type="text"
             placeholder="Type your message..."
@@ -9931,15 +8781,18 @@ overflowY:"auto"
 }
 }}
             style={{
-              border:"none",
-              borderRadius:"14px",
-              padding:"12px 16px",
-              background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
-              color:"#facc15",
-              fontSize:"14px",
-              fontWeight:"900",
-              cursor:"pointer"
-            }}
+  width:"50%",
+  height:"42px",
+  marginTop:"10px",
+  border:"none",
+  borderRadius:"14px",
+  padding:"0 22px",
+  background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
+  color:"#facc15",
+  fontSize:"15px",
+  fontWeight:"900",
+  cursor:"pointer"
+}}
           >
             Send
           </button>
@@ -9951,14 +8804,338 @@ overflowY:"auto"
       </div>
     )
 
-    : selectedSetting === "Legal Terms & Policies"
-    ? "MonniDrop terms and policies explain user responsibilities, account rules, delivery usage, payment handling, privacy practices, and platform safety requirements."
+ : selectedSetting === "Legal Terms & Policies" ||
+  selectedSetting === "Legal terms & policies"
+? (
+  <div
+    style={{
+      width:"100%",
+      marginTop:"18px",
+      background:"#ffffff",
+      borderRadius:"22px",
+      border:"1px solid #e5e7eb",
+      overflow:"hidden"
+    }}
+  >
+    {[
+      "Privacy policy",
+      "Terms of use",
+      "Community guidelines",
+      "Intellectual property policy"
+    ].map((item)=>(
+      <div
+        key={item}
+        onClick={() => setSelectedSetting(item)}
+        style={{
+          padding:"18px 22px",
+          display:"flex",
+          justifyContent:"space-between",
+          alignItems:"center",
+          borderBottom:"1px solid #e5e7eb",
+          cursor:"pointer"
+        }}
+      >
+        <span
+          style={{
+            fontSize:"18px",
+            fontWeight:"900",
+            color:"#0f172a"
+          }}
+        >
+          {item}
+        </span>
 
-    : selectedSetting === "Share This App"
-    ? "Share MonniDrop with friends, customers, and businesses that need a simple way to request deliveries and track riders in real time."
+        <span
+          style={{
+            fontSize:"30px",
+            color:"#94a3b8",
+            fontWeight:"300",
+            lineHeight:"1"
+          }}
+        >
+          ›
+        </span>
+      </div>
+    ))}
+  </div>
+)
 
-    : selectedSetting === "Switch Account"
-    ? "Switch Account allows you to switch between different MonniDrop accounts without permanently removing account information from the device."
+ : selectedSetting === "Share This App" ||
+  selectedSetting === "Share this app"
+? (
+  <div
+    style={{
+      background:"#ffffff",
+      borderRadius:"34px",
+      padding:"32px 24px",
+      marginTop:"22px"
+    }}
+  >
+    <div
+      style={{
+        display:"grid",
+        gridTemplateColumns:"repeat(4,minmax(70px,1fr))",
+        justifyItems:"center",
+        gap:"26px 20px",
+        textAlign:"center"
+      }}
+    >
+      {[
+        {
+          label:"Message",
+          color:"#22c55e",
+          icon:<FiMessageCircle size={38} />,
+          action:() => {
+            const shareText =
+              "Download MonniDrop and enjoy fast, reliable deliveries across Ghana. " +
+              window.location.origin;
+
+            window.location.href =
+              `sms:?body=${encodeURIComponent(shareText)}`;
+          }
+        },
+        {
+          label:"Facebook",
+          color:"#1877f2",
+          icon:<FaFacebookF size={38} />,
+          action:() => {
+            window.open(
+              `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                window.location.origin
+              )}`,
+              "_blank"
+            );
+          }
+        },
+        {
+          label:"WhatsApp",
+          color:"#25d366",
+          icon:<FaWhatsapp size={38} />,
+          action:() => {
+            const shareText =
+              "Download MonniDrop and enjoy fast, reliable deliveries across Ghana. " +
+              window.location.origin;
+
+            window.open(
+              `https://wa.me/?text=${encodeURIComponent(shareText)}`,
+              "_blank"
+            );
+          }
+        },
+        {
+          label:"X",
+          color:"#000000",
+          icon:<FaXTwitter size={36} />,
+          action:() => {
+            const shareText =
+              "Download MonniDrop and enjoy fast, reliable deliveries across Ghana. " +
+              window.location.origin;
+
+            window.open(
+              `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                shareText
+              )}`,
+              "_blank"
+            );
+          }
+        },
+        {
+          label:"Copy Link",
+          color:"#f3f4f6",
+          dark:true,
+          icon:<FiLink size={38} />,
+          action:() => {
+            navigator.clipboard.writeText(
+              window.location.origin
+            );
+
+            alert("Link copied");
+          }
+        },
+        {
+          label:"More",
+          color:"#f3f4f6",
+          dark:true,
+          icon:<FiMoreHorizontal size={38} />,
+          action:() => {
+            if(navigator.share){
+              navigator.share({
+                title:"MonniDrop",
+                text:
+                  "Download MonniDrop and enjoy fast, reliable deliveries across Ghana.",
+                url:window.location.origin
+              });
+            }
+          }
+        }
+      ].map((item)=>(
+        <div
+          key={item.label}
+          onClick={item.action}
+          onMouseEnter={(e)=>{
+            e.currentTarget.style.transform =
+              "translateY(-4px)";
+          }}
+          onMouseLeave={(e)=>{
+            e.currentTarget.style.transform =
+              "translateY(0)";
+          }}
+          style={{
+            cursor:"pointer",
+            transition:"0.2s ease"
+          }}
+        >
+          <div
+            style={{
+              width:"72px",
+              height:"72px",
+              borderRadius:"50%",
+              background:item.color,
+              margin:"0 auto 14px",
+              display:"flex",
+              alignItems:"center",
+              justifyContent:"center",
+              color:item.dark ? "#0f172a" : "#ffffff",
+              fontWeight:"900",
+              boxShadow:item.dark
+                ? "none"
+                : "0 10px 24px rgba(15,23,42,0.14)"
+            }}
+          >
+            {item.icon}
+          </div>
+
+          <div
+            style={{
+              fontSize:"14px",
+              fontWeight:"900",
+              color:"#0f172a"
+            }}
+          >
+            {item.label}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)
+    : selectedSetting === "Switch Account" ||
+  selectedSetting === "Switch account"
+? (
+  <div>
+    <div
+      style={{
+        fontSize:"26px",
+        fontWeight:"900",
+        color:"#0f172a",
+        marginBottom:"22px",
+        textAlign:"center"
+      }}
+    >
+      Switch accounts
+    </div>
+
+    <div
+      style={{
+        border:"1px solid #e5e7eb",
+        borderRadius:"18px",
+        padding:"16px",
+        display:"flex",
+        alignItems:"center",
+        gap:"14px",
+        marginBottom:"14px",
+        background:"#ffffff"
+      }}
+    >
+      <img
+        src={user?.profileImage || "/logo.png"}
+        alt="Current account"
+        style={{
+          width:"58px",
+          height:"58px",
+          borderRadius:"50%",
+          objectFit:"cover"
+        }}
+      />
+
+      <div style={{ flex:1 }}>
+        <div
+          style={{
+            fontSize:"20px",
+            fontWeight:"900",
+            color:"#000"
+          }}
+        >
+          {user?.name || "Current User"}
+        </div>
+
+        <div
+          style={{
+            fontSize:"15px",
+            color:"#777",
+            fontWeight:"700"
+          }}
+        >
+          {user?.email || "No email"}
+        </div>
+      </div>
+
+      <div
+        style={{
+          color:"#f97316",
+          fontSize:"34px",
+          fontWeight:"900"
+        }}
+      >
+        ✓
+      </div>
+    </div>
+
+    <div
+      onClick={() => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        window.location.href = "/login";
+      }}
+      style={{
+        border:"1px solid #e5e7eb",
+        borderRadius:"18px",
+        padding:"16px",
+        display:"flex",
+        alignItems:"center",
+        gap:"14px",
+        background:"#ffffff",
+        cursor:"pointer"
+      }}
+    >
+      <div
+        style={{
+          width:"58px",
+          height:"58px",
+          borderRadius:"50%",
+          background:"#f3f4f6",
+          display:"flex",
+          alignItems:"center",
+          justifyContent:"center",
+          fontSize:"34px",
+          color:"#555"
+        }}
+      >
+        +
+      </div>
+
+      <div
+        style={{
+          fontSize:"20px",
+          fontWeight:"900",
+          color:"#000"
+        }}
+      >
+        Add account
+      </div>
+    </div>
+  </div>
+)
 
     : selectedSetting
   }
@@ -9966,146 +9143,6 @@ overflowY:"auto"
           )
         }
 
-        {
-selectedSetting === "About this app" && (
-
-<div
-style={{
-
-background:"#fff",
-
-borderRadius:"26px",
-
-overflow:"hidden",
-
-marginBottom:"20px",
-
-border:"1px solid #e5e7eb"
-
-}}
->
-
-<div
-style={{
-
-padding:"50px 20px",
-
-textAlign:"center",
-
-borderBottom:
-"10px solid #f5f5f5"
-
-}}
->
-
-<img
-src="/logo.png"
-alt="MonniDrop"
-
-style={{
-
-width:"50px",
-
-height:"50px",
-
-objectFit:"contain",
-
-marginBottom:"15px"
-
-}}
-/>
-
-<div
-style={{
-
-fontSize:"20px",
-
-fontWeight:"700",
-
-color:"#000"
-
-}}
->
-
-MonniDrop
-
-</div>
-
-<div
-style={{
-
-marginTop:"8px",
-
-fontSize:"20px",
-
-color:"#777"
-
-}}
->
-
-App version 1.0.0
-
-</div>
-
-</div>
-
-
-{[
-"About MonniDrop",
-"Contact us"
-].map((item)=>(
-
-<div
-
-key={item}
-
-style={{
-
-padding:"24px",
-
-display:"flex",
-
-justifyContent:"space-between",
-
-borderBottom:
-"1px solid #eee",
-
-fontWeight:"700",
-
-fontSize:"26px",
-
-cursor:"pointer"
-
-}}
-
-onClick={()=>
-setSelectedSetting(item)
-}
-
->
-
-<span>
-
-{item}
-
-</span>
-
-<span>
-
-›
-
-</span>
-
-</div>
-
-))
-
-}
-
-</div>
-
-)
-}
       </div>
 
     </div>
