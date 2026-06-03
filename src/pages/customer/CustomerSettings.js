@@ -255,41 +255,163 @@ export default function CustomerSettings({
             )
 
             : selectedSetting === "About MonniDrop" ? (
-              <InfoBox>
-                <div style={smallHeadingStyle}>
-                  MonniDrop
-                </div>
+  <InfoBox>
 
-                <p style={smallTextStyle}>
-                  MonniDrop is a delivery platform that connects customers,
-                  riders, and admins for fast and reliable deliveries.
-                </p>
+    <div style={smallHeadingStyle}>
+      MonniDrop
+    </div>
 
-                <p style={smallTextStyle}>
-                  App version 1.0.0
-                </p>
-              </InfoBox>
-            )
+    <div style={lastUpdatedStyle}>
+      Version 1.0.0
+    </div>
 
-            : selectedSetting === "Contact us" ? (
-              <InfoBox>
-                <div style={smallHeadingStyle}>
-                  Contact MonniDrop
-                </div>
+    <p style={smallTextStyle}>
+      MonniDrop is a modern delivery platform designed to connect
+      customers, riders and administrators through a fast, secure and
+      reliable delivery experience.
+    </p>
 
-                <p style={smallTextStyle}>
-                  Address: Accra, Ghana
-                </p>
+    <p style={smallTextStyle}>
+      The platform enables customers to create delivery requests,
+      track orders in real time, communicate with riders and receive
+      updates throughout the delivery process.
+    </p>
 
-                <p style={smallTextStyle}>
-                  Email: support@monnidrop.com
-                </p>
+    <p style={smallTextStyle}>
+      Riders can manage delivery assignments, update order status,
+      navigate delivery routes and provide efficient services across
+      different locations.
+    </p>
 
-                <p style={smallTextStyle}>
-                  Phone: +233 244 095 101
-                </p>
-              </InfoBox>
-            )
+    <p style={smallTextStyle}>
+      Administrators are able to monitor operations, manage riders,
+      oversee payments, review customer support requests and maintain
+      the overall quality of the platform.
+    </p>
+
+    <p style={smallTextStyle}>
+      MonniDrop is built with a focus on convenience, transparency,
+      security and operational efficiency to help customers receive
+      their items quickly and reliably.
+    </p>
+
+    <p style={smallTextStyle}>
+      Our mission is to simplify local deliveries by providing a
+      trusted platform that connects people, businesses and riders
+      through technology-driven logistics solutions.
+    </p>
+
+  </InfoBox>
+)
+           : selectedSetting === "Contact us" ? (
+  <InfoBox>
+
+    <div style={smallHeadingStyle}>
+      Contact MonniDrop
+    </div>
+
+    <div style={lastUpdatedStyle}>
+      Support available for customers, riders and delivery issues.
+    </div>
+
+    <div style={contactCardStyle}>
+      <div>
+        <div style={contactTitleStyle}>
+          Call us
+        </div>
+
+        <div style={contactTextStyle}>
+          Speak directly with MonniDrop support.
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={()=>{
+          window.location.href = "tel:+233000000000";
+        }}
+        style={contactButtonStyle}
+      >
+        Call
+      </button>
+    </div>
+
+    <div style={contactCardStyle}>
+      <div>
+        <div style={contactTitleStyle}>
+          Email us
+        </div>
+
+        <div style={contactTextStyle}>
+          Send support questions or complaints by email.
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={()=>{
+          window.location.href =
+            "mailto:support@monnidrop.com?subject=MonniDrop Support Request";
+        }}
+        style={contactButtonStyle}
+      >
+        Email
+      </button>
+    </div>
+
+    <div style={contactCardStyle}>
+      <div>
+        <div style={contactTitleStyle}>
+          WhatsApp Support
+        </div>
+
+        <div style={contactTextStyle}>
+          Chat with MonniDrop support on WhatsApp.
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={()=>{
+          window.open(
+            "https://wa.me/233244095101?text=Hello%20MonniDrop%20Support",
+            "_blank"
+          );
+        }}
+        style={contactButtonStyle}
+      >
+        Chat
+      </button>
+    </div>
+
+    <div style={contactCardStyle}>
+      <div>
+        <div style={contactTitleStyle}>
+          Live Chat Support
+        </div>
+
+        <div style={contactTextStyle}>
+          Use in-app support chat for delivery, payment or account issues.
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={()=>{
+          alert("Live chat support will open here.");
+        }}
+        style={contactButtonStyle}
+      >
+        Open
+      </button>
+    </div>
+
+    <div style={contactFooterStyle}>
+      Address: Accra, Ghana
+    </div>
+
+  </InfoBox>
+)
 
            : selectedSetting === "Legal terms & policies" ? (
   <div>
@@ -889,4 +1011,51 @@ const lastUpdatedStyle = {
   fontWeight:"700",
   color:"#64748b",
   marginBottom:"16px"
+};
+
+const contactCardStyle = {
+  display:"flex",
+  justifyContent:"space-between",
+  alignItems:"center",
+  gap:"14px",
+  background:"#ffffff",
+  border:"1px solid #e5e7eb",
+  borderRadius:"16px",
+  padding:"16px",
+  marginBottom:"12px",
+  boxShadow:"0 6px 16px rgba(15,23,42,0.04)"
+};
+
+const contactTitleStyle = {
+  fontSize:"16px",
+  fontWeight:"900",
+  color:"#0f172a",
+  marginBottom:"4px"
+};
+
+const contactTextStyle = {
+  fontSize:"13px",
+  fontWeight:"600",
+  color:"#64748b",
+  lineHeight:"1.5"
+};
+
+const contactButtonStyle = {
+  minWidth:"78px",
+  border:"none",
+  borderRadius:"13px",
+  padding:"11px 14px",
+  background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
+  color:"#facc15",
+  fontSize:"13px",
+  fontWeight:"900",
+  cursor:"pointer"
+};
+
+const contactFooterStyle = {
+  marginTop:"14px",
+  fontSize:"13px",
+  fontWeight:"700",
+  color:"#64748b",
+  textAlign:"center"
 };
