@@ -2957,6 +2957,11 @@ export default function Customer(){
   const [activeSection,setActiveSection] =
     useState("dashboard");
 
+    const [selectedSetting,setSelectedSetting] = useState("");
+    const [country,setCountry] = useState("Ghana");
+    const [language,setLanguage] = useState("English");
+   const [currency,setCurrency] = useState("GHS");
+
   const [sidebarOpen,setSidebarOpen] =
     useState(false);
 
@@ -6101,7 +6106,16 @@ async function sendMessage(
 )}
 
 {activeSection === "Settings" && (
-  <CustomerSettings />
+ <CustomerSettings
+  selectedSetting={selectedSetting}
+  setSelectedSetting={setSelectedSetting}
+  country={country}
+  setCountry={setCountry}
+  language={language}
+  setLanguage={setLanguage}
+  currency={currency}
+  setCurrency={setCurrency}
+/>
 )}
 
 
