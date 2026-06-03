@@ -3059,7 +3059,24 @@ const [ratedOrderIds,setRatedOrderIds] =
   });
 
   const [notifications,setNotifications] =
-    useState([]);
+  useState(()=>{
+
+    try{
+
+      const savedNotifications =
+        JSON.parse(
+          localStorage.getItem("monnidropCustomerNotifications") || "[]"
+        );
+
+      return Array.isArray(savedNotifications)
+        ? savedNotifications
+        : [];
+
+    }catch(err){
+
+      return [];
+    }
+  });
 
     const [messageInbox,setMessageInbox] =
   useState([]);
@@ -4530,7 +4547,60 @@ localStorage.setItem(
   }
 }
 
+function addCustomerNotification(title,message,type="info"){
 
+  const newNotification = {
+    id:Date.now(),
+    title,
+    message,
+    type,
+    read:false,
+    createdAt:new Date().toISOString()
+  };
+
+  setNotifications((oldNotifications)=>{
+
+    const updatedNotifications = [
+      newNotification,
+      ...oldNotifications
+    ].slice(0,50);
+
+    localStorage.setItem(
+      "monnidropCustomerNotifications",
+      JSON.stringify(updatedNotifications)
+    );
+
+    return updatedNotifications;
+  });
+}
+
+function clearAllNotifications(){
+
+  setNotifications([]);
+
+  localStorage.setItem(
+    "monnidropCustomerNotifications",
+    JSON.stringify([])
+  );
+}
+
+function markAllNotificationsRead(){
+
+  const updatedNotifications =
+    notifications.map((note)=>({
+      ...note,
+      read:true
+    }));
+
+  setNotifications(
+    updatedNotifications
+  );
+
+  localStorage.setItem(
+    "monnidropCustomerNotifications",
+    JSON.stringify(updatedNotifications)
+  );
+}
 
  async function fetchOrders(){
 
@@ -4548,6 +4618,7 @@ localStorage.setItem(
 
     setPreviousOrders((oldOrders)=>{
 
+
       newOrders.forEach((newOrder)=>{
 
         const oldOrder =
@@ -4555,23 +4626,40 @@ localStorage.setItem(
             (old)=>old._id === newOrder._id
           );
 
-        if(
-          oldOrder &&
-          oldOrder.status !== newOrder.status &&
-          newOrder.status === "accepted"
-        ){
+        if(oldOrder && oldOrder.status !== newOrder.status){
 
-          setNotifications((prev)=>[
-            {
-              type:"status",
-              orderId:newOrder._id,
-              sender:"MonniDrop",
-              text:`Your order from ${newOrder.pickupLocation} to ${newOrder.dropoffLocation} is now ${newOrder.status}`,
-              time:new Date().toLocaleTimeString()
-            },
-            ...prev
-          ]);
-        }
+  if(newOrder.status === "accepted"){
+    addCustomerNotification(
+      "Order Accepted",
+      "A rider has accepted your delivery request.",
+      "success"
+    );
+  }
+
+  if(newOrder.status === "picked"){
+    addCustomerNotification(
+      "Package Picked Up",
+      "Your package has been picked up by the rider.",
+      "info"
+    );
+  }
+
+  if(newOrder.status === "delivered"){
+    addCustomerNotification(
+      "Delivery Completed",
+      "Your order has been delivered successfully.",
+      "success"
+    );
+  }
+
+  if(newOrder.status === "cancelled"){
+    addCustomerNotification(
+      "Order Cancelled",
+      "Your delivery order was cancelled.",
+      "danger"
+    );
+  }
+}
 
       });
 
@@ -5795,10 +5883,12 @@ async function sendMessage(
 
   {activeSection === "notifications" && (
   <CustomerNotifications
-    allNotifications={allNotifications}
-    setActiveSection={setActiveSection}
-    setOpenChats={setOpenChats}
-  />
+  allNotifications={notifications}
+  setActiveSection={setActiveSection}
+  setOpenChats={setOpenChats}
+  clearAllNotifications={clearAllNotifications}
+  markAllNotificationsRead={markAllNotificationsRead}
+/>
 )}     
 
         {activeSection === "My Profile" && (
