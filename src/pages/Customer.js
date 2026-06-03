@@ -6100,8 +6100,12 @@ async function sendMessage(
 
 )}
 
-
 {activeSection === "Settings" && (
+  <CustomerSettings />
+)}
+
+
+{false && activeSection === "Settings" && (
 
   <>
 
