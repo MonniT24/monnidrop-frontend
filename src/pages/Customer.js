@@ -2958,9 +2958,18 @@ export default function Customer(){
     useState("dashboard");
 
     const [selectedSetting,setSelectedSetting] = useState("");
-    const [country,setCountry] = useState("Ghana");
-    const [language,setLanguage] = useState("English");
-   const [currency,setCurrency] = useState("GHS");
+
+   const [country,setCountry] = useState(()=>{
+  return localStorage.getItem("monnidropCountry") || "Ghana";
+});
+
+const [language,setLanguage] = useState(()=>{
+  return localStorage.getItem("monnidropLanguage") || "English";
+});
+
+const [currency,setCurrency] = useState(()=>{
+  return localStorage.getItem("monnidropCurrency") || "GHS";
+});
 
   const [sidebarOpen,setSidebarOpen] =
     useState(false);
@@ -3819,9 +3828,6 @@ const [amount,setAmount] =
 const [dropoffCoords, setDropoffCoords] =
  useState(null);
 
-  const [ selectedSetting,setSelectedSetting] = 
-  useState(null);
-
   const [savedAccounts,setSavedAccounts] =
   useState([]);
 
@@ -3870,21 +3876,6 @@ const [
   showPasswords,
   setShowPasswords
 ] = useState(false);
-
-const [
-  language,
-  setLanguage
-] = useState("English");
-
-const [
-  currency,
-  setCurrency
-] = useState("GHS");
-
-const [
-  country,
-  setCountry
-] = useState("Ghana");
 
 const [
   twoFactorEnabled,
@@ -3941,17 +3932,23 @@ useEffect(()=>{
         savedSettings.email || ""
       );
 
-      setCountry(
-        savedSettings.country || "Ghana"
-      );
+     setCountry(
+  localStorage.getItem("monnidropCountry") ||
+  savedSettings.country ||
+  "Ghana"
+);
 
-      setLanguage(
-        savedSettings.language || "English"
-      );
+setLanguage(
+  localStorage.getItem("monnidropLanguage") ||
+  savedSettings.language ||
+  "English"
+);
 
       setCurrency(
-        savedSettings.currency || "GHS"
-      );
+  localStorage.getItem("monnidropCurrency") ||
+  savedSettings.currency ||
+  "GHS"
+);
 
       setPaymentMethod(
         savedSettings.paymentMethod || ""
@@ -4008,8 +4005,10 @@ useEffect(()=>{
         );
 
         setCurrency(
-          savedSettings.currency || "GHS"
-        );
+  localStorage.getItem("monnidropCurrency") ||
+  savedSettings.currency ||
+  "GHS"
+);
 
         setPaymentMethod(
           savedSettings.paymentMethod || ""
@@ -4530,6 +4529,8 @@ localStorage.setItem(
     console.log(err);
   }
 }
+
+
 
  async function fetchOrders(){
 

@@ -27,6 +27,21 @@ export default function CustomerSettings({
     window.location.href = "/";
   };
 
+  const updateSavedSettings = (key,value) => {
+    const savedSettings =
+      JSON.parse(
+        localStorage.getItem("monnidropCustomerSettings") || "{}"
+      );
+
+    localStorage.setItem(
+      "monnidropCustomerSettings",
+      JSON.stringify({
+        ...savedSettings,
+        [key]:value
+      })
+    );
+  };
+
   return (
     <>
       <div style={topCardStyle}>
@@ -109,7 +124,22 @@ export default function CustomerSettings({
             {selectedSetting === "Country & region" ? (
               <select
                 value={country}
-                onChange={(e)=>setCountry(e.target.value)}
+                onChange={(e)=>{
+                  const selectedCountry =
+                    e.target.value;
+
+                  setCountry(selectedCountry);
+
+                  localStorage.setItem(
+                    "monnidropCountry",
+                    selectedCountry
+                  );
+
+                  updateSavedSettings(
+                    "country",
+                    selectedCountry
+                  );
+                }}
                 style={selectStyle}
               >
                 <option value="Ghana">Ghana</option>
@@ -122,7 +152,22 @@ export default function CustomerSettings({
             : selectedSetting === "Language" ? (
               <select
                 value={language}
-                onChange={(e)=>setLanguage(e.target.value)}
+                onChange={(e)=>{
+                  const selectedLanguage =
+                    e.target.value;
+
+                  setLanguage(selectedLanguage);
+
+                  localStorage.setItem(
+                    "monnidropLanguage",
+                    selectedLanguage
+                  );
+
+                  updateSavedSettings(
+                    "language",
+                    selectedLanguage
+                  );
+                }}
                 style={selectStyle}
               >
                 <option value="English">English</option>
@@ -134,7 +179,22 @@ export default function CustomerSettings({
             : selectedSetting === "Currency" ? (
               <select
                 value={currency}
-                onChange={(e)=>setCurrency(e.target.value)}
+                onChange={(e)=>{
+                  const selectedCurrency =
+                    e.target.value;
+
+                  setCurrency(selectedCurrency);
+
+                  localStorage.setItem(
+                    "monnidropCurrency",
+                    selectedCurrency
+                  );
+
+                  updateSavedSettings(
+                    "currency",
+                    selectedCurrency
+                  );
+                }}
                 style={selectStyle}
               >
                 <option value="GHS">GHS</option>
@@ -227,6 +287,15 @@ export default function CustomerSettings({
                 ].map((item)=>(
                   <div
                     key={item.name}
+                    onClick={()=>{
+                      if(item.name === "Copy Link"){
+                        navigator.clipboard.writeText(
+                          window.location.origin
+                        );
+
+                        alert("MonniDrop link copied!");
+                      }
+                    }}
                     style={shareItemStyle}
                   >
                     <div style={shareIconStyle}>
