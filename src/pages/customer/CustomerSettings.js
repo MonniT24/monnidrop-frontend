@@ -1,5 +1,20 @@
 import React from "react";
 
+import {
+  FaWhatsapp,
+  FaFacebookF
+} from "react-icons/fa";
+
+import {
+  FaXTwitter
+} from "react-icons/fa6";
+
+import {
+  FiMessageCircle,
+  FiLink,
+  FiMoreHorizontal
+} from "react-icons/fi";
+
 export default function CustomerSettings({
   setSelectedSetting,
   selectedSetting,
@@ -106,11 +121,20 @@ export default function CustomerSettings({
               <button
                 type="button"
                 onClick={
-                  selectedSetting === "About MonniDrop" ||
-                  selectedSetting === "Contact us"
-                  ? () => setSelectedSetting("About this app")
-                  : closeSettings
-                }
+  selectedSetting === "About MonniDrop" ||
+  selectedSetting === "Contact us"
+
+  ? () => setSelectedSetting("About this app")
+
+  : selectedSetting === "Privacy policy" ||
+    selectedSetting === "Terms of use" ||
+    selectedSetting === "Refund policy" ||
+    selectedSetting === "Intellectual property policy"
+
+  ? () => setSelectedSetting("Legal terms & policies")
+
+  : closeSettings
+}
                 style={backButtonStyle}
               >
                 ←
@@ -262,40 +286,285 @@ export default function CustomerSettings({
                 </p>
 
                 <p style={smallTextStyle}>
-                  Phone: +233 000 000 000
+                  Phone: +233 244 095 101
                 </p>
               </InfoBox>
             )
 
-            : selectedSetting === "Legal terms & policies" ? (
-              <InfoBox>
-                By using MonniDrop, you agree to use the app responsibly.
-                Delivery information, account details, and payment records are
-                handled securely to support your orders and customer service.
-              </InfoBox>
-            )
+           : selectedSetting === "Legal terms & policies" ? (
+  <div>
+    {[
+      "Privacy policy",
+      "Terms of use",
+      "Refund policy",
+      "Intellectual property policy"
+    ].map((item)=>(
+      <div
+        key={item}
+        onClick={()=>setSelectedSetting(item)}
+        style={policyRowStyle}
+      >
+        <div style={policyTextStyle}>
+          {item}
+        </div>
 
+        <div style={policyArrowStyle}>
+          ›
+        </div>
+      </div>
+    ))}
+  </div>
+)
+
+: selectedSetting === "Privacy policy" ? (
+  <InfoBox>
+
+    <div style={smallHeadingStyle}>
+      Privacy Policy
+    </div>
+
+    <div style={lastUpdatedStyle}>
+      Last Updated: June 2026
+    </div>
+
+    <p style={smallTextStyle}>
+      MonniDrop collects only the information needed to provide account,
+      delivery, payment and customer support services.
+    </p>
+
+    <p style={smallTextStyle}>
+      This may include your name, phone number, email address, delivery
+      locations, payment method and order history.
+    </p>
+
+    <p style={smallTextStyle}>
+      Your personal information is used to process deliveries, assign riders,
+      improve customer service and keep your account secure.
+    </p>
+
+    <p style={smallTextStyle}>
+      MonniDrop does not sell your personal information to third parties.
+    </p>
+
+    <p style={smallTextStyle}>
+      We may share limited information with riders, admins or payment services
+      only when needed to complete your delivery or support request.
+    </p>
+
+    <p style={smallTextStyle}>
+      Users are responsible for keeping their login details private and
+      reporting suspicious account activity quickly.
+    </p>
+
+  </InfoBox>
+)
+
+: selectedSetting === "Terms of use" ? (
+  <InfoBox>
+
+    <div style={smallHeadingStyle}>
+      Terms of Use
+    </div>
+
+    <div
+  style={{
+    fontSize:"14px",
+    fontWeight:"700",
+    color:"#94a3b8",
+    marginBottom:"18px"
+  }}
+>
+  Last Updated: June 2026
+</div>
+
+    <p style={smallTextStyle}>
+      Users must provide accurate information when creating accounts and
+      placing delivery requests.
+    </p>
+
+    <p style={smallTextStyle}>
+      Fraudulent activities, misuse of the platform, fake orders,
+      impersonation and abuse of riders are strictly prohibited.
+    </p>
+
+    <p style={smallTextStyle}>
+      Customers are responsible for providing correct pickup and
+      delivery locations to ensure successful deliveries.
+    </p>
+
+    <p style={smallTextStyle}>
+      Riders are expected to handle packages professionally,
+      follow delivery instructions and comply with all applicable
+      road and safety regulations.
+    </p>
+
+    <p style={smallTextStyle}>
+      MonniDrop reserves the right to suspend or permanently
+      disable accounts that violate platform rules, engage in
+      fraudulent activities or compromise the safety of users.
+    </p>
+
+    <p style={smallTextStyle}>
+      Users are responsible for maintaining the confidentiality
+      of their login credentials and account information.
+    </p>
+
+    <p style={smallTextStyle}>
+      MonniDrop may update these terms periodically to improve
+      service quality, security, operational efficiency and
+      regulatory compliance.
+    </p>
+
+  </InfoBox>
+)
+
+: selectedSetting === "Refund policy" ? (
+  <InfoBox>
+
+    <div style={smallHeadingStyle}>
+      Refund Policy
+    </div>
+
+    <div style={lastUpdatedStyle}>
+      Last Updated: June 2026
+    </div>
+
+    <p style={smallTextStyle}>
+      Refund requests are reviewed based on delivery status, payment
+      confirmation and the reason for the request.
+    </p>
+
+    <p style={smallTextStyle}>
+      A refund may be considered if payment was made but the delivery service
+      was not completed due to a verified issue.
+    </p>
+
+    <p style={smallTextStyle}>
+      Refunds may not apply where incorrect pickup or drop-off information was
+      provided by the customer.
+    </p>
+
+    <p style={smallTextStyle}>
+      Cash payment issues may require confirmation from the rider, customer and
+      admin before any settlement decision is made.
+    </p>
+
+    <p style={smallTextStyle}>
+      Approved refunds will be processed through the original payment method
+      where possible.
+    </p>
+
+    <p style={smallTextStyle}>
+      MonniDrop may reject refund requests that involve fraud, false claims or
+      misuse of the platform.
+    </p>
+
+  </InfoBox>
+)
+
+: selectedSetting === "Intellectual property policy" ? (
+  <InfoBox>
+
+    <div style={smallHeadingStyle}>
+      Intellectual Property Policy
+    </div>
+
+    <div style={lastUpdatedStyle}>
+      Last Updated: June 2026
+    </div>
+
+    <p style={smallTextStyle}>
+      The MonniDrop name, logo, branding, app design, platform features,
+      software and written content are protected intellectual property.
+    </p>
+
+    <p style={smallTextStyle}>
+      Users may not copy, reproduce, modify, distribute or commercially use
+      MonniDrop materials without permission.
+    </p>
+
+    <p style={smallTextStyle}>
+      Riders, customers and admins may only use MonniDrop materials for normal
+      platform activities.
+    </p>
+
+    <p style={smallTextStyle}>
+      Any unauthorized use of MonniDrop branding, screenshots, code or business
+      materials may result in account restriction or legal action.
+    </p>
+
+    <p style={smallTextStyle}>
+      If you believe your intellectual property has been used improperly on
+      MonniDrop, contact support for review.
+    </p>
+
+  </InfoBox>
+)
             : selectedSetting === "Share this app" ? (
               <div style={shareGridStyle}>
-                {[
-                  { name:"Message", icon:"💬" },
-                  { name:"Facebook", icon:"f" },
-                  { name:"WhatsApp", icon:"☎" },
-                  { name:"X", icon:"𝕏" },
-                  { name:"Copy Link", icon:"🔗" },
-                  { name:"More", icon:"⋯" }
-                ].map((item)=>(
+               {[
+  { name:"Message", icon:<FiMessageCircle /> },
+  { name:"Facebook", icon:<FaFacebookF /> },
+  { name:"WhatsApp", icon:<FaWhatsapp /> },
+  { name:"X", icon:<FaXTwitter /> },
+  { name:"Copy Link", icon:<FiLink /> },
+  { name:"More", icon:<FiMoreHorizontal /> }
+].map((item)=>(
                   <div
                     key={item.name}
-                    onClick={()=>{
-                      if(item.name === "Copy Link"){
-                        navigator.clipboard.writeText(
-                          window.location.origin
-                        );
+                   onClick={()=>{
 
-                        alert("MonniDrop link copied!");
-                      }
-                    }}
+  const appLink =
+    window.location.origin;
+
+  const shareText =
+    `Check out MonniDrop: ${appLink}`;
+
+  if(item.name === "Message"){
+    window.location.href =
+      `sms:?body=${encodeURIComponent(shareText)}`;
+  }
+
+  if(item.name === "WhatsApp"){
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(shareText)}`,
+      "_blank"
+    );
+  }
+
+  if(item.name === "Facebook"){
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(appLink)}`,
+      "_blank"
+    );
+  }
+
+  if(item.name === "X"){
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`,
+      "_blank"
+    );
+  }
+
+  if(item.name === "Copy Link"){
+    navigator.clipboard.writeText(appLink);
+    alert("MonniDrop link copied!");
+  }
+
+  if(item.name === "More"){
+    if(navigator.share){
+      navigator.share({
+        title:"MonniDrop",
+        text:"Check out MonniDrop",
+        url:appLink
+      });
+    }else{
+      navigator.clipboard.writeText(appLink);
+      alert("Sharing is not supported here. Link copied instead!");
+    }
+  }
+
+}}
                     style={shareItemStyle}
                   >
                     <div style={shareIconStyle}>
@@ -510,10 +779,11 @@ const infoBoxStyle = {
   background:"#f8fafc",
   border:"1px solid #e5e7eb",
   borderRadius:"18px",
-  padding:"18px",
+  padding:"22px",
   color:"#64748b",
-  fontWeight:"800",
-  lineHeight:"1.6"
+  fontWeight:"600",
+  fontSize:"17px",
+  lineHeight:"1.8"
 };
 
 const smallHeadingStyle = {
@@ -524,11 +794,11 @@ const smallHeadingStyle = {
 };
 
 const smallTextStyle = {
-  margin:"0 0 10px",
-  fontSize:"16px",
-  fontWeight:"700",
-  color:"#64748b",
-  lineHeight:"1.6"
+  margin:"0 0 12px",
+  fontSize:"14px",
+  fontWeight:"600",
+  color:"#334155",
+  lineHeight:"1.7"
 };
 
 const shareGridStyle = {
@@ -591,4 +861,32 @@ const dangerButtonStyle = {
   fontSize:"16px",
   fontWeight:"900",
   cursor:"pointer"
+};
+
+const policyRowStyle = {
+  display:"flex",
+  justifyContent:"space-between",
+  alignItems:"center",
+  padding:"22px 4px",
+  borderBottom:"1px solid #e5e7eb",
+  cursor:"pointer"
+};
+
+const policyTextStyle = {
+  fontSize:"22px",
+  fontWeight:"800",
+  color:"#0f172a"
+};
+
+const policyArrowStyle = {
+  fontSize:"34px",
+  color:"#94a3b8",
+  fontWeight:"500"
+};
+
+const lastUpdatedStyle = {
+  fontSize:"13px",
+  fontWeight:"700",
+  color:"#64748b",
+  marginBottom:"16px"
 };
