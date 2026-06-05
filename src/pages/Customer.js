@@ -6391,6 +6391,10 @@ async function sendMessage(
   supportMessage={supportMessage}
   setSupportMessage={setSupportMessage}
   sendSupportMessage={sendSupportMessage}
+  supportImage={supportImage}
+  setSupportImage={setSupportImage}
+  supportImagePreview={supportImagePreview}
+  setSupportImagePreview={setSupportImagePreview}
 />
 
     {showSupportChat && (

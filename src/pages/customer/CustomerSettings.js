@@ -39,7 +39,12 @@ export default function CustomerSettings({
   supportMessages = [],
   supportMessage,
   setSupportMessage,
-  sendSupportMessage
+  sendSupportMessage,
+
+supportImage,
+setSupportImage,
+supportImagePreview,
+setSupportImagePreview,
 }) {
 
   const [closeHover,setCloseHover] =
@@ -883,24 +888,95 @@ const [notificationSettings,setNotificationSettings] =
     </div>
   );
 })}
-                    </div>
+</div>
 
-                    <div style={supportInputRowStyle}>
-                      <input
-                        value={supportMessage}
-                        onChange={(e)=>setSupportMessage(e.target.value)}
-                        placeholder="Type your message..."
-                        style={supportInputStyle}
-                      />
+<input
+  id="supportPhotoUpload"
+  type="file"
+  accept="image/*"
+  style={{ display:"none" }}
+  onChange={(e)=>{
 
-                      <button
-                        type="button"
-                        onClick={sendSupportMessage}
-                        style={supportSendButtonStyle}
-                      >
-                        Send
-                      </button>
-                    </div>
+    const file =
+      e.target.files[0];
+
+    if(file){
+      setSupportImage(file);
+      setSupportImagePreview(
+        URL.createObjectURL(file)
+      );
+    }
+  }}
+/>
+
+<input
+  id="supportCameraUpload"
+  type="file"
+  accept="image/*"
+  capture="environment"
+  style={{ display:"none" }}
+  onChange={(e)=>{
+
+    const file =
+      e.target.files[0];
+
+    if(file){
+      setSupportImage(file);
+      setSupportImagePreview(
+        URL.createObjectURL(file)
+      );
+    }
+  }}
+/>
+
+ <div
+  style={{
+    display:"grid",
+    gridTemplateColumns:"38px 38px 1fr 72px",
+    alignItems:"center",
+    gap:"7px",
+    width:"100%"
+  }}
+>
+  <button
+    type="button"
+    onClick={()=>
+      document
+        .getElementById("supportPhotoUpload")
+        .click()
+    }
+    style={uploadSmallButtonStyle}
+  >
+    📎
+  </button>
+
+  <button
+    type="button"
+    onClick={()=>
+      document
+        .getElementById("supportCameraUpload")
+        .click()
+    }
+    style={uploadSmallButtonStyle}
+  >
+    📷
+  </button>
+
+  <input
+    value={supportMessage}
+    onChange={(e)=>setSupportMessage(e.target.value)}
+    placeholder="Type your message..."
+    style={supportInputStyle}
+  />
+
+  <button
+    type="button"
+    onClick={sendSupportMessage}
+    style={supportSendButtonStyle}
+  >
+    Send
+  </button>
+</div>
                   </div>
                 )}
 
@@ -1726,8 +1802,9 @@ const supportInputRowStyle = {
 };
 
 const supportInputStyle = {
-  flex:1,
-  padding:"13px",
+  minWidth:0,
+  height:"38px",
+  padding:"0 12px",
   borderRadius:"14px",
   border:"1px solid #e5e7eb",
   outline:"none",
@@ -1735,7 +1812,8 @@ const supportInputStyle = {
 };
 
 const supportSendButtonStyle = {
-  minWidth:"78px",
+  width:"72px",
+  height:"38px",
   border:"none",
   borderRadius:"13px",
   padding:"11px 14px",
@@ -2033,4 +2111,20 @@ const removeSavedAccountButtonStyle = {
   fontWeight:"900",
   cursor:"pointer",
   flexShrink:0
+};
+
+const uploadSmallButtonStyle = {
+  width:"38px",
+  height:"38px",
+  border:"none",
+  borderRadius:"13px",
+  padding:"0",
+  background:"#f1f5f9",
+  color:"#0f172a",
+  fontSize:"16px",
+  fontWeight:"900",
+  cursor:"pointer",
+  display:"flex",
+  alignItems:"center",
+  justifyContent:"center"
 };
