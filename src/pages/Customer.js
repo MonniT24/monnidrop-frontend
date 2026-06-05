@@ -4642,7 +4642,12 @@ useEffect(()=>{
 
 async function sendSupportMessage(){
 
-  if(!supportMessage.trim() && !supportImage){
+  const typedMessage =
+    supportMessage.trim() ||
+    document.getElementById("supportMessageInput")?.value?.trim() ||
+    "";
+
+  if(!typedMessage && !supportImage){
     alert("Please type a message or attach an image first");
     return;
   }
@@ -4654,7 +4659,7 @@ async function sendSupportMessage(){
 
     formData.append(
       "message",
-      supportMessage
+      typedMessage
     );
 
     if(supportImage){
@@ -4666,12 +4671,7 @@ async function sendSupportMessage(){
 
     await API.post(
       "/support",
-      formData,
-      {
-        headers:{
-          "Content-Type":"multipart/form-data"
-        }
-      }
+      formData
     );
 
     addCustomerNotification(
@@ -4683,6 +4683,13 @@ async function sendSupportMessage(){
     setSupportMessage("");
     setSupportImage(null);
     setSupportImagePreview("");
+
+    const input =
+      document.getElementById("supportMessageInput");
+
+    if(input){
+      input.value = "";
+    }
 
     fetchSupportMessages();
 
@@ -5743,16 +5750,10 @@ async function sendMessage(
     try{
 
       const res =
-        await API.put(
-  "/customer/profile-image",
-  formData,
-  {
-    headers:{
-      "Content-Type":"multipart/form-data"
-    }
-  }
-);
-
+  await API.put(
+    "/customer/profile-image",
+    formData
+  );
       setUser(
         res.data.user
       );

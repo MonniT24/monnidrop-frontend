@@ -41,132 +41,129 @@ export default function CustomerSettings({
   setSupportMessage,
   sendSupportMessage,
 
-supportImage,
-setSupportImage,
-supportImagePreview,
-setSupportImagePreview,
+  supportImage,
+  setSupportImage,
+  supportImagePreview,
+  setSupportImagePreview
 }) {
 
   const [closeHover,setCloseHover] =
-  React.useState(false);
+    React.useState(false);
 
   const [cancelHover,setCancelHover] =
-  React.useState(false);
+    React.useState(false);
 
-const [signOutHover,setSignOutHover] =
-  React.useState(false);
+  const [signOutHover,setSignOutHover] =
+    React.useState(false);
 
   const [addAccountHover,setAddAccountHover] =
-  React.useState(false);
+    React.useState(false);
 
   const [resetHover,setResetHover] =
-  React.useState(false);
+    React.useState(false);
 
   const [removeAccountHover,setRemoveAccountHover] =
-  React.useState("");
+    React.useState("");
 
   const [editingNotification,setEditingNotification] =
-  React.useState("");
+    React.useState("");
 
-const [notificationSettings,setNotificationSettings] =
-  React.useState(()=>{
-    
+  const [notificationSettings,setNotificationSettings] =
+    React.useState(()=>{
 
-    const savedSettings =
-      localStorage.getItem("monnidropNotificationSettings");
+      const savedSettings =
+        localStorage.getItem("monnidropNotificationSettings");
 
-    if(savedSettings){
-      return JSON.parse(savedSettings);
-    }
-
-    return {
-
-      Promotions:{
-        push:true,
-        email:true,
-        sms:false
-      },
-
-      "Order updates":{
-        push:true,
-        email:true,
-        sms:true
-      },
-
-      "Chat messages":{
-        push:true,
-        email:true,
-        sms:true
-      },
-
-      "Payment alerts":{
-        push:true,
-        email:true,
-        sms:false
-      },
-
-      "Support replies":{
-        push:true,
-        email:false,
-        sms:false
+      if(savedSettings){
+        return JSON.parse(savedSettings);
       }
-    };
-  });
 
+      return {
 
+        Promotions:{
+          push:true,
+          email:true,
+          sms:false
+        },
+
+        "Order updates":{
+          push:true,
+          email:true,
+          sms:true
+        },
+
+        "Chat messages":{
+          push:true,
+          email:true,
+          sms:true
+        },
+
+        "Payment alerts":{
+          push:true,
+          email:true,
+          sms:false
+        },
+
+        "Support replies":{
+          push:true,
+          email:false,
+          sms:false
+        }
+      };
+    });
 
   const user =
     JSON.parse(localStorage.getItem("user")) || {};
 
-    const [savedAccounts,setSavedAccounts] =
-  React.useState(()=>{
+  const [savedAccounts,setSavedAccounts] =
+    React.useState(()=>{
 
-    const accounts =
-      localStorage.getItem(
-        "monnidropSavedAccounts"
-      );
+      const accounts =
+        localStorage.getItem(
+          "monnidropSavedAccounts"
+        );
 
-    return accounts
-      ? JSON.parse(accounts)
-      : [];
-  });
+      return accounts
+        ? JSON.parse(accounts)
+        : [];
+    });
 
   function saveCurrentAccount(){
 
-  if(!user?.email){
-    return;
-  }
-
-  const exists =
-    savedAccounts.find(
-      (account)=>
-        account.email === user.email
-    );
-
-  if(exists){
-    return;
-  }
-
-  const updatedAccounts = [
-
-    ...savedAccounts,
-
-    {
-      name:user.name,
-      email:user.email
+    if(!user?.email){
+      return;
     }
 
-  ];
+    const exists =
+      savedAccounts.find(
+        (account)=>
+          account.email === user.email
+      );
 
-  setSavedAccounts(
-    updatedAccounts
-  );
+    if(exists){
+      return;
+    }
 
-  localStorage.setItem(
-    "monnidropSavedAccounts",
-    JSON.stringify(updatedAccounts)
-  );
-}
+    const updatedAccounts = [
+
+      ...savedAccounts,
+
+      {
+        name:user.name,
+        email:user.email
+      }
+
+    ];
+
+    setSavedAccounts(
+      updatedAccounts
+    );
+
+    localStorage.setItem(
+      "monnidropSavedAccounts",
+      JSON.stringify(updatedAccounts)
+    );
+  }
 
   const closeSettings = () => {
     setSelectedSetting("");
@@ -364,233 +361,234 @@ const [notificationSettings,setNotificationSettings] =
               </select>
             )
 
-        : selectedSetting === "Notifications" ? (
-  <InfoBox>
+            : selectedSetting === "Notifications" ? (
+              <InfoBox>
 
-    {[
-      {
-        title:"Promotions",
-        text:"Get notified about offers and discounts.",
-        icon:<FiBell />
-      },
-      {
-        title:"Order updates",
-        text:"Get notified about your order status.",
-        icon:<FiBox />
-      },
-      {
-        title:"Chat messages",
-        text:"Get notified about new messages.",
-        icon:<FiMessageCircle />
-      },
-      {
-        title:"Payment alerts",
-        text:"Get notified about payment activities.",
-        icon:<FiCreditCard />
-      },
-      {
-        title:"Support replies",
-        text:"Get notified about support responses.",
-        icon:<FiHeadphones />
-      }
-    ].map((item)=>(
+                {[
+                  {
+                    title:"Promotions",
+                    text:"Get notified about offers and discounts.",
+                    icon:<FiBell />
+                  },
+                  {
+                    title:"Order updates",
+                    text:"Get notified about your order status.",
+                    icon:<FiBox />
+                  },
+                  {
+                    title:"Chat messages",
+                    text:"Get notified about new messages.",
+                    icon:<FiMessageCircle />
+                  },
+                  {
+                    title:"Payment alerts",
+                    text:"Get notified about payment activities.",
+                    icon:<FiCreditCard />
+                  },
+                  {
+                    title:"Support replies",
+                    text:"Get notified about support responses.",
+                    icon:<FiHeadphones />
+                  }
+                ].map((item)=>(
 
-      <div
-        key={item.title}
-        style={notificationCardStyle}
-      >
-        <div style={notificationTopRowStyle}>
+                  <div
+                    key={item.title}
+                    style={notificationCardStyle}
+                  >
+                    <div style={notificationTopRowStyle}>
 
-          <div style={notificationIconStyle}>
-            {item.icon}
-          </div>
+                      <div style={notificationIconStyle}>
+                        {item.icon}
+                      </div>
 
-          <div style={{flex:1}}>
-            <div style={notificationTitleStyle}>
-              {item.title}
-            </div>
+                      <div style={{flex:1}}>
+                        <div style={notificationTitleStyle}>
+                          {item.title}
+                        </div>
 
-            <div style={notificationTextStyle}>
-              {item.text}
-            </div>
-          </div>
+                        <div style={notificationTextStyle}>
+                          {item.text}
+                        </div>
+                      </div>
 
-          <button
-            type="button"
-            onClick={()=>{
-              setEditingNotification(
-                editingNotification === item.title
-                ? ""
-                : item.title
-              );
-            }}
-            style={notificationEditButtonStyle}
-          >
-            {
-              editingNotification === item.title
-              ? "Close"
-              : "Edit"
-            }
-          </button>
+                      <button
+                        type="button"
+                        onClick={()=>{
+                          setEditingNotification(
+                            editingNotification === item.title
+                            ? ""
+                            : item.title
+                          );
+                        }}
+                        style={notificationEditButtonStyle}
+                      >
+                        {
+                          editingNotification === item.title
+                          ? "Close"
+                          : "Edit"
+                        }
+                      </button>
 
-          <div style={notificationArrowStyle}>
-            {
-              editingNotification === item.title
-              ? <FiChevronUp />
-              : <FiChevronDown />
-            }
-          </div>
+                      <div style={notificationArrowStyle}>
+                        {
+                          editingNotification === item.title
+                          ? <FiChevronUp />
+                          : <FiChevronDown />
+                        }
+                      </div>
 
-        </div>
+                    </div>
 
-        {editingNotification === item.title && (
+                    {editingNotification === item.title && (
 
-          <div style={notificationToggleBoxStyle}>
+                      <div style={notificationToggleBoxStyle}>
 
-            {["push","email","sms"].map((type)=>(
+                        {["push","email","sms"].map((type)=>(
 
-              <div
-                key={type}
-                style={notificationToggleRowStyle}
-              >
-                <span style={notificationToggleTextStyle}>
-                  {type.toUpperCase()}
-                </span>
+                          <div
+                            key={type}
+                            style={notificationToggleRowStyle}
+                          >
+                            <span style={notificationToggleTextStyle}>
+                              {type.toUpperCase()}
+                            </span>
+
+                            <div
+                              onClick={()=>{
+
+                                setNotificationSettings((old)=>{
+
+                                  const updatedSettings = {
+                                    ...old,
+                                    [item.title]:{
+                                      ...old[item.title],
+                                      [type]:
+                                        !old[item.title]?.[type]
+                                    }
+                                  };
+
+                                  localStorage.setItem(
+                                    "monnidropNotificationSettings",
+                                    JSON.stringify(updatedSettings)
+                                  );
+
+                                  return updatedSettings;
+                                });
+
+                              }}
+                              style={{
+                                ...notificationSwitchStyle,
+                                background:
+                                  notificationSettings[item.title]?.[type]
+                                  ? "#1d4ed8"
+                                  : "#cbd5e1"
+                              }}
+                            >
+                              <div
+                                style={{
+                                  ...notificationSwitchDotStyle,
+                                  left:
+                                    notificationSettings[item.title]?.[type]
+                                    ? "22px"
+                                    : "3px"
+                                }}
+                              />
+                            </div>
+
+                          </div>
+
+                        ))}
+
+                      </div>
+
+                    )}
+
+                  </div>
+
+                ))}
 
                 <div
-                  onClick={()=>{
+                  style={{
+                    marginTop:"18px",
+                    display:"flex",
+                    justifyContent:"center"
+                  }}
+                >
+                  <button
+                    type="button"
+                    onMouseEnter={()=>setResetHover(true)}
+                    onMouseLeave={()=>setResetHover(false)}
+                    onClick={()=>{
 
-                    setNotificationSettings((old)=>{
+                      const defaultSettings = {
 
-                      const updatedSettings = {
-                        ...old,
-                        [item.title]:{
-                          ...old[item.title],
-                          [type]:
-                            !old[item.title]?.[type]
+                        Promotions:{
+                          push:true,
+                          email:true,
+                          sms:false
+                        },
+
+                        "Order updates":{
+                          push:true,
+                          email:true,
+                          sms:true
+                        },
+
+                        "Chat messages":{
+                          push:true,
+                          email:true,
+                          sms:true
+                        },
+
+                        "Payment alerts":{
+                          push:true,
+                          email:true,
+                          sms:false
+                        },
+
+                        "Support replies":{
+                          push:true,
+                          email:false,
+                          sms:false
                         }
+
                       };
+
+                      setNotificationSettings(
+                        defaultSettings
+                      );
 
                       localStorage.setItem(
                         "monnidropNotificationSettings",
-                        JSON.stringify(updatedSettings)
+                        JSON.stringify(defaultSettings)
                       );
 
-                      return updatedSettings;
-                    });
-
-                  }}
-                  style={{
-                    ...notificationSwitchStyle,
-                    background:
-                      notificationSettings[item.title]?.[type]
-                      ? "#1d4ed8"
-                      : "#cbd5e1"
-                  }}
-                >
-                  <div
-                    style={{
-                      ...notificationSwitchDotStyle,
-                      left:
-                        notificationSettings[item.title]?.[type]
-                        ? "22px"
-                        : "3px"
                     }}
-                  />
+                    style={{
+                      ...resetNotificationButtonStyle,
+                      background:
+                        resetHover
+                        ? "#b91c1c"
+                        : "#dc2626",
+                      transform:
+                        resetHover
+                        ? "translateY(-2px)"
+                        : "translateY(0)",
+                      boxShadow:
+                        resetHover
+                        ? "0 10px 24px rgba(220,38,38,0.35)"
+                        : "none",
+                      transition:"0.25s ease"
+                    }}
+                  >
+                    Reset to Default
+                  </button>
                 </div>
 
-              </div>
+              </InfoBox>
+            )
 
-            ))}
-
-          </div>
-
-        )}
-
-      </div>
-
-    ))}
-
-    <div
-      style={{
-        marginTop:"18px",
-        display:"flex",
-        justifyContent:"center"
-      }}
-    >
-      <button
-  type="button"
-  onMouseEnter={()=>setResetHover(true)}
-  onMouseLeave={()=>setResetHover(false)}
-  onClick={()=>{
-
-    const defaultSettings = {
-
-      Promotions:{
-        push:true,
-        email:true,
-        sms:false
-      },
-
-      "Order updates":{
-        push:true,
-        email:true,
-        sms:true
-      },
-
-      "Chat messages":{
-        push:true,
-        email:true,
-        sms:true
-      },
-
-      "Payment alerts":{
-        push:true,
-        email:true,
-        sms:false
-      },
-
-      "Support replies":{
-        push:true,
-        email:false,
-        sms:false
-      }
-
-    };
-
-    setNotificationSettings(
-      defaultSettings
-    );
-
-    localStorage.setItem(
-      "monnidropNotificationSettings",
-      JSON.stringify(defaultSettings)
-    );
-
-  }}
-  style={{
-    ...resetNotificationButtonStyle,
-    background:
-      resetHover
-      ? "#b91c1c"
-      : "#dc2626",
-    transform:
-      resetHover
-      ? "translateY(-2px)"
-      : "translateY(0)",
-    boxShadow:
-      resetHover
-      ? "0 10px 24px rgba(220,38,38,0.35)"
-      : "none",
-    transition:"0.25s ease"
-  }}
->
-  Reset to Default
-</button>
-    </div>
-
-  </InfoBox>
-)
             : selectedSetting === "About this app" ? (
               <div>
                 {["About MonniDrop", "Contact us"].map((item)=>(
@@ -758,225 +756,288 @@ const [notificationSettings,setNotificationSettings] =
                 {showSupportChat && (
                   <div style={supportChatBoxStyle}>
                     <div
-  style={{
-    display:"flex",
-    justifyContent:"space-between",
-    alignItems:"center",
-    marginBottom:"10px"
-  }}
->
-  <div style={smallHeadingStyle}>
-    Customer Support Chat
-  </div>
+                      style={{
+                        display:"flex",
+                        justifyContent:"space-between",
+                        alignItems:"center",
+                        marginBottom:"10px"
+                      }}
+                    >
+                      <div style={smallHeadingStyle}>
+                        Customer Support Chat
+                      </div>
 
-  <button
-  type="button"
-  onClick={()=>{
-    setShowSupportChat(false);
-  }}
-  onMouseEnter={()=>
-    setCloseHover(true)
-  }
-  onMouseLeave={()=>
-    setCloseHover(false)
-  }
-  style={{
-    width:"34px",
-    height:"34px",
-    border:"none",
-    borderRadius:"12px",
-    background:
-      closeHover
-      ? "#7f1d1d"
-      : "#991b1b",
-    color:"#ffffff",
-    fontSize:"18px",
-    fontWeight:"900",
-    cursor:"pointer",
-    transition:"0.25s ease",
-    transform:
-      closeHover
-      ? "scale(1.08)"
-      : "scale(1)"
-  }}
->
-  ×
-</button>
-</div>
+                      <button
+                        type="button"
+                        onClick={()=>{
+                          setShowSupportChat(false);
+                        }}
+                        onMouseEnter={()=>
+                          setCloseHover(true)
+                        }
+                        onMouseLeave={()=>
+                          setCloseHover(false)
+                        }
+                        style={{
+                          width:"34px",
+                          height:"34px",
+                          border:"none",
+                          borderRadius:"12px",
+                          background:
+                            closeHover
+                            ? "#7f1d1d"
+                            : "#991b1b",
+                          color:"#ffffff",
+                          fontSize:"18px",
+                          fontWeight:"900",
+                          cursor:"pointer",
+                          transition:"0.25s ease",
+                          transform:
+                            closeHover
+                            ? "scale(1.08)"
+                            : "scale(1)"
+                        }}
+                      >
+                        ×
+                      </button>
+                    </div>
 
                     <div style={supportChatWindowStyle}>
                       <div style={supportBubbleStyle}>
                         Hello 👋 Welcome to MonniDrop Customer support. How can we help you?
                       </div>
 
-                     {supportMessages.map((msg,index)=>{
+                      {supportMessages.map((msg,index)=>{
 
-  const currentDate =
-    msg.createdAt
-    ? new Date(msg.createdAt).toLocaleDateString("en-GB",{
-        day:"2-digit",
-        month:"short",
-        year:"numeric"
-      })
-    : "Today";
+                        const currentDate =
+                          msg.createdAt
+                          ? new Date(msg.createdAt).toLocaleDateString("en-GB",{
+                              day:"2-digit",
+                              month:"short",
+                              year:"numeric"
+                            })
+                          : "Today";
 
-  const previousMessage =
-    supportMessages[index - 1];
+                        const previousMessage =
+                          supportMessages[index - 1];
 
-  const previousDate =
-    previousMessage?.createdAt
-    ? new Date(previousMessage.createdAt).toLocaleDateString("en-GB",{
-        day:"2-digit",
-        month:"short",
-        year:"numeric"
-      })
-    : null;
+                        const previousDate =
+                          previousMessage?.createdAt
+                          ? new Date(previousMessage.createdAt).toLocaleDateString("en-GB",{
+                              day:"2-digit",
+                              month:"short",
+                              year:"numeric"
+                            })
+                          : null;
 
-  const showDate =
-    currentDate !== previousDate;
+                        const showDate =
+                          currentDate !== previousDate;
 
-  const messageTime =
-    msg.createdAt
-    ? new Date(msg.createdAt).toLocaleTimeString("en-GB",{
-        hour:"2-digit",
-        minute:"2-digit"
-      })
-    : "Now";
+                        const messageTime =
+                          msg.createdAt
+                          ? new Date(msg.createdAt).toLocaleTimeString("en-GB",{
+                              hour:"2-digit",
+                              minute:"2-digit"
+                            })
+                          : "Now";
 
-  const replyTime =
-    msg.repliedAt || msg.updatedAt || msg.createdAt
-    ? new Date(
-        msg.repliedAt || msg.updatedAt || msg.createdAt
-      ).toLocaleTimeString("en-GB",{
-        hour:"2-digit",
-        minute:"2-digit"
-      })
-    : "Now";
+                        const replyTime =
+                          msg.repliedAt || msg.updatedAt || msg.createdAt
+                          ? new Date(
+                              msg.repliedAt || msg.updatedAt || msg.createdAt
+                            ).toLocaleTimeString("en-GB",{
+                              hour:"2-digit",
+                              minute:"2-digit"
+                            })
+                          : "Now";
 
-  return (
+                        return (
 
-    <div key={msg._id || index}>
+                          <div key={msg._id || index}>
 
-      {showDate && (
-        <div style={chatDateStyle}>
-          {currentDate}
-        </div>
-      )}
+                            {showDate && (
+                              <div style={chatDateStyle}>
+                                {currentDate}
+                              </div>
+                            )}
 
-      <div style={customerBubbleStyle}>
-        <div>
-          You: {msg.message}
-        </div>
+                            <div style={customerBubbleStyle}>
+                              {msg.message && (
+                                <div>
+                                  You: {msg.message}
+                                </div>
+                              )}
 
-        <div style={messageTimeStyle}>
-          {messageTime}
-        </div>
-      </div>
+                              {msg.image && (
+                                <img
+                                  src={msg.image}
+                                  alt="Support attachment"
+                                  style={{
+                                    width:"100%",
+                                    maxWidth:"180px",
+                                    borderRadius:"12px",
+                                    marginTop:msg.message ? "8px" : "0",
+                                    display:"block"
+                                  }}
+                                />
+                              )}
 
-      {msg.reply && (
-        <div style={supportBubbleStyle}>
-          <div>
-            Support: {msg.reply}
-          </div>
+                              <div style={messageTimeStyle}>
+                                {messageTime}
+                              </div>
+                            </div>
 
-          <div style={messageTimeStyle}>
-            {replyTime}
-          </div>
-        </div>
-      )}
+                            {msg.reply && (
+                              <div style={supportBubbleStyle}>
+                                <div>
+                                  Support: {msg.reply}
+                                </div>
 
-    </div>
-  );
-})}
-</div>
+                                <div style={messageTimeStyle}>
+                                  {replyTime}
+                                </div>
+                              </div>
+                            )}
 
-<input
-  id="supportPhotoUpload"
-  type="file"
-  accept="image/*"
-  style={{ display:"none" }}
-  onChange={(e)=>{
+                          </div>
+                        );
+                      })}
+                    </div>
 
-    const file =
-      e.target.files[0];
+                    <input
+                      id="supportPhotoUpload"
+                      type="file"
+                      accept="image/*"
+                      style={{ display:"none" }}
+                      onChange={(e)=>{
 
-    if(file){
-      setSupportImage(file);
-      setSupportImagePreview(
-        URL.createObjectURL(file)
-      );
-    }
-  }}
-/>
+                        const file =
+                          e.target.files[0];
 
-<input
-  id="supportCameraUpload"
-  type="file"
-  accept="image/*"
-  capture="environment"
-  style={{ display:"none" }}
-  onChange={(e)=>{
+                        if(file){
+                          setSupportImage(file);
+                          setSupportImagePreview(
+                            URL.createObjectURL(file)
+                          );
+                        }
+                      }}
+                    />
 
-    const file =
-      e.target.files[0];
+                    <input
+                      id="supportCameraUpload"
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      style={{ display:"none" }}
+                      onChange={(e)=>{
 
-    if(file){
-      setSupportImage(file);
-      setSupportImagePreview(
-        URL.createObjectURL(file)
-      );
-    }
-  }}
-/>
+                        const file =
+                          e.target.files[0];
 
- <div
+                        if(file){
+                          setSupportImage(file);
+                          setSupportImagePreview(
+                            URL.createObjectURL(file)
+                          );
+                        }
+                      }}
+                    />
+
+                    {supportImagePreview && (
+                      <div
+                        style={{
+                          display:"flex",
+                          alignItems:"center",
+                          gap:"10px",
+                          margin:"8px 0",
+                          padding:"8px",
+                          background:"#f8fafc",
+                          border:"1px solid #e5e7eb",
+                          borderRadius:"14px"
+                        }}
+                      >
+                        <img
+                          src={supportImagePreview}
+                          alt="Selected"
+                          style={{
+                            width:"70px",
+                            height:"70px",
+                            objectFit:"cover",
+                            borderRadius:"12px"
+                          }}
+                        />
+
+                        <button
+                          type="button"
+                          onClick={()=>{
+                            setSupportImage(null);
+                            setSupportImagePreview("");
+                          }}
+                          style={{
+                            border:"none",
+                            background:"#ef4444",
+                            color:"#ffffff",
+                            padding:"8px 12px",
+                            borderRadius:"10px",
+                            fontWeight:"900",
+                            cursor:"pointer"
+                          }}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    )}
+
+               <div
   style={{
     display:"grid",
     gridTemplateColumns:"38px 38px 1fr 72px",
     alignItems:"center",
     gap:"7px",
-    width:"100%"
+    width:"100%",
+    marginTop:"12px"
   }}
 >
-  <button
-    type="button"
-    onClick={()=>
-      document
-        .getElementById("supportPhotoUpload")
-        .click()
-    }
-    style={uploadSmallButtonStyle}
-  >
-    📎
-  </button>
+                      <button
+                        type="button"
+                        onClick={()=>
+                          document
+                            .getElementById("supportPhotoUpload")
+                            .click()
+                        }
+                        style={uploadSmallButtonStyle}
+                      >
+                        📎
+                      </button>
 
-  <button
-    type="button"
-    onClick={()=>
-      document
-        .getElementById("supportCameraUpload")
-        .click()
-    }
-    style={uploadSmallButtonStyle}
-  >
-    📷
-  </button>
+                      <button
+                        type="button"
+                        onClick={()=>
+                          document
+                            .getElementById("supportCameraUpload")
+                            .click()
+                        }
+                        style={uploadSmallButtonStyle}
+                      >
+                        📷
+                      </button>
 
-  <input
-    value={supportMessage}
-    onChange={(e)=>setSupportMessage(e.target.value)}
-    placeholder="Type your message..."
-    style={supportInputStyle}
-  />
+                      <input
+  id="supportMessageInput"
+  value={supportMessage}
+  onChange={(e)=>setSupportMessage(e.target.value)}
+  placeholder="Type your message..."
+  style={supportInputStyle}
+/>
 
-  <button
-    type="button"
-    onClick={sendSupportMessage}
-    style={supportSendButtonStyle}
-  >
-    Send
-  </button>
-</div>
+                      <button
+                        type="button"
+                        onClick={sendSupportMessage}
+                        style={supportSendButtonStyle}
+                      >
+                        Send
+                      </button>
+                    </div>
                   </div>
                 )}
 
@@ -1218,229 +1279,230 @@ const [notificationSettings,setNotificationSettings] =
               </div>
             )
 
-        : selectedSetting === "Switch account" ? (
-  <InfoBox>
+            : selectedSetting === "Switch account" ? (
+              <InfoBox>
 
-    <div style={smallHeadingStyle}>
-      Switch Account
-    </div>
-
-    <div style={lastUpdatedStyle}>
-      Manage the account currently signed in on this device.
-    </div>
-
-    <div style={switchAccountCardStyle}>
-
-      <div style={switchAccountAvatarStyle}>
-        {(user?.name || "Customer").charAt(0).toUpperCase()}
-      </div>
-
-      <div style={{flex:1}}>
-        <div style={switchAccountNameStyle}>
-          {user?.name || "Customer"}
-        </div>
-
-        <div style={switchAccountEmailStyle}>
-          {user?.email || "No email found"}
-        </div>
-
-        <div style={activeAccountBadgeStyle}>
-          Active now
-        </div>
-      </div>
-
-    </div>
-
-    <div style={switchSectionTitleStyle}>
-      Saved accounts
-    </div>
-
-    {
-      savedAccounts.length === 0
-      ? (
-        <div style={savedAccountEmptyStyle}>
-          No other saved accounts on this device.
-        </div>
-      )
-      : (
-        <div>
-          {savedAccounts.map((account,index)=>(
-
-            <div
-              key={account.email || index}
-              style={savedAccountCardStyle}
-            >
-              <div style={savedAccountAvatarStyle}>
-                {(account.name || "A").charAt(0).toUpperCase()}
-              </div>
-
-              <div style={{flex:1}}>
-                <div style={savedAccountNameStyle}>
-                  {account.name || "Saved account"}
+                <div style={smallHeadingStyle}>
+                  Switch Account
                 </div>
 
-                <div style={savedAccountEmailStyle}>
-                  {account.email || "No email found"}
+                <div style={lastUpdatedStyle}>
+                  Manage the account currently signed in on this device.
                 </div>
-              </div>
 
-              <button
-  type="button"
-  onMouseEnter={()=>
-    setRemoveAccountHover(account.email)
-  }
-  onMouseLeave={()=>
-    setRemoveAccountHover("")
-  }
-  onClick={()=>{
+                <div style={switchAccountCardStyle}>
 
-    const updatedAccounts =
-      savedAccounts.filter(
-        (saved)=>
-          saved.email !== account.email
-      );
+                  <div style={switchAccountAvatarStyle}>
+                    {(user?.name || "Customer").charAt(0).toUpperCase()}
+                  </div>
 
-    setSavedAccounts(
-      updatedAccounts
-    );
+                  <div style={{flex:1}}>
+                    <div style={switchAccountNameStyle}>
+                      {user?.name || "Customer"}
+                    </div>
 
-    localStorage.setItem(
-      "monnidropSavedAccounts",
-      JSON.stringify(updatedAccounts)
-    );
+                    <div style={switchAccountEmailStyle}>
+                      {user?.email || "No email found"}
+                    </div>
 
-  }}
-  style={{
-    ...removeSavedAccountButtonStyle,
+                    <div style={activeAccountBadgeStyle}>
+                      Active now
+                    </div>
+                  </div>
 
-    background:
-      removeAccountHover === account.email
-      ? "#dc2626"
-      : "#fee2e2",
+                </div>
 
-    color:
-      removeAccountHover === account.email
-      ? "#ffffff"
-      : "#b91c1c",
+                <div style={switchSectionTitleStyle}>
+                  Saved accounts
+                </div>
 
-    transform:
-      removeAccountHover === account.email
-      ? "translateY(-2px)"
-      : "translateY(0)",
+                {
+                  savedAccounts.length === 0
+                  ? (
+                    <div style={savedAccountEmptyStyle}>
+                      No other saved accounts on this device.
+                    </div>
+                  )
+                  : (
+                    <div>
+                      {savedAccounts.map((account,index)=>(
 
-    boxShadow:
-      removeAccountHover === account.email
-      ? "0 8px 18px rgba(220,38,38,0.30)"
-      : "none",
+                        <div
+                          key={account.email || index}
+                          style={savedAccountCardStyle}
+                        >
+                          <div style={savedAccountAvatarStyle}>
+                            {(account.name || "A").charAt(0).toUpperCase()}
+                          </div>
 
-    transition:"0.25s ease"
-  }}
->
-  Remove
-</button>
-            </div>
+                          <div style={{flex:1}}>
+                            <div style={savedAccountNameStyle}>
+                              {account.name || "Saved account"}
+                            </div>
 
-          ))}
-        </div>
-      )
-    }
+                            <div style={savedAccountEmailStyle}>
+                              {account.email || "No email found"}
+                            </div>
+                          </div>
 
-    <button
-      type="button"
-      onClick={()=>{
+                          <button
+                            type="button"
+                            onMouseEnter={()=>
+                              setRemoveAccountHover(account.email)
+                            }
+                            onMouseLeave={()=>
+                              setRemoveAccountHover("")
+                            }
+                            onClick={()=>{
 
-        saveCurrentAccount();
+                              const updatedAccounts =
+                                savedAccounts.filter(
+                                  (saved)=>
+                                    saved.email !== account.email
+                                );
 
-        signOut();
+                              setSavedAccounts(
+                                updatedAccounts
+                              );
 
-      }}
-      onMouseEnter={()=>setAddAccountHover(true)}
-      onMouseLeave={()=>setAddAccountHover(false)}
-      style={{
-        ...mainButtonStyle,
-        background:addAccountHover
-          ? "linear-gradient(135deg,#0f172a,#1e40af)"
-          : "linear-gradient(135deg,#0f172a,#1d4ed8)",
-        transform:addAccountHover
-          ? "translateY(-2px)"
-          : "translateY(0)",
-        boxShadow:addAccountHover
-          ? "0 12px 26px rgba(29,78,216,0.30)"
-          : "none",
-        transition:"0.25s ease"
-      }}
-    >
-      + Add new account
-    </button>
+                              localStorage.setItem(
+                                "monnidropSavedAccounts",
+                                JSON.stringify(updatedAccounts)
+                              );
 
-  </InfoBox>
-)
-           : selectedSetting === "Sign out" ? (
-  <InfoBox>
-   <div
-  style={{
-    fontSize:"20px",
-    fontWeight:"900",
-    color:"#0f172a",
-    marginBottom:"8px"
-  }}
->
-  Sign out of MonniDrop?
-</div>
+                            }}
+                            style={{
+                              ...removeSavedAccountButtonStyle,
 
-    <p style={smallTextStyle}>
-      You are currently signed in as:
-    </p>
+                              background:
+                                removeAccountHover === account.email
+                                ? "#dc2626"
+                                : "#fee2e2",
 
-    <div style={accountMiniCardStyle}>
-      <strong>{user?.name || "Customer"}</strong>
-      <span>{user?.email || "No email found"}</span>
-    </div>
+                              color:
+                                removeAccountHover === account.email
+                                ? "#ffffff"
+                                : "#b91c1c",
 
-    <p style={smallTextStyle}>
-      You will need to log in again to access orders, messages,
-      payments and delivery updates.
-    </p>
+                              transform:
+                                removeAccountHover === account.email
+                                ? "translateY(-2px)"
+                                : "translateY(0)",
 
-    <div style={signOutButtonRowStyle}>
-      <button
-  type="button"
-  onClick={closeSettings}
-  onMouseEnter={()=>setCancelHover(true)}
-  onMouseLeave={()=>setCancelHover(false)}
-  style={{
-    ...cancelButtonStyle,
-    background:cancelHover ? "#f1f5f9" : "#ffffff",
-    transform:cancelHover ? "translateY(-2px)" : "translateY(0)",
-    boxShadow:cancelHover
-      ? "0 8px 20px rgba(15,23,42,0.08)"
-      : "none",
-    transition:"0.25s ease"
-  }}
->
-  Cancel
-</button>
+                              boxShadow:
+                                removeAccountHover === account.email
+                                ? "0 8px 18px rgba(220,38,38,0.30)"
+                                : "none",
 
-      <button
-  type="button"
-  onClick={signOut}
-  onMouseEnter={()=>setSignOutHover(true)}
-  onMouseLeave={()=>setSignOutHover(false)}
-  style={{
-    ...dangerButtonStyle,
-    background:signOutHover ? "#b91c1c" : "#dc2626",
-    transform:signOutHover ? "translateY(-2px)" : "translateY(0)",
-    boxShadow:signOutHover
-      ? "0 10px 24px rgba(220,38,38,0.35)"
-      : "none",
-    transition:"0.25s ease"
-  }}
->
-  Sign out
-</button>
-    </div>
-  </InfoBox>
-)
+                              transition:"0.25s ease"
+                            }}
+                          >
+                            Remove
+                          </button>
+                        </div>
+
+                      ))}
+                    </div>
+                  )
+                }
+
+                <button
+                  type="button"
+                  onClick={()=>{
+
+                    saveCurrentAccount();
+
+                    signOut();
+
+                  }}
+                  onMouseEnter={()=>setAddAccountHover(true)}
+                  onMouseLeave={()=>setAddAccountHover(false)}
+                  style={{
+                    ...mainButtonStyle,
+                    background:addAccountHover
+                      ? "linear-gradient(135deg,#0f172a,#1e40af)"
+                      : "linear-gradient(135deg,#0f172a,#1d4ed8)",
+                    transform:addAccountHover
+                      ? "translateY(-2px)"
+                      : "translateY(0)",
+                    boxShadow:addAccountHover
+                      ? "0 12px 26px rgba(29,78,216,0.30)"
+                      : "none",
+                    transition:"0.25s ease"
+                  }}
+                >
+                  + Add new account
+                </button>
+
+              </InfoBox>
+            )
+
+            : selectedSetting === "Sign out" ? (
+              <InfoBox>
+                <div
+                  style={{
+                    fontSize:"20px",
+                    fontWeight:"900",
+                    color:"#0f172a",
+                    marginBottom:"8px"
+                  }}
+                >
+                  Sign out of MonniDrop?
+                </div>
+
+                <p style={smallTextStyle}>
+                  You are currently signed in as:
+                </p>
+
+                <div style={accountMiniCardStyle}>
+                  <strong>{user?.name || "Customer"}</strong>
+                  <span>{user?.email || "No email found"}</span>
+                </div>
+
+                <p style={smallTextStyle}>
+                  You will need to log in again to access orders, messages,
+                  payments and delivery updates.
+                </p>
+
+                <div style={signOutButtonRowStyle}>
+                  <button
+                    type="button"
+                    onClick={closeSettings}
+                    onMouseEnter={()=>setCancelHover(true)}
+                    onMouseLeave={()=>setCancelHover(false)}
+                    style={{
+                      ...cancelButtonStyle,
+                      background:cancelHover ? "#f1f5f9" : "#ffffff",
+                      transform:cancelHover ? "translateY(-2px)" : "translateY(0)",
+                      boxShadow:cancelHover
+                        ? "0 8px 20px rgba(15,23,42,0.08)"
+                        : "none",
+                      transition:"0.25s ease"
+                    }}
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={signOut}
+                    onMouseEnter={()=>setSignOutHover(true)}
+                    onMouseLeave={()=>setSignOutHover(false)}
+                    style={{
+                      ...dangerButtonStyle,
+                      background:signOutHover ? "#b91c1c" : "#dc2626",
+                      transform:signOutHover ? "translateY(-2px)" : "translateY(0)",
+                      boxShadow:signOutHover
+                        ? "0 10px 24px rgba(220,38,38,0.35)"
+                        : "none",
+                      transition:"0.25s ease"
+                    }}
+                  >
+                    Sign out
+                  </button>
+                </div>
+              </InfoBox>
+            )
 
             : (
               <InfoBox>
@@ -1760,20 +1822,22 @@ const contactFooterStyle = {
 const supportChatBoxStyle = {
   marginTop:"14px",
   padding:"16px",
+  paddingBottom:"22px",
   borderRadius:"18px",
   background:"#ffffff",
   border:"1px solid #dbeafe"
 };
 
 const supportChatWindowStyle = {
-  minHeight:"140px",
-  maxHeight:"220px",
+  minHeight:"340px",
+  maxHeight:"420px",
   overflowY:"auto",
   background:"#f8fafc",
   border:"1px solid #e5e7eb",
   borderRadius:"16px",
   padding:"12px",
-  marginBottom:"12px"
+  paddingBottom:"20px",
+  marginBottom:"14px"
 };
 
 const supportBubbleStyle = {
@@ -1783,7 +1847,10 @@ const supportBubbleStyle = {
   borderRadius:"14px",
   marginBottom:"8px",
   fontSize:"14px",
-  fontWeight:"700"
+  fontWeight:"700",
+  position:"relative",
+  overflow:"hidden",
+  wordBreak:"break-word"
 };
 
 const customerBubbleStyle = {
@@ -1793,12 +1860,10 @@ const customerBubbleStyle = {
   borderRadius:"14px",
   marginBottom:"8px",
   fontSize:"14px",
-  fontWeight:"700"
-};
-
-const supportInputRowStyle = {
-  display:"flex",
-  gap:"10px"
+  fontWeight:"700",
+  position:"relative",
+  overflow:"hidden",
+  wordBreak:"break-word"
 };
 
 const supportInputStyle = {
@@ -1836,11 +1901,13 @@ const chatDateStyle = {
 };
 
 const messageTimeStyle = {
-  marginTop:"5px",
+  marginTop:"6px",
   fontSize:"11px",
   fontWeight:"800",
   color:"#64748b",
-  textAlign:"right"
+  textAlign:"right",
+  display:"block",
+  position:"static"
 };
 
 const accountMiniCardStyle = {
