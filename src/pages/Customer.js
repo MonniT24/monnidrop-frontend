@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React,{useState,useEffect,useRef} from "react";
 import styled,{createGlobalStyle} from "styled-components";
 
 import API from "../api/api";
@@ -66,7 +66,7 @@ const GlobalLeafletFix = createGlobalStyle`
   .leaflet-marker-pane,
   .leaflet-tooltip-pane,
   .leaflet-popup-pane{
-    z-index:0 !important;
+  z-index:0 !important;
   }
 
   .leaflet-top,
@@ -3854,6 +3854,9 @@ const [showSupportChat,setShowSupportChat] =
 const [supportMessage,setSupportMessage] =
   useState("");
 
+  const supportMessagesEndRef =
+  useRef(null);
+
   const [supportImage,setSupportImage] =
   useState(null);
 
@@ -3863,10 +3866,8 @@ const [supportImagePreview,setSupportImagePreview] =
   const [supportMessages,setSupportMessages] =
   useState([]);
 
-const [
-  phoneNumber,
-  setPhoneNumber
-] = useState("");
+const [ phoneNumber, setPhoneNumber] = 
+useState("");
 
 
 const [
@@ -4602,6 +4603,105 @@ function markAllNotificationsRead(){
   );
 }
 
+useEffect(()=>{
+
+  function openSupportChatFromSettings(){
+
+    setSelectedSetting("");
+    setActiveSection("Settings");
+    setShowSupportChat(true);
+
+    setTimeout(()=>{
+
+      const supportBox =
+        document.getElementById("customer-support-chat-box");
+
+      if(supportBox){
+        supportBox.scrollIntoView({
+          behavior:"smooth",
+          block:"start"
+        });
+      }
+
+    },300);
+  }
+
+  window.addEventListener(
+    "openCustomerSupportChat",
+    openSupportChatFromSettings
+  );
+
+  return ()=>{
+    window.removeEventListener(
+      "openCustomerSupportChat",
+      openSupportChatFromSettings
+    );
+  };
+
+},[]);
+
+async function sendSupportMessage(){
+
+  if(!supportMessage.trim() && !supportImage){
+    alert("Please type a message or attach an image first");
+    return;
+  }
+
+  try{
+
+    const formData =
+      new FormData();
+
+    formData.append(
+      "message",
+      supportMessage
+    );
+
+    if(supportImage){
+      formData.append(
+        "image",
+        supportImage
+      );
+    }
+
+    await API.post(
+      "/support",
+      formData,
+      {
+        headers:{
+          "Content-Type":"multipart/form-data"
+        }
+      }
+    );
+
+    addCustomerNotification(
+      "Support Message Sent",
+      "Your message has been sent to MonniDrop support.",
+      "success"
+    );
+
+    setSupportMessage("");
+    setSupportImage(null);
+    setSupportImagePreview("");
+
+    fetchSupportMessages();
+
+  }catch(error){
+
+    console.log(
+      "SUPPORT MESSAGE ERROR:",
+      error.response?.status,
+      error.response?.data,
+      error.message
+    );
+
+    alert(
+      error.response?.data?.message ||
+      "Failed to send support message"
+    );
+  }
+}
+
  async function fetchOrders(){
 
   try{
@@ -4709,6 +4809,48 @@ async function fetchSupportMessages(){
     const res =
       await API.get("/support");
 
+    setSupportMessages((oldMessages)=>{
+
+      const oldReplies =
+        oldMessages
+          .filter((msg)=>msg.reply)
+          .map((msg)=>msg._id);
+
+      const newReply =
+        res.data.find((msg)=>
+          msg.reply &&
+          !oldReplies.includes(msg._id)
+        );
+
+      if(newReply){
+
+        addCustomerNotification(
+          "Support Reply Received",
+          "MonniDrop support has replied to your message.",
+          "info"
+        );
+      }
+
+      return res.data;
+    });
+
+  }catch(error){
+
+    console.log(
+      "FETCH CUSTOMER SUPPORT ERROR:",
+      error.response?.data ||
+      error.message
+    );
+  }
+}
+
+async function fetchSupportMessages(){
+
+  try{
+
+    const res =
+      await API.get("/support");
+
     setSupportMessages(res.data);
 
   }catch(error){
@@ -4720,6 +4862,15 @@ async function fetchSupportMessages(){
     );
   }
 }
+
+useEffect(()=>{
+
+  supportMessagesEndRef.current?.
+    scrollIntoView({
+      behavior:"smooth"
+    });
+
+},[supportMessages]);
 
   async function cancelOrder(orderId){
 
@@ -5722,18 +5873,44 @@ async function sendMessage(
 </MenuItem>
             
 
-            <MenuItem
-              active={
-                activeSection === "notifications"
-              }
-              onClick={()=>
-                setActiveSection("notifications")
-              }
-            >
-              <FiBell />
-              Notifications
-            </MenuItem>
+   <MenuItem
+  active={activeSection === "notifications"}
+  onClick={()=>{
+    setActiveSection("notifications");
+    setSidebarOpen(false);
+  }}
+>
+  <FiBell />
 
+  <span>
+    Notifications
+  </span>
+
+ {notifications.some((note)=>note.read === false) && (
+    <span
+      style={{
+        marginLeft:"auto",
+        minWidth:"22px",
+        height:"22px",
+        padding:"0 7px",
+        borderRadius:"999px",
+        background:"#dc2626",
+        color:"#ffffff",
+        fontSize:"12px",
+        fontWeight:"900",
+        display:"inline-flex",
+        alignItems:"center",
+        justifyContent:"center"
+      }}
+    >
+      {
+  notifications.filter(
+    (note)=>note.read === false
+  ).length
+}
+    </span>
+  )}
+</MenuItem>
             <MenuItem
   active={
     activeSection === "My Profile"
@@ -6197,7 +6374,9 @@ async function sendMessage(
 )}
 
 {activeSection === "Settings" && (
- <CustomerSettings
+  <>
+
+    <CustomerSettings
   selectedSetting={selectedSetting}
   setSelectedSetting={setSelectedSetting}
   country={country}
@@ -6206,8 +6385,190 @@ async function sendMessage(
   setLanguage={setLanguage}
   currency={currency}
   setCurrency={setCurrency}
+  showSupportChat={showSupportChat}
+  setShowSupportChat={setShowSupportChat}
+  supportMessages={supportMessages}
+  supportMessage={supportMessage}
+  setSupportMessage={setSupportMessage}
+  sendSupportMessage={sendSupportMessage}
 />
+
+    {showSupportChat && (
+
+      <div
+  id="customer-support-chat-box"
+  style={{
+    marginTop:"18px",
+    padding:"16px",
+    borderRadius:"18px",
+    background:"#ffffff",
+    border:"1px solid #dbeafe"
+  }}
+>
+       <div
+  style={{
+    display:"flex",
+    justifyContent:"space-between",
+    alignItems:"center",
+    marginBottom:"12px"
+  }}
+>
+
+  <div
+    style={{
+      fontSize:"18px",
+      fontWeight:"900",
+      color:"#0f172a"
+    }}
+  >
+    Customer Support Chat
+  </div>
+
+  <div
+    style={{
+      display:"flex",
+      alignItems:"center",
+      gap:"6px",
+      background:"#dcfce7",
+      color:"#166534",
+      padding:"6px 10px",
+      borderRadius:"999px",
+      fontSize:"12px",
+      fontWeight:"900"
+    }}
+  >
+    <span>🟢</span>
+    Support Online
+  </div>
+
+</div>
+
+<div
+  style={{
+    fontSize:"12px",
+    color:"#64748b",
+    fontWeight:"700",
+    marginBottom:"12px"
+  }}
+>
+  Average response time: Under 5 minutes
+</div>
+
+        <div
+          style={{
+            minHeight:"120px",
+            maxHeight:"180px",
+            overflowY:"auto",
+            background:"#f8fafc",
+            border:"1px solid #e5e7eb",
+            borderRadius:"16px",
+            padding:"12px",
+            marginBottom:"12px"
+          }}
+        >
+          <div
+            style={{
+              background:"#dcfce7",
+              color:"#0f172a",
+              padding:"10px 11px",
+              borderRadius:"12px",
+              marginBottom:"8px",
+              fontSize:"12px",
+              fontWeight:"700"
+            }}
+          >
+            Hello 👋 Welcome to MonniDrop Customer support. How can we help you?
+          </div>
+
+          {
+            supportMessages.map((msg)=>(
+
+              <div key={msg._id}>
+
+                <div
+                  style={{
+                    background:"#dbeafe",
+                    color:"#0f172a",
+                    padding:"10px 12px",
+                    borderRadius:"14px",
+                    marginBottom:"8px",
+                    fontSize:"14px",
+                    fontWeight:"700"
+                  }}
+                >
+                  You: {msg.message}
+                </div>
+
+              {
+  msg.reply && (
+
+    <div
+      style={{
+        background:"#dcfce7",
+        color:"#0f172a",
+        padding:"10px 12px",
+        borderRadius:"14px",
+        marginBottom:"8px",
+        fontSize:"14px",
+        fontWeight:"700",
+        border:"1px solid #86efac"
+      }}
+    >
+
+      <div
+        style={{
+          display:"flex",
+          justifyContent:"space-between",
+          alignItems:"center",
+          marginBottom:"6px"
+        }}
+      >
+        <span>
+          Support
+        </span>
+
+       {msg.reply && (
+  new Date(msg.repliedAt || msg.updatedAt || msg.createdAt) >
+  new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+) && (
+  <span
+    style={{
+      background:"#16a34a",
+      color:"#ffffff",
+      padding:"3px 8px",
+      borderRadius:"999px",
+      fontSize:"11px",
+      fontWeight:"900"
+    }}
+  >
+    New Reply
+  </span>
 )}
+      </div>
+
+      {msg.reply}
+
+    </div>
+  )
+}
+
+              </div>
+            ))
+          }
+
+                    <div
+            ref={supportMessagesEndRef}
+          />
+
+        </div>
+
+      </div>
+
+    )}
+
+  </>
+)}
+
 
 
 {false && activeSection === "Settings" && (
@@ -7737,6 +8098,26 @@ marginBottom: "10px"
 />
 
 <input
+  id="supportPhotoUpload"
+  type="file"
+  accept="image/*"
+  style={{ display:"none" }}
+  onChange={(e)=>{
+
+    const file =
+      e.target.files[0];
+
+    if(file){
+      setSupportImage(file);
+
+      setSupportImagePreview(
+        URL.createObjectURL(file)
+      );
+    }
+  }}
+/>
+
+<input
   id="supportCameraUpload"
   type="file"
   accept="image/*"
@@ -7749,6 +8130,7 @@ marginBottom: "10px"
 
     if(file){
       setSupportImage(file);
+
       setSupportImagePreview(
         URL.createObjectURL(file)
       );
@@ -7756,130 +8138,152 @@ marginBottom: "10px"
   }}
 />
 
-<button
-  type="button"
-  onClick={()=>
-    document
-      .getElementById("supportPhotoUpload")
-      .click()
-  }
- style={{
-  width:"52px",
-  height:"52px",
-  border:"none",
-  borderRadius:"14px",
-  padding:"0",
-  background:"#f1f5f9",
-  color:"#0f172a",
-  fontSize:"20px",
-  fontWeight:"900",
-  cursor:"pointer",
-  display:"flex",
-  alignItems:"center",
-  justifyContent:"center",
-  flexShrink:0
-}}
->
-  📎
-</button>
+{supportImagePreview && (
+  <div
+    style={{
+      marginBottom:"10px",
+      position:"relative",
+      width:"120px"
+    }}
+  >
+    <img
+      src={supportImagePreview}
+      alt="Support preview"
+      style={{
+        width:"120px",
+        height:"90px",
+        objectFit:"cover",
+        borderRadius:"14px",
+        border:"1px solid #dbeafe"
+      }}
+    />
 
-<button
-  type="button"
-  onClick={()=>
-    document
-      .getElementById("supportCameraUpload")
-      .click()
-  }
+    <button
+      type="button"
+      onClick={()=>{
+        setSupportImage(null);
+        setSupportImagePreview("");
+      }}
+      style={{
+        position:"absolute",
+        top:"-8px",
+        right:"-8px",
+        width:"26px",
+        height:"26px",
+        borderRadius:"50%",
+        border:"none",
+        background:"#991b1b",
+        color:"#ffffff",
+        fontWeight:"900",
+        cursor:"pointer"
+      }}
+    >
+      ×
+    </button>
+  </div>
+)}
+
+<div
   style={{
-  width:"52px",
-  height:"52px",
-  border:"none",
-  borderRadius:"14px",
-  padding:"0",
-  background:"#f1f5f9",
-  color:"#0f172a",
-  fontSize:"20px",
-  fontWeight:"900",
-  cursor:"pointer",
-  display:"flex",
-  alignItems:"center",
-  justifyContent:"center",
-  flexShrink:0
-}}
+    display:"grid",
+    gridTemplateColumns:"38px 38px 1fr 72px",
+    alignItems:"center",
+    gap:"7px",
+    width:"100%"
+  }}
 >
-  📷
-</button>
-          <input
-            type="text"
-            placeholder="Type your message..."
-            value={supportMessage}
-            onChange={(e)=>setSupportMessage(e.target.value)}
-            style={{
-              flex:1,
-              padding:"12px 14px",
-              borderRadius:"14px",
-              border:"1px solid #dbeafe",
-              outline:"none",
-              fontSize:"14px",
-              fontWeight:"700"
-            }}
-          />
+  <button
+    type="button"
+    onClick={()=>
+      document
+        .getElementById("supportPhotoUpload")
+        .click()
+    }
+    style={{
+      width:"38px",
+      height:"38px",
+      border:"none",
+      borderRadius:"14px",
+      padding:"0",
+      background:"#f1f5f9",
+      color:"#0f172a",
+      fontSize:"16px",
+      fontWeight:"900",
+      cursor:"pointer",
+      display:"flex",
+      alignItems:"center",
+      justifyContent:"center",
+      flexShrink:0
+    }}
+  >
+    📎
+  </button>
 
-          <button
-            type="button"
-            onClick={async()=>{
+  <button
+    type="button"
+    onClick={()=>
+      document
+        .getElementById("supportCameraUpload")
+        .click()
+    }
+    style={{
+      width:"42px",
+      height:"42px",
+      border:"none",
+      borderRadius:"14px",
+      padding:"0",
+      background:"#f1f5f9",
+      color:"#0f172a",
+      fontSize:"18px",
+      fontWeight:"900",
+      cursor:"pointer",
+      display:"flex",
+      alignItems:"center",
+      justifyContent:"center",
+      flexShrink:0
+    }}
+  >
+    📷
+  </button>
 
-  if(!supportMessage.trim()){
-    alert("Please type a message first");
-    return;
-  }
+  <input
+    type="text"
+    placeholder="Type your message..."
+    value={supportMessage}
+    onChange={(e)=>setSupportMessage(e.target.value)}
+    style={{
+      flex:1,
+      minWidth:0,
+      height:"38px",
+      padding:"0 14px",
+      borderRadius:"14px",
+      border:"1px solid #dbeafe",
+      outline:"none",
+      fontSize:"14px",
+      fontWeight:"700"
+    }}
+  />
 
-  try{
-
-    await API.post(
-      "/support",
-      {
-        message:supportMessage
-      }
-    );
-
-    alert("Message sent to MonniDrop support");
-
-    setSupportMessage("");
-
-    fetchSupportMessages();
-
-  }catch(error){
-
-  console.log(
-    "SUPPORT MESSAGE ERROR:",
-    error.response?.status,
-    error.response?.data,
-    error.message
-  );
-
-  alert(
-    error.response?.data?.message ||
-    "Failed to send support message"
-  );
-}
-}}
-            style={{
-  width:"50%",
-  height:"42px",
-  marginTop:"10px",
-  border:"none",
-  borderRadius:"14px",
-  padding:"0 22px",
-  background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
-  color:"#facc15",
-  fontSize:"15px",
-  fontWeight:"900",
-  cursor:"pointer"
-}}
-          >
-            Send
-          </button>
+  <button
+    type="button"
+    onClick={sendSupportMessage}
+    style={{
+      width:"72px",
+      height:"38px",
+      border:"none",
+      borderRadius:"14px",
+      padding:"0",
+      background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
+      color:"#facc15",
+      fontSize:"14px",
+      fontWeight:"900",
+      cursor:"pointer",
+      flexShrink:0
+    }}
+  >
+    Send
+  </button>
+</div>
         </div>
       </div>
     )

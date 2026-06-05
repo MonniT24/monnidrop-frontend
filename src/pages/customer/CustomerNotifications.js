@@ -1,4 +1,5 @@
 import React from "react";
+import { FiBell } from "react-icons/fi";
 
 export default function CustomerNotifications({
   allNotifications = [],
@@ -33,28 +34,29 @@ export default function CustomerNotifications({
   };
 
   const getNotificationIcon = (note) => {
-    if(note.type === "success"){
-      return "✅";
-    }
+  if(note.type === "success"){
+    return "✅";
+  }
 
-    if(note.type === "danger"){
-      return "⚠️";
-    }
+  if(note.type === "danger"){
+    return "⚠️";
+  }
 
-    if(note.type === "status"){
-      return "📦";
-    }
+  if(note.type === "status"){
+    return "📦";
+  }
 
-    return "🔔";
-  };
+  return <FiBell />;
+};
 
   return (
     <>
       <div style={heroStyle}>
         <div style={heroContentStyle}>
           <div style={heroBadgeStyle}>
-            🔔 Delivery Alerts
-          </div>
+  <FiBell style={{marginRight:"6px"}} />
+  Delivery Alerts
+</div>
 
           <h1 style={heroTitleStyle}>
             Stay Updated Instantly
@@ -67,8 +69,8 @@ export default function CustomerNotifications({
         </div>
 
         <div style={heroIconStyle}>
-          🔔
-        </div>
+       <FiBell />
+     </div>
       </div>
 
       <div
@@ -115,8 +117,8 @@ export default function CustomerNotifications({
       {allNotifications.length === 0 ? (
         <div style={emptyStyle}>
           <div style={emptyIconStyle}>
-            🔔
-          </div>
+  <FiBell />
+</div>
 
           <div style={emptyTitleStyle}>
             No notifications yet
@@ -251,7 +253,7 @@ const heroIconStyle = {
   justifyContent:"center",
   background:"rgba(255,255,255,0.14)",
   border:"1px solid rgba(255,255,255,0.24)",
-  fontSize:"42px",
+  fontSize:"38px",
   boxShadow:"0 14px 30px rgba(15,23,42,0.22)"
 };
 
