@@ -65,8 +65,23 @@ export default function CustomerSettings({
   const [removeAccountHover,setRemoveAccountHover] =
     React.useState("");
 
+    const [deleteAccountHover,setDeleteAccountHover] =
+  React.useState(false);
+
   const [editingNotification,setEditingNotification] =
     React.useState("");
+
+  const [supportSearch,setSupportSearch] =
+  React.useState("");
+
+const [supportSearchResult,setSupportSearchResult] =
+  React.useState("");  
+
+  const [feedbackMessage,setFeedbackMessage] =
+  React.useState("");
+
+const [deleteAccountConfirmed,setDeleteAccountConfirmed
+] = React.useState(false);  
 
   const [notificationSettings,setNotificationSettings] =
     React.useState(()=>{
@@ -114,6 +129,36 @@ export default function CustomerSettings({
 
   const user =
     JSON.parse(localStorage.getItem("user")) || {};
+
+const [securityPanel,setSecurityPanel] =
+  React.useState("");
+
+const [securityMessage,setSecurityMessage] =
+  React.useState("");
+
+const [securityPhone,setSecurityPhone] =
+  React.useState(user?.phone || "");
+
+const [securityEmail,setSecurityEmail] =
+  React.useState(user?.email || "");
+
+const [securityPassword,setSecurityPassword] =
+  React.useState("");
+
+const [twoFactorOn,setTwoFactorOn] =
+  React.useState(
+    localStorage.getItem("monnidropTwoFactorEnabled") === "true"
+  );
+
+const [googleLinked,setGoogleLinked] =
+  React.useState(
+    localStorage.getItem("monnidropGoogleLinked") === "true"
+  );
+
+const [facebookLinked,setFacebookLinked] =
+  React.useState(
+    localStorage.getItem("monnidropFacebookLinked") === "true"
+  );  
 
   const [savedAccounts,setSavedAccounts] =
     React.useState(()=>{
@@ -176,6 +221,101 @@ export default function CustomerSettings({
     window.location.href = "/";
   };
 
+  const updateLocalUser = (updates) => {
+  const currentUser =
+    JSON.parse(localStorage.getItem("user") || "{}");
+
+  const updatedUser = {
+    ...currentUser,
+    ...updates
+  };
+
+  localStorage.setItem(
+    "user",
+    JSON.stringify(updatedUser)
+  );
+};
+
+const openSecurityPanel = (panelName) => {
+  setSecurityPanel(panelName);
+  setSecurityMessage("");
+};
+
+ const searchSupportArticle = () => {
+
+  const text =
+    supportSearch.trim().toLowerCase();
+
+  if(!text){
+    setSupportSearchResult(
+      "Please type a question first."
+    );
+    return;
+  }
+
+  if(
+    text.includes("fake rider") ||
+    text.includes("report rider") ||
+    text.includes("suspicious rider") ||
+    text.includes("rider")
+  ){
+    setSupportSearchResult(
+      "To report a fake or suspicious rider, go to Contact us, open Live Chat Support, describe the rider and delivery issue, and attach a screenshot or photo if available."
+    );
+    return;
+  }
+
+  if(
+    text.includes("fake link") ||
+    text.includes("fake website") ||
+    text.includes("fake app")
+  ){
+    setSupportSearchResult(
+      "Avoid opening suspicious MonniDrop links. Only use the official MonniDrop app or website. Report fake links through Contact us."
+    );
+    return;
+  }
+
+  if(
+    text.includes("payment") ||
+    text.includes("momo") ||
+    text.includes("money") ||
+    text.includes("pay")
+  ){
+    setSupportSearchResult(
+      "For payment safety, always confirm your payment status inside MonniDrop and avoid sending money outside the app."
+    );
+    return;
+  }
+
+  if(
+    text.includes("scam") ||
+    text.includes("fake") ||
+    text.includes("fraud")
+  ){
+    setSupportSearchResult(
+      "Be careful with fake calls, suspicious links, and people asking for payments outside MonniDrop."
+    );
+    return;
+  }
+
+  if(
+    text.includes("password") ||
+    text.includes("secure") ||
+    text.includes("account") ||
+    text.includes("login")
+  ){
+    setSupportSearchResult(
+      "To make your account more secure, use a strong password, avoid reusing passwords, and enable two-factor authentication when available."
+    );
+    return;
+  }
+
+  setSupportSearchResult(
+    "No exact answer found. Please contact MonniDrop support from Contact us."
+  );
+};
+
   const updateSavedSettings = (key,value) => {
     const savedSettings =
       JSON.parse(
@@ -207,6 +347,54 @@ export default function CustomerSettings({
           safe and secure.
         </p>
       </div>
+
+<div style={securityGridStyle}>
+
+  {[
+    {
+      title:"Account security",
+      icon:"🛡️"
+    },
+    {
+      title:"Privacy",
+      icon:"🔒"
+    },
+    {
+      title:"Permissions",
+      icon:"🔑"
+    },
+    {
+      title:"Safety center",
+      icon:"✅"
+    }
+  ].map((item)=>(
+
+    <div
+      key={item.title}
+      onClick={()=>setSelectedSetting(item.title)}
+      style={securityCardStyle}
+    >
+      <div style={securityIconStyle}>
+        {item.icon}
+      </div>
+
+      <div style={securityTextStyle}>
+        {item.title}
+      </div>
+
+      <div style={securityArrowStyle}>
+        ›
+      </div>
+    </div>
+
+  ))}
+
+</div>
+
+<div style={boxStyle}>
+  <div style={sectionTitleStyle}>
+    Preferences
+  </div>
 
       <div style={boxStyle}>
         <div style={sectionTitleStyle}>
@@ -1022,7 +1210,7 @@ export default function CustomerSettings({
                         📷
                       </button>
 
-                      <input
+  <input
   id="supportMessageInput"
   value={supportMessage}
   onChange={(e)=>setSupportMessage(e.target.value)}
@@ -1437,6 +1625,719 @@ export default function CustomerSettings({
               </InfoBox>
             )
 
+            
+
+           : selectedSetting === "Account security" ? (
+  <InfoBox>
+    <div style={accountSecurityHeroStyle}>
+      <div style={accountSecurityIconStyle}>🛡️</div>
+
+      <div>
+        <div style={accountSecurityTitleStyle}>
+          Your account is protected
+        </div>
+
+        <div style={accountSecurityTextStyle}>
+          Your MonniDrop account is protected by secure login,
+          account verification and delivery safety checks.
+        </div>
+      </div>
+    </div>
+
+    {!securityPanel && (
+      <>
+        <SecurityRow
+          title="Mobile phone number"
+          value={securityPhone || "No phone number added"}
+          action={securityPhone ? "Edit" : "Add"}
+          onClick={()=>openSecurityPanel("phone")}
+        />
+
+        <SecurityRow
+          title="Email"
+          value={securityEmail || "No email added"}
+          action={securityEmail ? "Edit" : "Add"}
+          onClick={()=>openSecurityPanel("email")}
+        />
+
+        <SecurityRow
+          title="Password"
+          value="Password is hidden for security"
+          action="Edit"
+          onClick={()=>openSecurityPanel("password")}
+        />
+
+        <SecurityRow
+          title={`Two-factor authentication: ${twoFactorOn ? "On" : "Off"}`}
+          value="Protect your account by adding an extra layer of security."
+          action={twoFactorOn ? "Turn off" : "Turn on"}
+          onClick={()=>{
+            const nextValue = !twoFactorOn;
+            setTwoFactorOn(nextValue);
+
+            localStorage.setItem(
+              "monnidropTwoFactorEnabled",
+              nextValue ? "true" : "false"
+            );
+
+            setSecurityMessage(
+              nextValue
+              ? "✅ Two-factor authentication has been turned on."
+              : "✅ Two-factor authentication has been turned off."
+            );
+          }}
+        />
+
+        <div style={securityGroupTitleStyle}>
+          Third-party accounts
+        </div>
+
+       <SecurityRow
+  title="Google"
+  value={googleLinked ? "Linked" : "Not linked"}
+  action={googleLinked ? "Unlink" : "Link"}
+  onClick={()=>{
+    if(googleLinked){
+      setGoogleLinked(false);
+      localStorage.setItem("monnidropGoogleLinked","false");
+      setSecurityMessage("✅ Google account unlinked successfully.");
+      return;
+    }
+
+    window.open(
+      "https://accounts.google.com/",
+      "_blank"
+    );
+
+    setGoogleLinked(true);
+    localStorage.setItem("monnidropGoogleLinked","true");
+    setSecurityMessage("✅ Google account linked successfully.");
+  }}
+/>
+
+        <SecurityRow
+  title="Facebook"
+  value={facebookLinked ? "Linked" : "Not linked"}
+  action={facebookLinked ? "Unlink" : "Link"}
+  onClick={()=>{
+    if(facebookLinked){
+      setFacebookLinked(false);
+      localStorage.setItem("monnidropFacebookLinked","false");
+      setSecurityMessage("✅ Facebook account unlinked successfully.");
+      return;
+    }
+
+    window.open(
+      "https://www.facebook.com/login/",
+      "_blank"
+    );
+
+    setFacebookLinked(true);
+    localStorage.setItem("monnidropFacebookLinked","true");
+    setSecurityMessage("✅ Facebook account linked successfully.");
+  }}
+/>
+
+        <div style={securityGroupTitleStyle}>
+          Account activity
+        </div>
+
+        <SecurityPlainRow
+          title="Sign in activity"
+          onClick={()=>openSecurityPanel("signin")}
+        />
+
+        <SecurityPlainRow
+          title="Recent devices"
+          onClick={()=>openSecurityPanel("devices")}
+        />
+
+        <SecurityPlainRow
+          title="Trusted devices"
+          onClick={()=>openSecurityPanel("trusted")}
+        />
+
+        <div style={securityGroupTitleStyle}>
+          MonniDrop security
+        </div>
+
+        <SecurityPlainRow
+          title="Delivery verification OTP"
+          onClick={()=>openSecurityPanel("otp")}
+        />
+
+        <SecurityPlainRow
+          title="Payment protection"
+          onClick={()=>openSecurityPanel("payment")}
+        />
+
+        <SecurityPlainRow
+          title="Rider verification status"
+          onClick={()=>openSecurityPanel("rider")}
+        />
+
+        <div style={securityGroupTitleStyle}>
+          Security actions
+        </div>
+
+        <SecurityPlainRow
+          title="Sign out from all devices"
+          onClick={()=>{
+            localStorage.removeItem("monnidropSavedAccounts");
+            setSavedAccounts([]);
+
+            setSecurityMessage(
+              "✅ All saved accounts have been removed from this device."
+            );
+          }}
+        />
+
+        <SecurityPlainRow
+          title="Delete your MonniDrop account"
+          danger
+          onClick={()=>openSecurityPanel("delete")}
+        />
+
+        {securityMessage && (
+          <div style={securitySuccessMessageStyle}>
+            {securityMessage}
+          </div>
+        )}
+      </>
+    )}
+
+    {securityPanel === "phone" && (
+      <SecurityEditPage
+        title="Edit mobile phone number"
+        value={securityPhone}
+        setValue={setSecurityPhone}
+        placeholder="Enter phone number"
+        buttonText="Save phone number"
+        onBack={()=>setSecurityPanel("")}
+        onSave={()=>{
+          if(!securityPhone.trim()){
+            setSecurityMessage("Please enter a valid phone number.");
+            return;
+          }
+
+          updateLocalUser({phone:securityPhone});
+          setSecurityMessage("✅ Phone number updated successfully.");
+          setSecurityPanel("");
+        }}
+      />
+    )}
+
+    {securityPanel === "email" && (
+      <SecurityEditPage
+        title="Edit email address"
+        value={securityEmail}
+        setValue={setSecurityEmail}
+        placeholder="Enter email address"
+        buttonText="Save email"
+        onBack={()=>setSecurityPanel("")}
+        onSave={()=>{
+          if(!securityEmail.includes("@")){
+            setSecurityMessage("Please enter a valid email address.");
+            return;
+          }
+
+          updateLocalUser({email:securityEmail});
+          setSecurityMessage("✅ Email address updated successfully.");
+          setSecurityPanel("");
+        }}
+      />
+    )}
+
+    {securityPanel === "password" && (
+      <SecurityEditPage
+        title="Change password"
+        value={securityPassword}
+        setValue={setSecurityPassword}
+        placeholder="Enter new password"
+        type="password"
+        buttonText="Save password"
+        onBack={()=>setSecurityPanel("")}
+        onSave={()=>{
+          if(securityPassword.length < 6){
+            setSecurityMessage("Password must be at least 6 characters.");
+            return;
+          }
+
+          localStorage.setItem(
+            "monnidropPasswordUpdatedAt",
+            new Date().toISOString()
+          );
+
+          setSecurityPassword("");
+          setSecurityMessage("✅ Password updated successfully.");
+          setSecurityPanel("");
+        }}
+      />
+    )}
+
+    {securityPanel === "signin" && (
+      <SecurityReadPage
+        title="Sign in activity"
+        onBack={()=>setSecurityPanel("")}
+        items={[
+          ["Current device","Chrome on Windows • Active now"],
+          ["Last login",new Date().toLocaleString()]
+        ]}
+      />
+    )}
+
+    {securityPanel === "devices" && (
+      <SecurityReadPage
+        title="Recent devices"
+        onBack={()=>setSecurityPanel("")}
+        items={[
+          ["Windows Desktop","Current device"],
+          ["Mobile browser","Recently used device"]
+        ]}
+      />
+    )}
+
+    {securityPanel === "trusted" && (
+      <SecurityReadPage
+        title="Trusted devices"
+        onBack={()=>setSecurityPanel("")}
+        items={[
+          ["This device","Trusted for faster login"]
+        ]}
+      />
+    )}
+
+    {securityPanel === "otp" && (
+      <SecurityReadPage
+        title="Delivery verification OTP"
+        onBack={()=>setSecurityPanel("")}
+   Back     items={[
+          ["Delivery safety","MonniDrop uses delivery OTP verification to confirm that packages are delivered to the correct customer before a delivery is completed."]
+        ]}
+      />
+    )}
+
+    {securityPanel === "payment" && (
+      <SecurityReadPage
+        title="Payment protection"
+        onBack={()=>setSecurityPanel("")}
+        items={[
+          ["Payment safety","MonniDrop protects payments by confirming payment status inside the app and helping customers avoid payments outside the platform."]
+        ]}
+      />
+    )}
+
+    {securityPanel === "rider" && (
+      <SecurityReadPage
+        title="Rider verification status"
+        onBack={()=>setSecurityPanel("")}
+        items={[
+          ["Rider safety","MonniDrop allows riders to be monitored and verified by admins. Customers can report suspicious delivery activity through support."]
+        ]}
+      />
+    )}
+
+   {securityPanel === "delete" && (
+  <div style={securityPanelStyle}>
+    <button
+      type="button"
+      onClick={()=>setSecurityPanel("")}
+      style={securityPanelBackButtonStyle}
+    >
+      ← Back
+    </button>
+
+    <div style={securityPanelTitleStyle}>
+      Delete your MonniDrop account
+    </div>
+
+    <div
+      style={{
+        background:"#fef2f2",
+        border:"1px solid #fecaca",
+        borderRadius:"16px",
+        padding:"16px",
+        marginBottom:"18px"
+      }}
+    >
+      <div
+        style={{
+          color:"#b91c1c",
+          fontWeight:"900",
+          fontSize:"16px",
+          marginBottom:"10px"
+        }}
+      >
+        Warning
+      </div>
+
+      <div
+        style={{
+          color:"#7f1d1d",
+          lineHeight:"1.7",
+          fontWeight:"700"
+        }}
+      >
+        • Your account cannot be recovered after deletion.
+        <br /><br />
+        • Saved addresses will be removed.
+        <br /><br />
+        • Saved payment methods will be removed.
+        <br /><br />
+        • Delivery records may no longer be accessible.
+        <br /><br />
+        • Rider communication records may be removed.
+      </div>
+    </div>
+
+    <label
+      style={{
+        display:"flex",
+        alignItems:"center",
+        gap:"10px",
+        marginBottom:"20px",
+        fontWeight:"800",
+        cursor:"pointer"
+      }}
+    >
+      <input
+        type="checkbox"
+        checked={deleteAccountConfirmed}
+        onChange={(e)=>
+          setDeleteAccountConfirmed(
+            e.target.checked
+          )
+        }
+      />
+
+      I understand that deleting my account is permanent.
+    </label>
+
+    <button
+      type="button"
+      disabled={!deleteAccountConfirmed}
+      onMouseEnter={()=>setDeleteAccountHover(true)}
+      onMouseLeave={()=>setDeleteAccountHover(false)}
+      onClick={()=>{
+        localStorage.clear();
+        window.location.href="/";
+      }}
+     style={{
+  width:"100%",
+  border:"none",
+  borderRadius:"16px",
+  padding:"16px",
+  background:
+    !deleteAccountConfirmed
+    ? "#cbd5e1"
+    : deleteAccountHover
+    ? "#991b1b"
+    : "#dc2626",
+  color:"#ffffff",
+  fontWeight:"900",
+  fontSize:"16px",
+  cursor:
+    deleteAccountConfirmed
+    ? "pointer"
+    : "not-allowed",
+  transform:
+    deleteAccountConfirmed && deleteAccountHover
+    ? "translateY(-2px)"
+    : "translateY(0)",
+  boxShadow:
+    deleteAccountConfirmed && deleteAccountHover
+    ? "0 12px 26px rgba(220,38,38,0.35)"
+    : "none",
+  transition:"0.25s ease"
+}}
+    >
+      Delete My Account
+    </button>
+  </div>
+)}
+  </InfoBox>
+)
+
+            : selectedSetting === "Safety center" ? (
+  <InfoBox>
+    <div style={safetyHeroStyle}>
+      <button
+        type="button"
+        onClick={() => setSelectedSetting("")}
+        style={safetyBackStyle}
+      >
+        ←
+      </button>
+
+      <div>
+        <div style={safetyHeroTitleStyle}>
+          Safety center
+        </div>
+
+        <div style={safetyHeroTextStyle}>
+          MonniDrop is committed to creating a safe delivery environment.
+          Learn how we protect your account, payments and personal information.
+        </div>
+      </div>
+
+      <div style={safetyShieldStyle}>
+        🛡️
+      </div>
+    </div>
+
+    <div style={safetySectionTitleStyle}>
+      We protect your information on MonniDrop
+    </div>
+
+    <div style={safetyGridStyle}>
+      {[
+  "Data protection",
+  "Account protection",
+  "Payment protection"
+].map((item)=>(
+  <div
+    key={item}
+    onClick={()=>{
+      if(item === "Account protection"){
+        setSelectedSetting("Account protection");
+      }
+    }}
+    style={safetyCardStyle}
+  >
+    <div style={safetyIconStyle}>🔒</div>
+
+    <div style={safetyCardTextStyle}>
+      {item} ›
+    </div>
+  </div>
+))}
+    </div>
+
+    <div style={safetySectionTitleStyle}>
+      Stay safe from scammers
+    </div>
+
+    <div style={safetyGridStyle}>
+      {[
+        "Recognize scams",
+        "Recognize scam emails",
+        "Recognize scam messages"
+      ].map((item)=>(
+        <div key={item} style={safetyCardStyle}>
+          <div style={safetyIconStyle}>⚠️</div>
+          <div style={safetyCardTextStyle}>{item} ›</div>
+        </div>
+      ))}
+    </div>
+
+    <div style={safetySectionTitleStyle}>
+      Report something suspicious
+    </div>
+
+    {[
+      "Report a suspicious phone call, email or SMS/text message",
+      "Report a fake website or app similar to MonniDrop",
+      "Report suspicious rider or delivery activity"
+    ].map((item)=>(
+      <div key={item} style={safetyReportRowStyle}>
+        <span>{item}</span>
+        <span>›</span>
+      </div>
+    ))}
+  </InfoBox>
+)
+
+: selectedSetting === "Account protection" ? (
+  <InfoBox>
+    <div style={articleHeaderStyle}>
+      <button
+        type="button"
+        onClick={() => setSelectedSetting("Safety center")}
+        style={articleBackButtonStyle}
+      >
+        ←
+      </button>
+
+      <div style={articleTitleBarStyle}>
+        How can I make my account more secure?
+      </div>
+    </div>
+
+   <div style={articleSearchStyle}>
+  <input
+    value={supportSearch}
+    onChange={(e)=>setSupportSearch(e.target.value)}
+    onKeyDown={(e)=>{
+      if(e.key === "Enter"){
+        searchSupportArticle();
+      }
+    }}
+    placeholder="Have any questions? Ask them here!"
+    style={articleSearchInputStyle}
+  />
+
+  <button
+    type="button"
+    onClick={searchSupportArticle}
+    style={articleSearchIconStyle}
+  >
+    ⌕
+  </button>
+</div>
+
+{supportSearch && (
+  <div style={searchSuggestionsBoxStyle}>
+    {[
+      "How can I make my account more secure?",
+      "How do I protect my payment?",
+      "How do I recognize scams?",
+      "How do I report a fake rider?",
+      "How do I avoid fake MonniDrop links?"
+    ]
+      .filter((item)=>
+        item.toLowerCase().includes(
+          supportSearch.toLowerCase()
+        )
+      )
+      .map((item)=>(
+        <div
+          key={item}
+         onClick={()=>{
+  setSupportSearch(item);
+
+  const selectedText =
+    item.toLowerCase();
+
+  if(selectedText.includes("fake rider")){
+    setSupportSearchResult(
+      "To report a fake or suspicious rider, go to Contact us, open Live Chat Support, describe the rider and delivery issue, and attach a screenshot or photo if available."
+    );
+    return;
+  }
+
+  if(selectedText.includes("payment")){
+    setSupportSearchResult(
+      "For payment safety, always confirm your payment status inside MonniDrop and avoid sending money outside the app."
+    );
+    return;
+  }
+
+  if(selectedText.includes("scam")){
+    setSupportSearchResult(
+      "Be careful with fake calls, suspicious links, and people asking for payments outside MonniDrop."
+    );
+    return;
+  }
+
+  if(selectedText.includes("fake monnidrop links")){
+    setSupportSearchResult(
+      "Avoid opening suspicious MonniDrop links. Only use the official MonniDrop app or website. Report fake links through Contact us."
+    );
+    return;
+  }
+
+  setSupportSearchResult(
+    "To make your account more secure, use a strong password, avoid reusing passwords, and enable two-factor authentication when available."
+  );
+}}
+          style={searchSuggestionItemStyle}
+        >
+          {item}
+        </div>
+      ))}
+  </div>
+)}
+
+{supportSearchResult && (
+  <div style={articleSearchResultStyle}>
+    {supportSearchResult}
+  </div>
+)}
+
+    <h1 style={articleMainTitleStyle}>
+      How can I make my account more secure?
+    </h1>
+
+    <p style={articleParagraphStyle}>
+      To better protect your account, we recommend that you:
+    </p>
+
+    <p style={articleParagraphStyle}>
+      <strong>1. Use a strong password</strong>
+      <br />
+      A strong password should be easy for you to remember but hard for others
+      to guess. Best practices include:
+    </p>
+
+    <ul style={articleListStyle}>
+      <li>Use at least eight characters, longer is better</li>
+      <li>Include a mix of uppercase and lowercase letters, numbers, and symbols</li>
+      <li>Don&apos;t reuse old passwords or passwords used on other sites</li>
+      <li>Avoid dictionary words, keyboard patterns, birthdays, names, or company information</li>
+    </ul>
+
+    <p style={articleParagraphStyle}>
+      <strong>2. Enable two-factor authentication (2FA)</strong>
+      <br />
+      2FA adds another layer of protection by asking for a verification code
+      when you sign in. This helps ensure that only you can access your account.
+    </p>
+
+    <p style={articleParagraphStyle}>
+      You can turn on 2FA in{" "}
+      <strong>You &gt; Settings &gt; Account Security &gt; Two-factor Authentication.</strong>
+    </p>
+
+    <div style={helpfulBoxStyle}>
+      {
+  !feedbackMessage && (
+    <div style={helpfulTextStyle}>
+      Is this helpful for you?
+    </div>
+  )
+}
+
+     <div style={helpfulBoxStyle}>
+  {
+    feedbackMessage
+    ? (
+      <div style={feedbackSuccessStyle}>
+        <span style={feedbackCheckStyle}>✓</span>
+        <span>Thanks for your feedback!</span>
+      </div>
+    )
+    : (
+      <>
+        <div style={helpfulButtonsStyle}>
+          <button
+            type="button"
+            onClick={()=>{
+              setFeedbackMessage("yes");
+            }}
+            style={helpfulButtonStyle}
+          >
+            👍 Yes
+          </button>
+
+          <button
+            type="button"
+            onClick={()=>{
+              setFeedbackMessage("no");
+            }}
+            style={helpfulButtonStyle}
+          >
+            👎 No
+          </button>
+        </div>
+      </>
+    )
+  }
+</div>
+
+    </div>
+  </InfoBox>
+)
+
             : selectedSetting === "Sign out" ? (
               <InfoBox>
                 <div
@@ -1511,8 +2412,149 @@ export default function CustomerSettings({
             )}
           </div>
         </div>
-      )}
+           )}
+    </div>
     </>
+  );
+}
+
+function SecurityRow({title,value,action,onClick}) {
+  return (
+    <div
+      onClick={onClick}
+      style={securityRowStyle}
+    >
+      <div>
+        <div style={securityRowTitleStyle}>
+          {title}
+        </div>
+
+        {value && (
+          <div style={securityRowValueStyle}>
+            {value}
+          </div>
+        )}
+      </div>
+
+      <button
+        type="button"
+        onClick={(e)=>{
+          e.stopPropagation();
+
+          if(onClick){
+            onClick();
+          }
+        }}
+        style={securityActionButtonStyle}
+      >
+        {action}
+      </button>
+    </div>
+  );
+}
+
+function SecurityPlainRow({title,danger,onClick}) {
+  return (
+    <div
+      onClick={onClick}
+      style={securityPlainRowStyle}
+    >
+      <div
+        style={{
+          ...securityPlainTextStyle,
+          color:danger ? "#dc2626" : "#0f172a"
+        }}
+      >
+        {title}
+      </div>
+
+      <div style={securityPlainArrowStyle}>
+        ›
+      </div>
+    </div>
+  );
+}
+
+function SecurityInfoItem({title,text}) {
+  return (
+    <div style={securityInfoItemStyle}>
+      <div style={securityInfoTitleStyle}>
+        {title}
+      </div>
+
+      <div style={securityInfoTextStyle}>
+        {text}
+      </div>
+    </div>
+  );
+}
+
+function SecurityEditPage({
+  title,
+  value,
+  setValue,
+  placeholder,
+  buttonText,
+  onBack,
+  onSave,
+  type = "text"
+}) {
+  return (
+    <div style={securityPanelStyle}>
+      <button
+        type="button"
+        onClick={onBack}
+        style={securityPanelBackButtonStyle}
+      >
+        ← Back
+      </button>
+
+      <div style={securityPanelTitleStyle}>
+        {title}
+      </div>
+
+      <input
+        type={type}
+        value={value}
+        onChange={(e)=>setValue(e.target.value)}
+        placeholder={placeholder}
+        style={securityInputStyle}
+      />
+
+      <button
+        type="button"
+        onClick={onSave}
+        style={securitySaveButtonStyle}
+      >
+        {buttonText}
+      </button>
+    </div>
+  );
+}
+
+function SecurityReadPage({title,onBack,items}) {
+  return (
+    <div style={securityPanelStyle}>
+      <button
+        type="button"
+        onClick={onBack}
+        style={securityPanelBackButtonStyle}
+      >
+        ← Back
+      </button>
+
+      <div style={securityPanelTitleStyle}>
+        {title}
+      </div>
+
+      {items.map((item,index)=>(
+        <SecurityInfoItem
+          key={index}
+          title={item[0]}
+          text={item[1]}
+        />
+      ))}
+    </div>
   );
 }
 
@@ -2194,4 +3236,520 @@ const uploadSmallButtonStyle = {
   display:"flex",
   alignItems:"center",
   justifyContent:"center"
+};
+
+const securityGridStyle = {
+  display:"grid",
+  gridTemplateColumns:"repeat(2,1fr)",
+  gap:"14px",
+  marginBottom:"22px"
+};
+
+const securityCardStyle = {
+  background:"#ffffff",
+  border:"1px solid #e5e7eb",
+  borderRadius:"16px",
+  padding:"18px",
+  display:"flex",
+  alignItems:"center",
+  gap:"12px",
+  cursor:"pointer",
+  boxShadow:"0 6px 16px rgba(15,23,42,0.04)"
+};
+
+const securityIconStyle = {
+  width:"42px",
+  height:"42px",
+  borderRadius:"14px",
+  background:"#dcfce7",
+  color:"#15803d",
+  display:"flex",
+  alignItems:"center",
+  justifyContent:"center",
+  fontSize:"22px",
+  flexShrink:0
+};
+
+const securityTextStyle = {
+  flex:1,
+  fontSize:"18px",
+  fontWeight:"900",
+  color:"#15803d"
+};
+
+const securityArrowStyle = {
+  fontSize:"28px",
+  color:"#15803d",
+  fontWeight:"700"
+};
+
+const safetyHeroStyle = {
+  background:"linear-gradient(135deg,#15803d,#22c55e)",
+  color:"#ffffff",
+  borderRadius:"20px",
+  padding:"18px",
+  marginBottom:"18px",
+  display:"flex",
+  alignItems:"center",
+  justifyContent:"space-between",
+  gap:"12px"
+};
+
+const safetyBackStyle = {
+  border:"none",
+  background:"transparent",
+  color:"#ffffff",
+  fontSize:"24px",
+  fontWeight:"900",
+  cursor:"pointer"
+};
+
+const safetyHeroTitleStyle = {
+  fontSize:"28px",
+  fontWeight:"900",
+  marginBottom:"8px",
+  lineHeight:"1.1"
+};
+
+const safetyHeroTextStyle = {
+  fontSize:"14px",
+  fontWeight:"700",
+  lineHeight:"1.45",
+  maxWidth:"360px"
+};
+
+const safetyShieldStyle = {
+  fontSize:"38px",
+  flexShrink:0
+};
+
+const safetySectionTitleStyle = {
+  fontSize:"20px",
+  fontWeight:"900",
+  color:"#0f172a",
+  margin:"18px 0 12px"
+};
+
+const safetyGridStyle = {
+  display:"grid",
+  gridTemplateColumns:"repeat(3,1fr)",
+  gap:"10px",
+  marginBottom:"18px"
+};
+
+const safetyCardStyle = {
+  background:"#ffffff",
+  border:"1px solid #e5e7eb",
+  borderRadius:"14px",
+  minHeight:"110px",
+  padding:"12px",
+  display:"flex",
+  flexDirection:"column",
+  alignItems:"center",
+  justifyContent:"center",
+  textAlign:"center",
+  boxShadow:"0 4px 12px rgba(15,23,42,0.04)"
+};
+
+const safetyIconStyle = {
+  fontSize:"26px",
+  marginBottom:"8px"
+};
+
+const safetyCardTextStyle = {
+  fontSize:"14px",
+  fontWeight:"900",
+  color:"#0f172a",
+  lineHeight:"1.25"
+};
+
+const safetyReportRowStyle = {
+  background:"#ffffff",
+  border:"1px solid #e5e7eb",
+  borderRadius:"14px",
+  padding:"14px",
+  marginBottom:"10px",
+  display:"flex",
+  justifyContent:"space-between",
+  alignItems:"center",
+  gap:"12px",
+  fontSize:"14px",
+  fontWeight:"800",
+  color:"#0f172a"
+};
+
+const articleBackButtonStyle = {
+  border:"none",
+  background:"transparent",
+  color:"#0f172a",
+  fontSize:"26px",
+  fontWeight:"900",
+  cursor:"pointer"
+};
+
+const articleSearchStyle = {
+  border:"2px solid #0f172a",
+  borderRadius:"999px",
+  padding:"8px 10px 8px 14px",
+  display:"flex",
+  justifyContent:"space-between",
+  alignItems:"center",
+  gap:"10px",
+  color:"#94a3b8",
+  fontSize:"13px",
+  fontWeight:"700",
+  marginBottom:"18px"
+};
+
+const articleSearchIconStyle = {
+  width:"36px",
+  height:"36px",
+  borderRadius:"50%",
+  background:"#000000",
+  color:"#ffffff",
+  display:"flex",
+  alignItems:"center",
+  justifyContent:"center",
+  fontSize:"22px",
+  fontWeight:"900",
+  flexShrink:0,
+  cursor:"pointer"
+};
+
+const articleMainTitleStyle = {
+  fontSize:"24px",
+  fontWeight:"900",
+  color:"#0f172a",
+  lineHeight:"1.2",
+  margin:"0 0 14px"
+};
+
+const articleParagraphStyle = {
+  fontSize:"14px",
+  fontWeight:"600",
+  color:"#111827",
+  lineHeight:"1.55",
+  margin:"0 0 12px"
+};
+
+const articleListStyle = {
+  fontSize:"13px",
+  fontWeight:"600",
+  color:"#111827",
+  lineHeight:"1.6",
+  paddingLeft:"20px",
+  margin:"0 0 14px"
+};
+
+const articleHeaderStyle = {
+  display:"flex",
+  alignItems:"center",
+  gap:"10px",
+  marginBottom:"14px"
+};
+
+const helpfulBoxStyle = {
+  marginTop:"20px",
+  borderTop:"1px solid #e5e7eb",
+  paddingTop:"16px",
+  textAlign:"center"
+};
+
+const helpfulTextStyle = {
+  fontSize:"15px",
+  fontWeight:"700",
+  color:"#94a3b8",
+  marginBottom:"12px"
+};
+
+const helpfulButtonsStyle = {
+  display:"grid",
+  gridTemplateColumns:"1fr 1fr",
+  gap:"10px"
+};
+
+const helpfulButtonStyle = {
+  border:"1px solid #e5e7eb",
+  borderRadius:"999px",
+  padding:"10px",
+  background:"#ffffff",
+  color:"#0f172a",
+  fontSize:"14px",
+  fontWeight:"900",
+  cursor:"pointer"
+};
+
+const articleTitleBarStyle = {
+  fontSize:"18px",
+  fontWeight:"900",
+  color:"#0f172a",
+  whiteSpace:"nowrap",
+  overflow:"hidden",
+  textOverflow:"ellipsis"
+};
+
+const articleSearchInputStyle = {
+  flex:1,
+  border:"none",
+  outline:"none",
+  background:"transparent",
+  color:"#0f172a",
+  fontSize:"13px",
+  fontWeight:"800",
+  minWidth:0
+};
+
+const articleSearchResultStyle = {
+  background:"#eff6ff",
+  border:"1px solid #bfdbfe",
+  color:"#0f172a",
+  borderRadius:"14px",
+  padding:"12px",
+  marginBottom:"16px",
+  fontSize:"13px",
+  fontWeight:"800",
+  lineHeight:"1.5"
+};
+
+const searchSuggestionsBoxStyle = {
+  background:"#ffffff",
+  border:"1px solid #e5e7eb",
+  borderRadius:"14px",
+  overflow:"hidden",
+  marginBottom:"14px",
+  boxShadow:"0 8px 18px rgba(15,23,42,0.06)"
+};
+
+const searchSuggestionItemStyle = {
+  padding:"12px 14px",
+  borderBottom:"1px solid #eef2f7",
+  color:"#0f172a",
+  fontSize:"13px",
+  fontWeight:"800",
+  cursor:"pointer"
+};
+
+const feedbackMessageStyle = {
+  marginTop:"14px",
+  background:"#dcfce7",
+  color:"#166534",
+  border:"1px solid #86efac",
+  borderRadius:"999px",
+  padding:"10px 14px",
+  fontSize:"14px",
+  fontWeight:"900",
+  textAlign:"center"
+};
+
+const feedbackSuccessStyle = {
+  display:"flex",
+  alignItems:"center",
+  justifyContent:"center",
+  gap:"14px",
+  padding:"24px 10px",
+  color:"#8a8a8a",
+  fontSize:"24px",
+  fontWeight:"700"
+};
+
+const feedbackCheckStyle = {
+  width:"46px",
+  height:"46px",
+  border:"3px solid #15803d",
+  borderRadius:"50%",
+  display:"inline-flex",
+  alignItems:"center",
+  justifyContent:"center",
+  color:"#15803d",
+  fontSize:"30px",
+  fontWeight:"900"
+};
+
+const accountSecurityHeroStyle = {
+  display:"flex",
+  alignItems:"center",
+  gap:"18px",
+  padding:"18px 0 22px",
+  borderBottom:"1px solid #e5e7eb",
+  marginBottom:"12px"
+};
+
+const accountSecurityIconStyle = {
+  width:"64px",
+  height:"64px",
+  borderRadius:"50%",
+  background:"#dcfce7",
+  color:"#15803d",
+  display:"flex",
+  alignItems:"center",
+  justifyContent:"center",
+  fontSize:"32px",
+  flexShrink:0
+};
+
+const accountSecurityTitleStyle = {
+  fontSize:"22px",
+  fontWeight:"900",
+  color:"#15803d",
+  marginBottom:"6px"
+};
+
+const accountSecurityTextStyle = {
+  fontSize:"15px",
+  fontWeight:"700",
+  color:"#64748b",
+  lineHeight:"1.5"
+};
+
+const securityRowStyle = {
+  display:"flex",
+  justifyContent:"space-between",
+  alignItems:"center",
+  gap:"14px",
+  padding:"18px 0",
+  borderBottom:"1px solid #e5e7eb"
+};
+
+const securityRowTitleStyle = {
+  fontSize:"18px",
+  fontWeight:"900",
+  color:"#0f172a",
+  marginBottom:"4px"
+};
+
+const securityRowValueStyle = {
+  fontSize:"14px",
+  fontWeight:"700",
+  color:"#64748b",
+  lineHeight:"1.4"
+};
+
+const securityActionButtonStyle = {
+  minWidth:"88px",
+  border:"none",
+  borderRadius:"999px",
+  padding:"10px 16px",
+  background:"#f97316",
+  color:"#ffffff",
+  fontSize:"14px",
+  fontWeight:"900",
+  cursor:"pointer"
+};
+
+const securityGroupTitleStyle = {
+  fontSize:"19px",
+  fontWeight:"900",
+  color:"#0f172a",
+  margin:"24px 0 8px"
+};
+
+const securityPlainRowStyle = {
+  display:"flex",
+  justifyContent:"space-between",
+  alignItems:"center",
+  padding:"18px 0",
+  borderBottom:"1px solid #e5e7eb",
+  cursor:"pointer"
+};
+
+const securityPlainTextStyle = {
+  fontSize:"17px",
+  fontWeight:"800"
+};
+
+const securityPlainArrowStyle = {
+  fontSize:"28px",
+  color:"#94a3b8"
+};
+
+const securitySuccessMessageStyle = {
+  marginTop:"16px",
+  background:"#dcfce7",
+  color:"#166534",
+  border:"1px solid #86efac",
+  borderRadius:"14px",
+  padding:"12px",
+  fontSize:"14px",
+  fontWeight:"900",
+  textAlign:"center"
+};
+
+const securityPanelStyle = {
+  marginTop:"18px",
+  background:"#ffffff",
+  border:"1px solid #e5e7eb",
+  borderRadius:"18px",
+  padding:"16px",
+  boxShadow:"0 8px 18px rgba(15,23,42,0.05)"
+};
+
+const securityPanelBackButtonStyle = {
+  border:"none",
+  background:"transparent",
+  color:"#1d4ed8",
+  fontSize:"14px",
+  fontWeight:"900",
+  cursor:"pointer",
+  marginBottom:"12px"
+};
+
+const securityPanelTitleStyle = {
+  fontSize:"20px",
+  fontWeight:"900",
+  color:"#0f172a",
+  marginBottom:"12px"
+};
+
+const securityInputStyle = {
+  width:"100%",
+  padding:"13px",
+  border:"1px solid #cbd5e1",
+  borderRadius:"14px",
+  outline:"none",
+  fontSize:"14px",
+  fontWeight:"800",
+  marginBottom:"12px",
+  boxSizing:"border-box"
+};
+
+const securitySaveButtonStyle = {
+  width:"100%",
+  border:"none",
+  borderRadius:"14px",
+  padding:"13px",
+  background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
+  color:"#facc15",
+  fontSize:"14px",
+  fontWeight:"900",
+  cursor:"pointer"
+};
+
+const securityPanelTextStyle = {
+  fontSize:"14px",
+  fontWeight:"700",
+  color:"#334155",
+  lineHeight:"1.6",
+  margin:"0"
+};
+
+const securityInfoItemStyle = {
+  background:"#f8fafc",
+  border:"1px solid #e5e7eb",
+  borderRadius:"14px",
+  padding:"13px",
+  marginBottom:"10px"
+};
+
+const securityInfoTitleStyle = {
+  fontSize:"15px",
+  fontWeight:"900",
+  color:"#0f172a",
+  marginBottom:"4px"
+};
+
+const securityInfoTextStyle = {
+  fontSize:"13px",
+  fontWeight:"700",
+  color:"#64748b",
+  lineHeight:"1.5"
 };

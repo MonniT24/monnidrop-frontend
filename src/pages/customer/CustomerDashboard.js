@@ -23,10 +23,10 @@ export default function CustomerDashboard({
           position:"relative",
           overflow:"hidden",
           background:
-            "radial-gradient(circle at top right, rgba(250,204,21,0.38), transparent 28%), linear-gradient(135deg,#0f172a,#1d4ed8)",
+            "radial-gradient(circle at top right, rgba(250,204,21,0.30), transparent 28%), linear-gradient(135deg,#0f172a,#1d4ed8)",
           color:"white",
           borderRadius:"24px",
-          padding:"18px 22px",
+          padding:"18px",
           marginBottom:"18px",
           boxShadow:"0 12px 28px rgba(15,23,42,0.14)"
         }}
@@ -34,44 +34,46 @@ export default function CustomerDashboard({
         <div
           style={{
             display:"grid",
-            gridTemplateColumns:"minmax(0,1fr) 330px",
+            gridTemplateColumns:"minmax(0,1fr) 300px",
             alignItems:"center",
-            gap:"18px"
+            gap:"14px"
           }}
         >
           <div
             style={{
               display:"flex",
               alignItems:"center",
-              gap:"16px"
+              gap:"12px",
+              minWidth:0
             }}
           >
             <img
               src="/logo.png"
               alt="MonniDrop Logo"
               style={{
-                width:"85px",
-                height:"85px",
+                width:"68px",
+                height:"68px",
                 objectFit:"contain",
                 background:"white",
-                padding:"6px",
+                padding:"5px",
                 borderRadius:"50%",
-                boxShadow:"0 10px 22px rgba(15,23,42,0.22)"
+                boxShadow:"0 10px 22px rgba(15,23,42,0.22)",
+                flexShrink:0
               }}
             />
 
-            <div>
+            <div style={{minWidth:0}}>
               <div
                 style={{
                   display:"inline-flex",
                   background:"rgba(255,255,255,0.15)",
                   border:"1px solid rgba(255,255,255,0.25)",
                   color:"white",
-                  padding:"10px 14px",
+                  padding:"8px 12px",
                   borderRadius:"999px",
-                  fontSize:"13px",
+                  fontSize:"12px",
                   fontWeight:"800",
-                  marginBottom:"16px"
+                  marginBottom:"12px"
                 }}
               >
                 ⚡ MonniDrop Customer Dashboard
@@ -79,10 +81,11 @@ export default function CustomerDashboard({
 
               <h1
                 style={{
-                  fontSize:"32px",
+                  fontSize:"26px",
                   fontWeight:"900",
                   margin:"0 0 8px",
-                  lineHeight:"1.15"
+                  lineHeight:"1.12",
+                  maxWidth:"430px"
                 }}
               >
                 Welcome/Akwaaba, {user?.name || "Customer"} 👋
@@ -90,10 +93,10 @@ export default function CustomerDashboard({
 
               <p
                 style={{
-                  maxWidth:"520px",
+                  maxWidth:"440px",
                   color:"#dbeafe",
-                  fontSize:"14px",
-                  lineHeight:"1.55",
+                  fontSize:"13px",
+                  lineHeight:"1.5",
                   margin:0
                 }}
               >
@@ -104,9 +107,9 @@ export default function CustomerDashboard({
               <div
                 style={{
                   display:"flex",
-                  gap:"12px",
+                  gap:"10px",
                   flexWrap:"wrap",
-                  marginTop:"24px"
+                  marginTop:"18px"
                 }}
               >
                 <button
@@ -115,9 +118,10 @@ export default function CustomerDashboard({
                   style={{
                     border:"none",
                     borderRadius:"14px",
-                    padding:"13px 18px",
+                    padding:"11px 16px",
                     background:"#facc15",
                     color:"#111827",
+                    fontSize:"13px",
                     fontWeight:"900",
                     cursor:"pointer"
                   }}
@@ -131,9 +135,10 @@ export default function CustomerDashboard({
                   style={{
                     border:"1px solid rgba(255,255,255,0.22)",
                     borderRadius:"14px",
-                    padding:"13px 18px",
+                    padding:"11px 16px",
                     background:"rgba(255,255,255,0.14)",
                     color:"white",
+                    fontSize:"13px",
                     fontWeight:"900",
                     cursor:"pointer"
                   }}
@@ -147,22 +152,23 @@ export default function CustomerDashboard({
           <div
             style={{
               width:"100%",
-              maxWidth:"330px",
+              maxWidth:"300px",
               background:
                 "linear-gradient(135deg,rgba(255,255,255,0.25),rgba(255,255,255,0.08))",
               border:"1px solid rgba(255,255,255,0.34)",
-              borderRadius:"22px",
-              padding:"14px 18px",
+              borderRadius:"20px",
+              padding:"13px 16px",
               color:"white",
-              boxShadow:"0 14px 30px rgba(0,0,0,0.18)"
+              boxShadow:"0 14px 30px rgba(0,0,0,0.18)",
+              justifySelf:"end"
             }}
           >
             <div
               style={{
                 color:"#bfdbfe",
-                fontSize:"13px",
+                fontSize:"12px",
                 fontWeight:"800",
-                marginBottom:"8px"
+                marginBottom:"7px"
               }}
             >
               Today
@@ -170,10 +176,10 @@ export default function CustomerDashboard({
 
             <div
               style={{
-                fontSize:"24px",
+                fontSize:"20px",
                 fontWeight:"900",
-                lineHeight:"1.05",
-                marginBottom:"10px"
+                lineHeight:"1.1",
+                marginBottom:"9px"
               }}
             >
               {currentTime.toLocaleDateString("en-US", {
@@ -187,12 +193,12 @@ export default function CustomerDashboard({
             <div
               style={{
                 display:"inline-flex",
-                padding:"8px 12px",
-                marginBottom:"9px",
-                borderRadius:"14px",
+                padding:"7px 11px",
+                marginBottom:"8px",
+                borderRadius:"13px",
                 background:"linear-gradient(135deg,#facc15,#f59e0b)",
                 color:"#0f172a",
-                fontSize:"16px",
+                fontSize:"14px",
                 fontWeight:"900",
                 letterSpacing:"1px"
               }}
@@ -207,8 +213,8 @@ export default function CustomerDashboard({
             <div
               style={{
                 color:"#dbeafe",
-                fontSize:"13px",
-                marginTop:"8px"
+                fontSize:"12px",
+                marginTop:"7px"
               }}
             >
               Ready to move your next package.
