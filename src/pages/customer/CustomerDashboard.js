@@ -16,6 +16,10 @@ export default function CustomerDashboard({
   notifications,
   setActiveSection
 }) {
+
+  const isMobile =
+    window.innerWidth <= 768;
+
   return (
     <>
       <div
@@ -23,10 +27,10 @@ export default function CustomerDashboard({
           position:"relative",
           overflow:"hidden",
           background:
-            "radial-gradient(circle at top right, rgba(250,204,21,0.30), transparent 28%), linear-gradient(135deg,#0f172a,#1d4ed8)",
+            "radial-gradient(circle at top right, rgba(250,204,21,0.28), transparent 30%), linear-gradient(135deg,#0f172a,#1d4ed8)",
           color:"white",
-          borderRadius:"24px",
-          padding:"18px",
+          borderRadius:isMobile ? "24px" : "28px",
+          padding:isMobile ? "22px" : "26px",
           marginBottom:"18px",
           boxShadow:"0 12px 28px rgba(15,23,42,0.14)"
         }}
@@ -34,30 +38,33 @@ export default function CustomerDashboard({
         <div
           style={{
             display:"grid",
-            gridTemplateColumns:"minmax(0,1fr) 300px",
-            alignItems:"center",
-            gap:"14px"
+            gridTemplateColumns:isMobile ? "1fr" : "minmax(0,1fr) 320px",
+            gap:isMobile ? "22px" : "18px",
+            alignItems:"center"
           }}
         >
           <div
             style={{
-              display:"flex",
+              display:isMobile ? "block" : "flex",
               alignItems:"center",
-              gap:"12px",
-              minWidth:0
+              gap:"16px",
+              minWidth:0,
+              textAlign:isMobile ? "center" : "left"
             }}
           >
             <img
               src="/logo.png"
               alt="MonniDrop Logo"
               style={{
-                width:"68px",
-                height:"68px",
+                width:isMobile ? "84px" : "78px",
+                height:isMobile ? "84px" : "78px",
                 objectFit:"contain",
                 background:"white",
-                padding:"5px",
+                padding:"6px",
                 borderRadius:"50%",
                 boxShadow:"0 10px 22px rgba(15,23,42,0.22)",
+                margin:isMobile ? "0 auto 16px" : "0",
+                display:"block",
                 flexShrink:0
               }}
             />
@@ -66,14 +73,17 @@ export default function CustomerDashboard({
               <div
                 style={{
                   display:"inline-flex",
+                  alignItems:"center",
+                  justifyContent:"center",
                   background:"rgba(255,255,255,0.15)",
                   border:"1px solid rgba(255,255,255,0.25)",
                   color:"white",
                   padding:"8px 12px",
                   borderRadius:"999px",
                   fontSize:"12px",
-                  fontWeight:"800",
-                  marginBottom:"12px"
+                  fontWeight:"900",
+                  marginBottom:"14px",
+                  maxWidth:"100%"
                 }}
               >
                 ⚡ MonniDrop Customer Dashboard
@@ -81,23 +91,26 @@ export default function CustomerDashboard({
 
               <h1
                 style={{
-                  fontSize:"26px",
+                  fontSize:isMobile ? "32px" : "34px",
                   fontWeight:"900",
-                  margin:"0 0 8px",
-                  lineHeight:"1.12",
-                  maxWidth:"430px"
+                  margin:"0 0 12px",
+                  lineHeight:"1.08",
+                  color:"white"
                 }}
               >
-                Welcome/Akwaaba, {user?.name || "Customer"} 👋
+                Welcome/Akwaaba,
+                <br />
+                {user?.name || "Customer"} 👋
               </h1>
 
               <p
                 style={{
-                  maxWidth:"440px",
+                  maxWidth:isMobile ? "100%" : "460px",
                   color:"#dbeafe",
-                  fontSize:"13px",
-                  lineHeight:"1.5",
-                  margin:0
+                  fontSize:isMobile ? "15px" : "15px",
+                  lineHeight:"1.55",
+                  margin:isMobile ? "0 auto" : "0",
+                  fontWeight:"600"
                 }}
               >
                 Book deliveries, track riders, monitor payments,
@@ -107,9 +120,10 @@ export default function CustomerDashboard({
               <div
                 style={{
                   display:"flex",
-                  gap:"10px",
+                  gap:"12px",
                   flexWrap:"wrap",
-                  marginTop:"18px"
+                  marginTop:"22px",
+                  justifyContent:isMobile ? "center" : "flex-start"
                 }}
               >
                 <button
@@ -117,13 +131,14 @@ export default function CustomerDashboard({
                   onClick={() => setActiveSection("createOrder")}
                   style={{
                     border:"none",
-                    borderRadius:"14px",
-                    padding:"11px 16px",
+                    borderRadius:"16px",
+                    padding:"14px 18px",
                     background:"#facc15",
                     color:"#111827",
-                    fontSize:"13px",
+                    fontSize:"15px",
                     fontWeight:"900",
-                    cursor:"pointer"
+                    cursor:"pointer",
+                    minWidth:isMobile ? "170px" : "auto"
                   }}
                 >
                   Create New Delivery
@@ -133,14 +148,15 @@ export default function CustomerDashboard({
                   type="button"
                   onClick={() => setActiveSection("orders")}
                   style={{
-                    border:"1px solid rgba(255,255,255,0.22)",
-                    borderRadius:"14px",
-                    padding:"11px 16px",
+                    border:"1px solid rgba(255,255,255,0.24)",
+                    borderRadius:"16px",
+                    padding:"14px 18px",
                     background:"rgba(255,255,255,0.14)",
                     color:"white",
-                    fontSize:"13px",
+                    fontSize:"15px",
                     fontWeight:"900",
-                    cursor:"pointer"
+                    cursor:"pointer",
+                    minWidth:isMobile ? "170px" : "auto"
                   }}
                 >
                   Track My Orders
@@ -152,23 +168,24 @@ export default function CustomerDashboard({
           <div
             style={{
               width:"100%",
-              maxWidth:"300px",
+              maxWidth:isMobile ? "100%" : "320px",
               background:
-                "linear-gradient(135deg,rgba(255,255,255,0.25),rgba(255,255,255,0.08))",
+                "linear-gradient(135deg,rgba(255,255,255,0.24),rgba(255,255,255,0.08))",
               border:"1px solid rgba(255,255,255,0.34)",
-              borderRadius:"20px",
-              padding:"13px 16px",
+              borderRadius:"22px",
+              padding:"18px",
               color:"white",
               boxShadow:"0 14px 30px rgba(0,0,0,0.18)",
-              justifySelf:"end"
+              justifySelf:isMobile ? "stretch" : "end",
+              textAlign:isMobile ? "center" : "left"
             }}
           >
             <div
               style={{
                 color:"#bfdbfe",
-                fontSize:"12px",
-                fontWeight:"800",
-                marginBottom:"7px"
+                fontSize:"13px",
+                fontWeight:"900",
+                marginBottom:"8px"
               }}
             >
               Today
@@ -176,10 +193,10 @@ export default function CustomerDashboard({
 
             <div
               style={{
-                fontSize:"20px",
+                fontSize:isMobile ? "23px" : "22px",
                 fontWeight:"900",
-                lineHeight:"1.1",
-                marginBottom:"9px"
+                lineHeight:"1.15",
+                marginBottom:"12px"
               }}
             >
               {currentTime.toLocaleDateString("en-US", {
@@ -193,12 +210,12 @@ export default function CustomerDashboard({
             <div
               style={{
                 display:"inline-flex",
-                padding:"7px 11px",
-                marginBottom:"8px",
-                borderRadius:"13px",
+                padding:"9px 14px",
+                marginBottom:"10px",
+                borderRadius:"999px",
                 background:"linear-gradient(135deg,#facc15,#f59e0b)",
                 color:"#0f172a",
-                fontSize:"14px",
+                fontSize:isMobile ? "16px" : "15px",
                 fontWeight:"900",
                 letterSpacing:"1px"
               }}
@@ -213,8 +230,9 @@ export default function CustomerDashboard({
             <div
               style={{
                 color:"#dbeafe",
-                fontSize:"12px",
-                marginTop:"7px"
+                fontSize:"13px",
+                marginTop:"8px",
+                fontWeight:"700"
               }}
             >
               Ready to move your next package.
@@ -226,14 +244,31 @@ export default function CustomerDashboard({
       <div
         style={{
           display:"grid",
-          gridTemplateColumns:"repeat(auto-fit,minmax(190px,1fr))",
+          gridTemplateColumns:isMobile
+            ? "repeat(2,minmax(0,1fr))"
+            : "repeat(auto-fit,minmax(190px,1fr))",
           gap:"12px",
           marginBottom:"20px"
         }}
       >
-        <StatCard title="Active Orders" value={activeOrders.length} icon={<FiTruck />} />
-        <StatCard title="Completed Orders" value={completedOrders.length} icon={<FiPackage />} />
-        <StatCard title="Notifications" value={notifications.length} icon={<FiBell />} />
+        <StatCard
+          title="Active Orders"
+          value={activeOrders.length}
+          icon={<FiTruck />}
+        />
+
+        <StatCard
+          title="Completed Orders"
+          value={completedOrders.length}
+          icon={<FiPackage />}
+        />
+
+        <StatCard
+          title="Notifications"
+          value={notifications.length}
+          icon={<FiBell />}
+        />
+
         <StatCard
           title="Pending Orders"
           value={orders.filter((o) => o.status === "pending").length}
@@ -244,22 +279,22 @@ export default function CustomerDashboard({
       <div
         style={{
           display:"grid",
-          gridTemplateColumns:"1.4fr 0.9fr",
+          gridTemplateColumns:isMobile ? "1fr" : "1.4fr 0.9fr",
           gap:"22px"
         }}
       >
         <div
           style={{
             background:"#ffffff",
-            borderRadius:"28px",
-            padding:"24px",
+            borderRadius:"24px",
+            padding:isMobile ? "18px" : "24px",
             boxShadow:"0 10px 30px rgba(15,23,42,0.06)",
             border:"1px solid #eef2f7"
           }}
         >
           <h3
             style={{
-              fontSize:"20px",
+              fontSize:isMobile ? "18px" : "20px",
               fontWeight:"900",
               color:"#0f172a",
               margin:"0 0 16px",
@@ -277,7 +312,8 @@ export default function CustomerDashboard({
                 alignItems:"center",
                 justifyContent:"center",
                 background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
-                color:"#facc15"
+                color:"#facc15",
+                flexShrink:0
               }}
             >
               <FiTruck />
@@ -318,7 +354,8 @@ export default function CustomerDashboard({
                     padding:"12px",
                     color:"#0f172a",
                     fontWeight:"800",
-                    marginBottom:"10px"
+                    marginBottom:"10px",
+                    overflowWrap:"anywhere"
                   }}
                 >
                   <strong style={{color:"#1d4ed8"}}>Route:</strong>{" "}
@@ -349,7 +386,7 @@ export default function CustomerDashboard({
                 <div
                   style={{
                     display:"grid",
-                    gridTemplateColumns:"1fr auto auto",
+                    gridTemplateColumns:isMobile ? "1fr" : "1fr auto auto",
                     alignItems:"center",
                     gap:"14px",
                     width:"100%",
@@ -360,7 +397,8 @@ export default function CustomerDashboard({
                     style={{
                       display:"flex",
                       alignItems:"center",
-                      gap:"12px"
+                      gap:"12px",
+                      minWidth:0
                     }}
                   >
                     <img
@@ -375,11 +413,12 @@ export default function CustomerDashboard({
                         borderRadius:"50%",
                         objectFit:"cover",
                         border:"3px solid #facc15",
-                        background:"white"
+                        background:"white",
+                        flexShrink:0
                       }}
                     />
 
-                    <div>
+                    <div style={{minWidth:0}}>
                       <div
                         style={{
                           fontSize:"11px",
@@ -394,7 +433,8 @@ export default function CustomerDashboard({
                         style={{
                           fontSize:"15px",
                           fontWeight:"900",
-                          color:"#0f172a"
+                          color:"#0f172a",
+                          overflowWrap:"anywhere"
                         }}
                       >
                         {o.rider?.name || "Searching for rider"}
@@ -433,7 +473,8 @@ export default function CustomerDashboard({
                       textTransform:"uppercase",
                       background:"#dbeafe",
                       color:"#0f172a",
-                      whiteSpace:"nowrap"
+                      whiteSpace:"nowrap",
+                      textAlign:"center"
                     }}
                   >
                     {o.status}
@@ -442,6 +483,7 @@ export default function CustomerDashboard({
                   <span
                     style={{
                       display:"inline-flex",
+                      justifyContent:"center",
                       padding:"7px 12px",
                       borderRadius:"999px",
                       background:o.isPaid ? "#dcfce7" : "#fef3c7",
@@ -483,8 +525,8 @@ export default function CustomerDashboard({
             color:"white",
             border:"1px solid rgba(250,204,21,0.22)",
             boxShadow:"0 10px 24px rgba(29,78,216,0.16)",
-            padding:"14px",
-            borderRadius:"18px",
+            padding:"18px",
+            borderRadius:"20px",
             alignSelf:"start"
           }}
         >
@@ -494,22 +536,23 @@ export default function CustomerDashboard({
               alignItems:"center",
               gap:"7px",
               color:"white",
-              fontSize:"15px",
-              margin:"0 0 10px",
+              fontSize:"16px",
+              margin:"0 0 12px",
               fontWeight:"900"
             }}
           >
             <span
               style={{
-                width:"26px",
-                height:"26px",
+                width:"28px",
+                height:"28px",
                 borderRadius:"9px",
                 display:"inline-flex",
                 alignItems:"center",
                 justifyContent:"center",
                 background:"#facc15",
                 color:"#0f172a",
-                fontSize:"14px"
+                fontSize:"14px",
+                flexShrink:0
               }}
             >
               <FiPackage />
@@ -526,8 +569,8 @@ export default function CustomerDashboard({
               background:"rgba(250,204,21,0.16)",
               border:"1px solid rgba(250,204,21,0.35)",
               color:"#fef3c7",
-              borderRadius:"20px",
-              padding:"18px",
+              borderRadius:"18px",
+              padding:"16px",
               lineHeight:"1.6",
               fontWeight:"700",
               marginTop:"12px"
@@ -562,29 +605,33 @@ export default function CustomerDashboard({
 }
 
 function StatCard({title,value,icon}) {
+
+  const isMobile =
+    window.innerWidth <= 768;
+
   return (
     <div
       style={{
         background:"white",
         borderRadius:"18px",
-        padding:"16px",
+        padding:isMobile ? "16px" : "18px",
         boxShadow:"0 8px 20px rgba(15,23,42,0.06)",
         border:"1px solid #eef2f7",
-        minHeight:"125px"
+        minHeight:isMobile ? "120px" : "130px"
       }}
     >
       <div
         style={{
-          width:"32px",
-          height:"32px",
-          borderRadius:"12px",
+          width:"38px",
+          height:"38px",
+          borderRadius:"14px",
           display:"flex",
           alignItems:"center",
           justifyContent:"center",
           background:"#eff6ff",
           color:"#2563eb",
-          fontSize:"16px",
-          marginBottom:"8px"
+          fontSize:"18px",
+          marginBottom:"12px"
         }}
       >
         {icon}
@@ -593,9 +640,9 @@ function StatCard({title,value,icon}) {
       <div
         style={{
           color:"#64748b",
-          fontSize:"13px",
+          fontSize:isMobile ? "13px" : "14px",
           fontWeight:"900",
-          marginBottom:"6px"
+          marginBottom:"8px"
         }}
       >
         {title}
@@ -603,7 +650,7 @@ function StatCard({title,value,icon}) {
 
       <div
         style={{
-          fontSize:"24px",
+          fontSize:isMobile ? "26px" : "28px",
           fontWeight:"900",
           color:"#0f172a"
         }}
