@@ -4,6 +4,8 @@ import styled,{createGlobalStyle} from "styled-components";
 import API from "../api/api";
 import socket from "../socket";
 
+import GoogleLiveMap from "../components/GoogleLiveMap";
+
 import CustomerDashboard from "./customer/CustomerDashboard";
 import CustomerProfile from "./customer/CustomerProfile";
 import CustomerOrders from "./customer/CustomerOrders";
@@ -5184,7 +5186,7 @@ function getDistanceKm(
   return R * c;
 }
 
-  async function calculateDistance(
+ async function calculateDistance(
   pickupValue = pickupLocation,
   dropoffValue = dropoffLocation
 ){
@@ -5198,156 +5200,170 @@ function getDistanceKm(
       return;
     }
 
-    const pickup =
-      locationCoords[pickupValue];
-
-    const dropoff =
-      locationCoords[dropoffValue];
-
-    if(!pickup){
-
+    if(
+      !window.google ||
+      !window.google.maps
+    ){
       alert(
-        "Pickup location not found. Please choose from the suggestions."
+        "Google Maps is still loading. Please try again in a few seconds."
       );
 
       return;
     }
 
-    if(!dropoff){
+    const directionsService =
+      new window.google.maps.DirectionsService();
 
-      alert(
-        "Dropoff location not found. Please choose from the suggestions."
-      );
+    directionsService.route(
+      {
+        origin:pickupValue,
+        destination:dropoffValue,
+        travelMode:window.google.maps.TravelMode.DRIVING
+      },
+      (result,status)=>{
 
-      return;
-    }
+        if(
+          status !== window.google.maps.DirectionsStatus.OK ||
+          !result
+        ){
 
-    setPickupCoords(
-      pickup
-    );
+          console.log(
+            "GOOGLE DIRECTIONS ERROR:",
+            status
+          );
 
-    setDropoffCoords(
-      dropoff
-    );
+          alert(
+            "Could not calculate route. Please choose valid pickup and dropoff locations."
+          );
 
-    const straightDistance =
-      getDistanceKm(
-        pickup.lat,
-        pickup.lng,
-        dropoff.lat,
-        dropoff.lng
-      );
+          return;
+        }
 
-    const roadDistance =
-      straightDistance * 1.3;
+        const route =
+          result.routes[0];
 
-    const km =
-      Number(
-        roadDistance.toFixed(1)
-      );
+        const leg =
+          route.legs[0];
 
-    setDistance(
-      km.toFixed(1)
-    );
+        const km =
+          Number(
+            (leg.distance.value / 1000).toFixed(1)
+          );
 
-    let deliveryEstimate =
-      "20 - 35 mins";
+        setPickupCoords({
+          lat:leg.start_location.lat(),
+          lng:leg.start_location.lng()
+        });
 
-    if(km <= 5){
+        setDropoffCoords({
+          lat:leg.end_location.lat(),
+          lng:leg.end_location.lng()
+        });
 
-      deliveryEstimate =
-        "15 - 25 mins";
-    }
+        setDistance(
+          km.toFixed(1)
+        );
 
-    else if(km <= 10){
+        let deliveryEstimate =
+          "20 - 35 mins";
 
-      deliveryEstimate =
-        "25 - 40 mins";
-    }
+        if(km <= 5){
 
-    else if(km <= 20){
+          deliveryEstimate =
+            "15 - 25 mins";
+        }
 
-      deliveryEstimate =
-        "40 - 60 mins";
-    }
+        else if(km <= 10){
 
-    else if(km <= 40){
+          deliveryEstimate =
+            "25 - 40 mins";
+        }
 
-      deliveryEstimate =
-        "1 hr - 1 hr 40 mins";
-    }
+        else if(km <= 20){
 
-    else{
+          deliveryEstimate =
+            "40 - 60 mins";
+        }
 
-      deliveryEstimate =
-        "2 hrs+";
-    }
+        else if(km <= 40){
 
-    setDeliveryTime(
-      deliveryEstimate
-    );
+          deliveryEstimate =
+            "1 hr - 1 hr 40 mins";
+        }
 
-    const baseFare =
-      7;
+        else{
 
-    let perKmRate =
-      2.6;
+          deliveryEstimate =
+            "2 hrs+";
+        }
 
-    if(km > 10){
+        setDeliveryTime(
+          deliveryEstimate
+        );
 
-      perKmRate =
-        3.8;
-    }
+        const baseFare =
+          7;
 
-    if(km > 20){
+        let perKmRate =
+          2.6;
 
-      perKmRate =
-        4.5;
-    }
+        if(km > 10){
 
-    if(km > 40){
+          perKmRate =
+            3.8;
+        }
 
-      perKmRate =
-        5.5;
-    }
+        if(km > 20){
 
-    const serviceFee =
-      1;
+          perKmRate =
+            4.5;
+        }
 
-    let longDistanceFee =
-      0;
+        if(km > 40){
 
-    if(km > 20){
+          perKmRate =
+            5.5;
+        }
 
-      longDistanceFee =
-        10;
-    }
+        const serviceFee =
+          1;
 
-    if(km > 40){
+        let longDistanceFee =
+          0;
 
-      longDistanceFee =
-        25;
-    }
+        if(km > 20){
 
-    const deliveryFee =
-      baseFare +
-      (km * perKmRate) +
-      serviceFee +
-      longDistanceFee;
+          longDistanceFee =
+            10;
+        }
 
-    const finalFee =
-      Math.ceil(
-        deliveryFee
-      );
+        if(km > 40){
 
-    setAmount(
-      finalFee.toFixed(2)
+          longDistanceFee =
+            25;
+        }
+
+        const deliveryFee =
+          baseFare +
+          (km * perKmRate) +
+          serviceFee +
+          longDistanceFee;
+
+        const finalFee =
+          Math.ceil(
+            deliveryFee
+          );
+
+        setAmount(
+          finalFee.toFixed(2)
+        );
+      }
     );
 
   }catch(err){
 
     console.log(
-      "DELIVERY FEE ERROR:",
+      "GOOGLE DELIVERY FEE ERROR:",
       err
     );
 
@@ -5396,12 +5412,29 @@ async function createOrder(){
       return;
     }
 
+    let pickupLat =
+      pickupCoords?.lat || null;
+
+    let pickupLng =
+      pickupCoords?.lng || null;
+
+    let dropoffLat =
+      dropoffCoords?.lat || null;
+
+    let dropoffLng =
+      dropoffCoords?.lng || null;
+
     const orderRes =
       await API.post(
         "/orders",
         {
           pickupLocation,
+          pickupLat,
+          pickupLng,
+
           dropoffLocation,
+          dropoffLat,
+          dropoffLng,
 
           distance:distance,
           deliveryTime:deliveryTime,
@@ -5422,14 +5455,14 @@ async function createOrder(){
         }
       );
 
-   const createdOrder =
-  orderRes.data.order ||
-  orderRes.data;
+    const createdOrder =
+      orderRes.data.order ||
+      orderRes.data;
 
-console.log(
-  "CREATED ORDER RESPONSE:",
-  createdOrder
-);
+    console.log(
+      "CREATED ORDER RESPONSE:",
+      createdOrder
+    );
 
     if(paymentMethod === "momo"){
 
@@ -5470,25 +5503,27 @@ console.log(
         );
 
         alert(
-        `MoMo payment successful. Order created and marked as paid. Your OTP Number is ${createdOrder.deliveryCode}`
-       );
+          `MoMo payment successful. Order created and marked as paid. Your OTP Number is ${createdOrder.deliveryCode}`
+        );
 
       }else{
 
         alert(
-        `Order created, but MoMo payment was not successful. Your OTP Number is ${createdOrder.deliveryCode}`
-       );
+          `Order created, but MoMo payment was not successful. Your OTP Number is ${createdOrder.deliveryCode}`
+        );
       }
 
     }else{
 
- alert(
-  `Order created successfully. Your OTP Number is ${createdOrder.deliveryCode || "not generated"}`
-);
-}
+      alert(
+        `Order created successfully. Your OTP Number is ${createdOrder.deliveryCode || "not generated"}`
+      );
+    }
 
     setPickupLocation("");
     setDropoffLocation("");
+    setPickupCoords(null);
+    setDropoffCoords(null);
     setDistance("");
     setAmount("");
     setItemNotes("");
@@ -5983,16 +6018,19 @@ async function sendMessage(
           ☰
         </MobileMenuButton>
 
-        {activeSection === "dashboard" && (
-  <CustomerDashboard
-    user={user}
-    currentTime={currentTime}
-    activeOrders={activeOrders}
-    completedOrders={completedOrders}
-    orders={orders}
-    notifications={notifications}
-    setActiveSection={setActiveSection}
-  />
+       {activeSection === "dashboard" && (
+  <>
+    <CustomerDashboard
+      user={user}
+      currentTime={currentTime}
+      activeOrders={activeOrders}
+      completedOrders={completedOrders}
+      orders={orders}
+      notifications={notifications}
+      setActiveSection={setActiveSection}
+    />
+
+  </>
 )}
 
 {activeSection === "orders" && (

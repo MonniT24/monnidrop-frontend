@@ -1,5 +1,7 @@
 import React from "react";
 
+import API from "../../api/api";
+
 import {
   FaWhatsapp,
   FaFacebookF
@@ -83,6 +85,81 @@ const [supportSearchResult,setSupportSearchResult] =
 const [deleteAccountConfirmed,setDeleteAccountConfirmed
 ] = React.useState(false);  
 
+const [privacyRecommendations,setPrivacyRecommendations] =
+  React.useState(
+    localStorage.getItem("monnidropPrivacyRecommendations") !== "false"
+  );
+
+const [privacyLocation,setPrivacyLocation] =
+  React.useState(
+    localStorage.getItem("monnidropPrivacyLocation") !== "false"
+  );
+
+const [privacyNotifications,setPrivacyNotifications] =
+  React.useState(
+    localStorage.getItem("monnidropPrivacyNotifications") !== "false"
+  );
+
+const [privacyPage,setPrivacyPage] =
+  React.useState("");
+
+  const [suspiciousReportOpen,setSuspiciousReportOpen] =
+  React.useState(false);
+
+const [suspiciousReceiveMethod,setSuspiciousReceiveMethod] =
+  React.useState("");
+
+const [suspiciousEmail,setSuspiciousEmail] =
+  React.useState("");
+
+const [suspiciousPlatform,setSuspiciousPlatform] =
+  React.useState("");
+
+const [suspiciousLocation,setSuspiciousLocation] =
+  React.useState("");
+
+const [suspiciousDate,setSuspiciousDate] =
+  React.useState("");
+
+const [suspiciousSummary,setSuspiciousSummary] =
+  React.useState("");
+
+const [suspiciousSubmitHover,setSuspiciousSubmitHover] =
+  React.useState(false);
+
+const [fakeSiteType,setFakeSiteType] =
+  React.useState("Website");
+
+const [fakeSiteLink,setFakeSiteLink] =
+  React.useState("");
+
+const [fakeSiteSubmittedInfo,setFakeSiteSubmittedInfo] =
+  React.useState([]);
+
+const [fakeSiteLossAmount,setFakeSiteLossAmount] =
+  React.useState("");
+
+const [fakeSiteSummary,setFakeSiteSummary] =
+  React.useState("");
+
+const [fakeSiteSubmitHover,setFakeSiteSubmitHover] =
+  React.useState(false); 
+  
+const [riderReportSource,setRiderReportSource] =
+  React.useState("Facebook");
+
+const [riderReportLink,setRiderReportLink] =
+  React.useState("");
+
+const [riderReportLossAmount,setRiderReportLossAmount] =
+  React.useState("");
+
+const [riderReportSummary,setRiderReportSummary] =
+  React.useState("");
+
+const [riderReportSubmitHover,setRiderReportSubmitHover] =
+  React.useState(false);  
+
   const [notificationSettings,setNotificationSettings] =
     React.useState(()=>{
 
@@ -127,8 +204,22 @@ const [deleteAccountConfirmed,setDeleteAccountConfirmed
       };
     });
 
-  const user =
-    JSON.parse(localStorage.getItem("user")) || {};
+ let user = {};
+
+try{
+
+  const savedUser =
+    localStorage.getItem("user");
+
+  user =
+    savedUser && savedUser !== "undefined"
+    ? JSON.parse(savedUser)
+    : {};
+
+}catch(err){
+
+  user = {};
+}
 
 const [securityPanel,setSecurityPanel] =
   React.useState("");
@@ -159,6 +250,46 @@ const [facebookLinked,setFacebookLinked] =
   React.useState(
     localStorage.getItem("monnidropFacebookLinked") === "true"
   );  
+
+  React.useEffect(()=>{
+
+  async function loadCustomerSecurity(){
+
+    try{
+
+      const res =
+        await API.get(
+          "/customer/me"
+        );
+
+      const freshUser =
+        res.data;
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(freshUser)
+      );
+
+      setSecurityPhone(
+        freshUser?.phone || ""
+      );
+
+      setSecurityEmail(
+        freshUser?.email || ""
+      );
+
+    }catch(err){
+
+      console.log(
+        "LOAD CUSTOMER SECURITY ERROR:",
+        err
+      );
+    }
+  }
+
+  loadCustomerSecurity();
+
+},[]);
 
   const [savedAccounts,setSavedAccounts] =
     React.useState(()=>{
@@ -1625,9 +1756,146 @@ const openSecurityPanel = (panelName) => {
               </InfoBox>
             )
 
-            
+           : selectedSetting === "Permissions" ? (
+  <InfoBox>
 
-           : selectedSetting === "Account security" ? (
+    <div style={permissionHeroStyle}>
+      <div style={permissionHeroIconStyle}>
+        🔑
+      </div>
+
+      <div style={permissionHeroTextStyle}>
+        Access certain device features with your permission
+      </div>
+    </div>
+
+    <PermissionAllowedItem
+      title="Camera"
+      text="You can allow access to your camera in order to take photos for customer service feedback. If you want to turn off access to this device feature, you can go to settings."
+    />
+
+    <PermissionAllowedItem
+      title="Notifications"
+      text="Enable notifications to get updates on your orders. You can view and edit notifications on the notification page. If you want to turn off access to this device feature, you can go to settings."
+    />
+
+    <PermissionAllowedItem
+      title="Live Activities"
+      text="Live Activities provide real-time updates for order status, rider movement, payment status and delivery progress."
+    />
+
+    <div style={permissionLockedSectionStyle}>
+      <div style={permissionLockIconStyle}>
+        🔒
+      </div>
+
+      <div style={permissionLockedTitleStyle}>
+        We DO NOT access the following device features
+      </div>
+    </div>
+
+    <PermissionBlockedItem icon="🎙️" title="Microphone" />
+    <PermissionBlockedItem icon="👤" title="Contacts" />
+    <PermissionBlockedItem icon="ᛒ" title="Bluetooth" />
+    <PermissionBlockedItem icon="📋" title="Clipboard" />
+
+    <PermissionBlockedItem
+      icon="📍"
+      title="Location"
+      text="MonniDrop only uses location access when it is needed for delivery tracking, route updates and accurate order movement."
+    />
+
+    <PermissionBlockedItem
+      icon="🖼️"
+      title="Photos"
+      text="MonniDrop does not access your full photo library. You can still select specific photos when sending support images."
+    />
+
+    <PermissionBlockedItem
+      icon="•••"
+      title="Others"
+      text="MonniDrop does not request access to other device features such as calendar, reminders or unrelated personal device data."
+    />
+
+    <p style={permissionFooterTextStyle}>
+      MonniDrop believes in being transparent and requesting a minimal amount
+      of permissions. You can learn more in the Privacy policy.
+    </p>
+
+  </InfoBox>
+) 
+
+           : selectedSetting === "Privacy" ? (
+  <InfoBox>
+
+    <div style={privacyTopRowStyle}>
+      <div style={privacyRowTitleStyle}>
+        Required cookies & technologies
+      </div>
+
+      <div style={privacyAlwaysOnStyle}>
+        Always on
+      </div>
+    </div>
+
+    <div style={privacySectionStyle}>
+      <p style={privacyTextStyle}>
+        For details on how we use your data, see our Privacy Policy and
+        Cookie and Similar Technologies Policy.
+      </p>
+    </div>
+
+    <div style={privacySectionStyle}>
+      <div style={privacyRowTitleStyle}>
+        Personalised advertised listing
+      </div>
+
+      <p style={privacyTextStyle}>
+        If you choose to turn off personalised advertised listings,
+        you will still continue to see listings, but they will no
+        longer be tailored to your interests or interactions.
+      </p>
+
+      <PrivacyToggle
+        enabled={privacyRecommendations}
+        onClick={()=>{
+          const nextValue =
+            !privacyRecommendations;
+
+          setPrivacyRecommendations(
+            nextValue
+          );
+
+          localStorage.setItem(
+            "monnidropPrivacyRecommendations",
+            nextValue ? "true" : "false"
+          );
+        }}
+      />
+    </div>
+
+    <div style={privacySectionTitleStyle}>
+      Additional privacy options
+    </div>
+
+    <PrivacyLinkRow
+      title="Privacy Policy"
+      onClick={()=>setSelectedSetting("Privacy policy")}
+    />
+
+    <PrivacyLinkRow
+      title="Delete your account"
+      danger
+      onClick={()=>{
+        setSelectedSetting("Account security");
+        setSecurityPanel("delete");
+      }}
+    />
+
+  </InfoBox>
+)
+
+  : selectedSetting === "Account security" ? (
   <InfoBox>
     <div style={accountSecurityHeroStyle}>
       <div style={accountSecurityIconStyle}>🛡️</div>
@@ -1643,6 +1911,16 @@ const openSecurityPanel = (panelName) => {
         </div>
       </div>
     </div>
+
+    {securityMessage && (
+
+          <div style={securitySuccessMessageStyle}>
+
+            {securityMessage}
+
+          </div>
+
+        )}
 
     {!securityPanel && (
       <>
@@ -1797,95 +2075,130 @@ const openSecurityPanel = (panelName) => {
           danger
           onClick={()=>openSecurityPanel("delete")}
         />
-
-        {securityMessage && (
-          <div style={securitySuccessMessageStyle}>
-            {securityMessage}
-          </div>
-        )}
       </>
     )}
 
-    {securityPanel === "phone" && (
-      <SecurityEditPage
-        title="Edit mobile phone number"
-        value={securityPhone}
-        setValue={setSecurityPhone}
-        placeholder="Enter phone number"
-        buttonText="Save phone number"
-        onBack={()=>setSecurityPanel("")}
-        onSave={()=>{
-          if(!securityPhone.trim()){
-            setSecurityMessage("Please enter a valid phone number.");
-            return;
-          }
+   {securityPanel === "phone" && (
+  <SecurityEditPage
+    title="Edit mobile phone number"
+    value={securityPhone}
+    setValue={setSecurityPhone}
+    placeholder="Enter phone number"
+    buttonText="Save phone number"
+    onBack={()=>setSecurityPanel("")}
+    onSave={async()=>{
 
-          updateLocalUser({phone:securityPhone});
-          setSecurityMessage("✅ Phone number updated successfully.");
-          setSecurityPanel("");
-        }}
-      />
-    )}
+      if(!securityPhone.trim()){
+        setSecurityMessage("Please enter a valid phone number.");
+        return;
+      }
+
+      try{
+
+        await API.put(
+          "/customer/settings",
+          {
+            phoneNumber:securityPhone,
+            phone:securityPhone
+          }
+        );
+
+        setSecurityMessage("✅ Phone number updated successfully.");
+        setSecurityPanel("");
+
+      }catch(err){
+
+        console.log("PHONE SAVE ERROR:", err);
+
+        setSecurityMessage(
+          err.response?.data?.message ||
+          "Phone number update failed."
+        );
+      }
+
+    }}
+  />
+)}
 
     {securityPanel === "email" && (
-      <SecurityEditPage
-        title="Edit email address"
-        value={securityEmail}
-        setValue={setSecurityEmail}
-        placeholder="Enter email address"
-        buttonText="Save email"
-        onBack={()=>setSecurityPanel("")}
-        onSave={()=>{
-          if(!securityEmail.includes("@")){
-            setSecurityMessage("Please enter a valid email address.");
-            return;
-          }
+  <SecurityEditPage
+    title="Edit email address"
+    value={securityEmail}
+    setValue={setSecurityEmail}
+    placeholder="Enter email address"
+    buttonText="Save email"
+    onBack={()=>setSecurityPanel("")}
+    onSave={()=>{
 
-          updateLocalUser({email:securityEmail});
-          setSecurityMessage("✅ Email address updated successfully.");
-          setSecurityPanel("");
-        }}
-      />
-    )}
+      setSecurityMessage(
+        "For security, email changes must be verified before saving. We will add email verification next."
+      );
+
+      setSecurityPanel("");
+
+    }}
+  />
+)}
 
     {securityPanel === "password" && (
-      <SecurityEditPage
-        title="Change password"
-        value={securityPassword}
-        setValue={setSecurityPassword}
-        placeholder="Enter new password"
-        type="password"
-        buttonText="Save password"
-        onBack={()=>setSecurityPanel("")}
-        onSave={()=>{
-          if(securityPassword.length < 6){
-            setSecurityMessage("Password must be at least 6 characters.");
-            return;
+  <SecurityEditPage
+    title="Change password"
+    value={securityPassword}
+    setValue={setSecurityPassword}
+    placeholder="Enter new password"
+    type="password"
+    buttonText="Save password"
+    onBack={()=>setSecurityPanel("")}
+    onSave={async()=>{
+
+      if(securityPassword.length < 6){
+
+        setSecurityMessage(
+          "Password must be at least 6 characters."
+        );
+
+        return;
+      }
+
+      try{
+
+        await API.put(
+          "/customer/settings",
+          {
+            password:securityPassword
           }
+        );
 
-          localStorage.setItem(
-            "monnidropPasswordUpdatedAt",
-            new Date().toISOString()
-          );
+        setSecurityPassword("");
 
-          setSecurityPassword("");
-          setSecurityMessage("✅ Password updated successfully.");
-          setSecurityPanel("");
-        }}
-      />
-    )}
+        setSecurityMessage(
+          "✅ Password updated successfully."
+        );
 
-    {securityPanel === "signin" && (
-      <SecurityReadPage
-        title="Sign in activity"
-        onBack={()=>setSecurityPanel("")}
-        items={[
-          ["Current device","Chrome on Windows • Active now"],
-          ["Last login",new Date().toLocaleString()]
-        ]}
-      />
-    )}
+        setSecurityPanel("");
 
+      }catch(err){
+
+        setSecurityMessage(
+          err.response?.data?.message ||
+          "Password update failed."
+        );
+      }
+
+    }}
+  />
+)}
+
+{securityPanel === "signin" && (
+  <SecurityReadPage
+    title="Sign in activity"
+    onBack={()=>setSecurityPanel("")}
+    items={[
+      ["Current device","Chrome on Windows • Active now"],
+      ["Last login",new Date().toLocaleString()]
+    ]}
+  />
+)}
     {securityPanel === "devices" && (
       <SecurityReadPage
         title="Recent devices"
@@ -2097,11 +2410,19 @@ const openSecurityPanel = (panelName) => {
 ].map((item)=>(
   <div
     key={item}
-    onClick={()=>{
-      if(item === "Account protection"){
-        setSelectedSetting("Account protection");
-      }
-    }}
+   onClick={()=>{
+  if(item === "Data protection"){
+    setSelectedSetting("Data protection");
+  }
+
+  if(item === "Account protection"){
+    setSelectedSetting("Account protection");
+  }
+
+  if(item === "Payment protection"){
+    setSelectedSetting("Payment protection");
+  }
+}}
     style={safetyCardStyle}
   >
     <div style={safetyIconStyle}>🔒</div>
@@ -2118,16 +2439,35 @@ const openSecurityPanel = (panelName) => {
     </div>
 
     <div style={safetyGridStyle}>
-      {[
-        "Recognize scams",
-        "Recognize scam emails",
-        "Recognize scam messages"
-      ].map((item)=>(
-        <div key={item} style={safetyCardStyle}>
-          <div style={safetyIconStyle}>⚠️</div>
-          <div style={safetyCardTextStyle}>{item} ›</div>
-        </div>
-      ))}
+     {[
+  "Recognize scams",
+  "Recognize scam emails",
+  "Recognize scam messages"
+].map((item)=>(
+  <div
+    key={item}
+    onClick={()=>{
+      if(item === "Recognize scams"){
+        setSelectedSetting("Recognize scams");
+      }
+
+      if(item === "Recognize scam emails"){
+        setSelectedSetting("Recognize scam emails");
+      }
+
+      if(item === "Recognize scam messages"){
+        setSelectedSetting("Recognize scam messages");
+      }
+    }}
+    style={safetyCardStyle}
+  >
+    <div style={safetyIconStyle}>⚠️</div>
+
+    <div style={safetyCardTextStyle}>
+      {item} ›
+    </div>
+  </div>
+))}
     </div>
 
     <div style={safetySectionTitleStyle}>
@@ -2135,15 +2475,704 @@ const openSecurityPanel = (panelName) => {
     </div>
 
     {[
-      "Report a suspicious phone call, email or SMS/text message",
-      "Report a fake website or app similar to MonniDrop",
-      "Report suspicious rider or delivery activity"
-    ].map((item)=>(
-      <div key={item} style={safetyReportRowStyle}>
-        <span>{item}</span>
-        <span>›</span>
+  "Report a suspicious phone call, email or SMS/text message",
+  "Report a fake website or app similar to MonniDrop",
+  "Report suspicious rider or delivery activity"
+].map((item)=>(
+  <div
+    key={item}
+    onClick={()=>{
+      if(
+        item ===
+        "Report a suspicious phone call, email or SMS/text message"
+      ){
+      setSelectedSetting(
+       "Suspicious report"
+      );
+
+      }
+
+     if(
+  item ===
+  "Report a fake website or app similar to MonniDrop"
+){
+  setSelectedSetting(
+    "Fake website report"
+  );
+}
+
+if(
+  item ===
+  "Report suspicious rider or delivery activity"
+){
+  setSelectedSetting(
+    "Rider activity report"
+  );
+}
+
+    }}
+    style={safetyReportRowStyle}
+  >
+    <span>{item}</span>
+    <span>›</span>
+  </div>
+))}
+
+  </InfoBox>
+)
+
+: selectedSetting === "Rider activity report" ? (
+  <InfoBox>
+    <div style={articleHeaderStyle}>
+      <button
+        type="button"
+        onClick={()=>setSelectedSetting("Safety center")}
+        style={articleBackButtonStyle}
+      >
+        ←
+      </button>
+
+      <div style={articleTitleBarStyle}>
+        Report something suspicious
       </div>
-    ))}
+    </div>
+
+    <div style={suspiciousFormBoxStyle}>
+      <div style={suspiciousFormTitleStyle}>
+        🔒 All data is safeguarded
+      </div>
+
+      <label style={suspiciousLabelStyle}>
+        How did you receive the suspicious message?*
+      </label>
+
+      <select
+        value={riderReportSource}
+        onChange={(e)=>setRiderReportSource(e.target.value)}
+        style={suspiciousInputStyle}
+      >
+        <option value="Facebook">Facebook</option>
+        <option value="WhatsApp">WhatsApp</option>
+        <option value="SMS">SMS</option>
+        <option value="Phone call">Phone call</option>
+        <option value="Inside MonniDrop">Inside MonniDrop</option>
+        <option value="Others">Others</option>
+      </select>
+
+      <label style={suspiciousLabelStyle}>
+        Enter the suspicious website link, rider name, phone number, or app name
+      </label>
+
+      <input
+        value={riderReportLink}
+        onChange={(e)=>setRiderReportLink(e.target.value)}
+        placeholder="Enter link, rider name, phone number, or app name"
+        style={suspiciousInputStyle}
+      />
+
+      <label style={suspiciousLabelStyle}>
+        Has there been a loss of assets? If yes, please fill in the specific amount
+      </label>
+
+      <input
+        value={riderReportLossAmount}
+        onChange={(e)=>setRiderReportLossAmount(e.target.value)}
+        placeholder="Example: GHS 30"
+        style={suspiciousInputStyle}
+      />
+
+      <label style={suspiciousLabelStyle}>
+        Summarize the suspicious activity in a few sentences*
+      </label>
+
+      <textarea
+        value={riderReportSummary}
+        onChange={(e)=>setRiderReportSummary(e.target.value)}
+        placeholder="Share details about the rider, delivery issue, payment request, fake call, or suspicious activity."
+        style={suspiciousTextAreaStyle}
+      />
+
+      <button
+        type="button"
+        onMouseEnter={()=>setRiderReportSubmitHover(true)}
+        onMouseLeave={()=>setRiderReportSubmitHover(false)}
+        onClick={()=>{
+          alert("Suspicious rider or delivery report submitted.");
+          setSelectedSetting("Safety center");
+        }}
+        style={{
+          ...suspiciousSubmitButtonStyle,
+          background:riderReportSubmitHover ? "#991b1b" : "#dc2626",
+          transform:riderReportSubmitHover ? "translateY(-2px)" : "translateY(0)"
+        }}
+      >
+        Submit
+      </button>
+    </div>
+  </InfoBox>
+)
+
+: selectedSetting === "Rider activity report" ? (
+  <InfoBox>
+
+    <div style={articleHeaderStyle}>
+      <button
+        type="button"
+        onClick={()=>setSelectedSetting("Safety center")}
+        style={articleBackButtonStyle}
+      >
+        ←
+      </button>
+
+      <div style={articleTitleBarStyle}>
+        Report suspicious rider or delivery activity
+      </div>
+    </div>
+
+    <div style={suspiciousFormBoxStyle}>
+
+      <div style={suspiciousFormTitleStyle}>
+        🔒 All data is safeguarded
+      </div>
+
+      <label style={suspiciousLabelStyle}>
+        How did you receive the suspicious activity?*
+      </label>
+
+      <select
+        value={riderReportSource}
+        onChange={(e)=>setRiderReportSource(e.target.value)}
+        style={suspiciousInputStyle}
+      >
+        <option value="Facebook">Facebook</option>
+        <option value="WhatsApp">WhatsApp</option>
+        <option value="SMS">SMS</option>
+        <option value="Phone call">Phone call</option>
+        <option value="Inside MonniDrop">
+          Inside MonniDrop
+        </option>
+        <option value="Others">
+          Others
+        </option>
+      </select>
+
+      <label style={suspiciousLabelStyle}>
+        Rider name, rider phone number, order ID or delivery reference*
+      </label>
+
+      <input
+        value={riderReportLink}
+        onChange={(e)=>setRiderReportLink(e.target.value)}
+        placeholder="Enter rider name, phone number or order ID"
+        style={suspiciousInputStyle}
+      />
+
+      <label style={suspiciousLabelStyle}>
+        Has there been a loss of money or property?
+      </label>
+
+      <input
+        value={riderReportLossAmount}
+        onChange={(e)=>setRiderReportLossAmount(e.target.value)}
+        placeholder="Example: GHS 50"
+        style={suspiciousInputStyle}
+      />
+
+      <label style={suspiciousLabelStyle}>
+        Summarize the suspicious activity in a few sentences*
+      </label>
+
+      <textarea
+        value={riderReportSummary}
+        onChange={(e)=>setRiderReportSummary(e.target.value)}
+        placeholder="Explain what happened..."
+        style={suspiciousTextAreaStyle}
+      />
+
+      <button
+        type="button"
+        onMouseEnter={()=>
+          setRiderReportSubmitHover(true)
+        }
+        onMouseLeave={()=>
+          setRiderReportSubmitHover(false)
+        }
+        onClick={()=>{
+          alert(
+            "Suspicious rider activity report submitted."
+          );
+
+          setSelectedSetting(
+            "Safety center"
+          );
+        }}
+        style={{
+          ...suspiciousSubmitButtonStyle,
+          background:
+            riderReportSubmitHover
+            ? "#991b1b"
+            : "#dc2626",
+          transform:
+            riderReportSubmitHover
+            ? "translateY(-2px)"
+            : "translateY(0)"
+        }}
+      >
+        Submit
+      </button>
+
+    </div>
+
+  </InfoBox>
+)
+
+: selectedSetting === "Fake website report" ? (
+  <InfoBox>
+    <div style={articleHeaderStyle}>
+      <button
+        type="button"
+        onClick={()=>setSelectedSetting("Safety center")}
+        style={articleBackButtonStyle}
+      >
+        ←
+      </button>
+
+      <div style={articleTitleBarStyle}>
+        Report something suspicious
+      </div>
+    </div>
+
+    <div style={suspiciousFormBoxStyle}>
+      <div style={suspiciousFormTitleStyle}>
+        🔒 All data is safeguarded
+      </div>
+
+      <label style={suspiciousLabelStyle}>
+        Did you use a fake website or app?*
+      </label>
+
+      <select
+        value={fakeSiteType}
+        onChange={(e)=>setFakeSiteType(e.target.value)}
+        style={suspiciousInputStyle}
+      >
+        <option value="Website">Website</option>
+        <option value="App">App</option>
+      </select>
+
+      <label style={suspiciousLabelStyle}>
+        Enter the suspicious website link or app name*
+      </label>
+
+      <input
+        value={fakeSiteLink}
+        onChange={(e)=>setFakeSiteLink(e.target.value)}
+        placeholder="Enter website link or app name"
+        style={suspiciousInputStyle}
+      />
+
+      <label style={suspiciousLabelStyle}>
+        Did you submit any personal information?*
+      </label>
+
+      {[
+        "I mentioned my MonniDrop account information.",
+        "I submitted my bank information.",
+        "I submitted my personal email, phone number, or home address.",
+        "I did not submit any information.",
+        "Others"
+      ].map((item)=>(
+        <label
+          key={item}
+          style={fakeCheckboxRowStyle}
+        >
+          <input
+            type="checkbox"
+            checked={fakeSiteSubmittedInfo.includes(item)}
+            onChange={(e)=>{
+
+              if(e.target.checked){
+                setFakeSiteSubmittedInfo([
+                  ...fakeSiteSubmittedInfo,
+                  item
+                ]);
+              }else{
+                setFakeSiteSubmittedInfo(
+                  fakeSiteSubmittedInfo.filter(
+                    (saved)=>saved !== item
+                  )
+                );
+              }
+            }}
+          />
+
+          <span>{item}</span>
+        </label>
+      ))}
+
+      <label style={suspiciousLabelStyle}>
+        Has there been a loss of assets? If yes, please fill in the specific amount
+      </label>
+
+      <input
+        value={fakeSiteLossAmount}
+        onChange={(e)=>setFakeSiteLossAmount(e.target.value)}
+        placeholder="Example: GHS 30"
+        style={suspiciousInputStyle}
+      />
+
+      <label style={suspiciousLabelStyle}>
+        Summarize the suspicious activity in a few sentences*
+      </label>
+
+      <textarea
+        value={fakeSiteSummary}
+        onChange={(e)=>setFakeSiteSummary(e.target.value)}
+        placeholder="Share details like a website URL or app name that was provided. Do not include sensitive personal information."
+        style={suspiciousTextAreaStyle}
+      />
+
+      <button
+        type="button"
+        onMouseEnter={()=>setFakeSiteSubmitHover(true)}
+        onMouseLeave={()=>setFakeSiteSubmitHover(false)}
+        onClick={()=>{
+          alert("Fake website or app report submitted.");
+          setSelectedSetting("Safety center");
+        }}
+        style={{
+          ...suspiciousSubmitButtonStyle,
+          background:fakeSiteSubmitHover ? "#991b1b" : "#dc2626",
+          transform:fakeSiteSubmitHover ? "translateY(-2px)" : "translateY(0)"
+        }}
+      >
+        Submit
+      </button>
+    </div>
+  </InfoBox>
+)
+
+: selectedSetting === "Suspicious report" ? (
+  <InfoBox>
+    <div style={articleHeaderStyle}>
+      <button
+        type="button"
+        onClick={()=>setSelectedSetting("Safety center")}
+        style={articleBackButtonStyle}
+      >
+        ←
+      </button>
+
+      <div style={articleTitleBarStyle}>
+        Report suspicious message
+      </div>
+    </div>
+
+    <div style={suspiciousFormBoxStyle}>
+      <div style={suspiciousFormTitleStyle}>
+        Report suspicious phone call, email or SMS/text message
+      </div>
+
+      <label style={suspiciousLabelStyle}>
+        How did you receive the suspicious message?*
+      </label>
+
+      <div style={suspiciousFieldRowStyle}>
+        <select
+          value={suspiciousReceiveMethod}
+          onChange={(e)=>setSuspiciousReceiveMethod(e.target.value)}
+          style={suspiciousInputStyle}
+        >
+          <option value="">Select method</option>
+          <option value="Email">Email</option>
+          <option value="SMS">SMS</option>
+          <option value="Phone">Phone</option>
+        </select>
+
+        <button
+          type="button"
+          onClick={()=>setSuspiciousReceiveMethod("")}
+          style={suspiciousCancelButtonStyle}
+        >
+          Cancel
+        </button>
+      </div>
+
+      <label style={suspiciousLabelStyle}>
+        Enter the suspicious email address*
+      </label>
+
+      <input
+        value={suspiciousEmail}
+        onChange={(e)=>setSuspiciousEmail(e.target.value)}
+        placeholder="example@domain.com"
+        style={suspiciousInputStyle}
+      />
+
+      <label style={suspiciousLabelStyle}>
+        What platform did you receive the scam email on?*
+      </label>
+
+      <div style={suspiciousFieldRowStyle}>
+        <select
+          value={suspiciousPlatform}
+          onChange={(e)=>setSuspiciousPlatform(e.target.value)}
+          style={suspiciousInputStyle}
+        >
+          <option value="">Select platform</option>
+          <option value="Gmail">Gmail</option>
+          <option value="Yahoo">Yahoo</option>
+          <option value="Outlook">Outlook</option>
+          <option value="Hotmail">Hotmail</option>
+          <option value="Live">Live</option>
+          <option value="MSN">MSN</option>
+          <option value="iCloud">iCloud</option>
+          <option value="Others">Others</option>
+        </select>
+
+        <button
+          type="button"
+          onClick={()=>setSuspiciousPlatform("")}
+          style={suspiciousCancelButtonStyle}
+        >
+          Cancel
+        </button>
+      </div>
+
+      <label style={suspiciousLabelStyle}>
+        Where did you find the suspicious email?*
+      </label>
+
+      <div style={suspiciousFieldRowStyle}>
+        <select
+          value={suspiciousLocation}
+          onChange={(e)=>setSuspiciousLocation(e.target.value)}
+          style={suspiciousInputStyle}
+        >
+          <option value="">Select location</option>
+          <option value="In my inbox">In my inbox</option>
+          <option value="In the spam folder">In the spam folder</option>
+          <option value="Others">Others</option>
+        </select>
+
+        <button
+          type="button"
+          onClick={()=>setSuspiciousLocation("")}
+          style={suspiciousCancelButtonStyle}
+        >
+          Cancel
+        </button>
+      </div>
+
+      <label style={suspiciousLabelStyle}>
+        When were you first contacted?*
+      </label>
+
+      <input
+        type="date"
+        value={suspiciousDate}
+        onChange={(e)=>setSuspiciousDate(e.target.value)}
+        style={suspiciousInputStyle}
+      />
+
+      <label style={suspiciousLabelStyle}>
+        Summarize the suspicious activity in a few sentences*
+      </label>
+
+      <textarea
+        value={suspiciousSummary}
+        onChange={(e)=>setSuspiciousSummary(e.target.value)}
+        placeholder="Explain what happened..."
+        style={suspiciousTextAreaStyle}
+      />
+
+      <button
+        type="button"
+        onMouseEnter={()=>setSuspiciousSubmitHover(true)}
+        onMouseLeave={()=>setSuspiciousSubmitHover(false)}
+        onClick={()=>{
+          alert("Suspicious activity report submitted.");
+          setSelectedSetting("Safety center");
+        }}
+        style={{
+          ...suspiciousSubmitButtonStyle,
+          background:suspiciousSubmitHover ? "#991b1b" : "#dc2626",
+          transform:suspiciousSubmitHover ? "translateY(-2px)" : "translateY(0)"
+        }}
+      >
+        Submit
+      </button>
+    </div>
+  </InfoBox>
+)
+
+: selectedSetting === "Recognize scams" ? (
+  <InfoBox>
+    <div style={articleHeaderStyle}>
+      <button
+        type="button"
+        onClick={()=>setSelectedSetting("Safety center")}
+        style={articleBackButtonStyle}
+      >
+        ←
+      </button>
+
+      <div style={articleTitleBarStyle}>
+        Recognize scams
+      </div>
+    </div>
+
+    <h1 style={articleMainTitleStyle}>
+      Protect Yourself from Spam Text Messages and Phishing Scams
+    </h1>
+
+    <p style={articleParagraphStyle}>
+      Be careful when someone asks you to make payment outside MonniDrop,
+      share your password, send OTP codes, or click unknown links.
+    </p>
+
+    <ul style={articleListStyle}>
+      <li>Never share your password or OTP code.</li>
+      <li>Do not pay outside MonniDrop.</li>
+      <li>Avoid suspicious links from unknown people.</li>
+      <li>Report suspicious delivery activity to support.</li>
+    </ul>
+  </InfoBox>
+)
+
+: selectedSetting === "Recognize scam emails" ? (
+  <InfoBox>
+    <div style={articleHeaderStyle}>
+      <button
+        type="button"
+        onClick={()=>setSelectedSetting("Safety center")}
+        style={articleBackButtonStyle}
+      >
+        ←
+      </button>
+
+      <div style={articleTitleBarStyle}>
+        Recognize scam emails
+      </div>
+    </div>
+
+    <h1 style={articleMainTitleStyle}>
+      How to identify scam emails
+    </h1>
+
+    <p style={articleParagraphStyle}>
+      Scam emails may pretend to be from MonniDrop and ask you to click links,
+      confirm payments, reset your password, or share account details.
+    </p>
+
+    <ul style={articleListStyle}>
+      <li>Check the sender email carefully.</li>
+      <li>Do not click suspicious links.</li>
+      <li>Do not share login details by email.</li>
+      <li>Report suspicious emails to MonniDrop support.</li>
+    </ul>
+  </InfoBox>
+)
+
+: selectedSetting === "Recognize scam messages" ? (
+  <InfoBox>
+    <div style={articleHeaderStyle}>
+      <button
+        type="button"
+        onClick={()=>setSelectedSetting("Safety center")}
+        style={articleBackButtonStyle}
+      >
+        ←
+      </button>
+
+      <div style={articleTitleBarStyle}>
+        Recognize scam messages
+      </div>
+    </div>
+
+    <h1 style={articleMainTitleStyle}>
+      How to identify scam messages
+    </h1>
+
+    <p style={articleParagraphStyle}>
+      Scam messages may come through SMS, WhatsApp, or social media claiming
+      there is a delivery issue, payment problem, or account warning.
+    </p>
+
+    <ul style={articleListStyle}>
+      <li>Do not send OTP codes through SMS or WhatsApp.</li>
+      <li>Do not open unknown delivery links.</li>
+      <li>Confirm order updates only inside MonniDrop.</li>
+      <li>Contact support if a message looks suspicious.</li>
+    </ul>
+  </InfoBox>
+)
+
+: selectedSetting === "Data protection" ? (
+  <InfoBox>
+    <div style={articleHeaderStyle}>
+      <button
+        type="button"
+        onClick={()=>setSelectedSetting("Safety center")}
+        style={articleBackButtonStyle}
+      >
+        ←
+      </button>
+
+      <div style={articleTitleBarStyle}>
+        Data protection
+      </div>
+    </div>
+
+    <h1 style={articleMainTitleStyle}>
+      How MonniDrop protects your data
+    </h1>
+
+    <p style={articleParagraphStyle}>
+      MonniDrop protects your personal data by using secure login sessions,
+      controlled account access, and protected delivery records.
+    </p>
+
+    <ul style={articleListStyle}>
+      <li>Your password is encrypted.</li>
+      <li>Your delivery details are only used for active orders.</li>
+      <li>Your support messages are used only to help resolve issues.</li>
+      <li>Your personal details are not sold to third parties.</li>
+    </ul>
+  </InfoBox>
+)
+
+: selectedSetting === "Payment protection" ? (
+  <InfoBox>
+    <div style={articleHeaderStyle}>
+      <button
+        type="button"
+        onClick={()=>setSelectedSetting("Safety center")}
+        style={articleBackButtonStyle}
+      >
+        ←
+      </button>
+
+      <div style={articleTitleBarStyle}>
+        Payment protection
+      </div>
+    </div>
+
+    <h1 style={articleMainTitleStyle}>
+      How MonniDrop protects payments
+    </h1>
+
+    <p style={articleParagraphStyle}>
+      MonniDrop helps protect payments by tracking payment status,
+      delivery cost, mobile money payment records, and cash settlement status.
+    </p>
+
+    <ul style={articleListStyle}>
+      <li>Always confirm payment status inside MonniDrop.</li>
+      <li>Do not send money outside the app.</li>
+      <li>Report suspicious payment requests to support.</li>
+      <li>Admins can verify payment records when needed.</li>
+    </ul>
   </InfoBox>
 )
 
@@ -2558,6 +3587,121 @@ function SecurityReadPage({title,onBack,items}) {
   );
 }
 
+function PermissionAllowedItem({title,text}) {
+  return (
+    <div style={permissionAllowedItemStyle}>
+      <div style={permissionAllowedTopStyle}>
+        <div style={permissionAllowedTitleStyle}>
+          {title}
+        </div>
+
+        <div style={permissionAllowedBadgeStyle}>
+          Allowed
+        </div>
+      </div>
+
+      <div style={permissionAllowedTextStyle}>
+        {text}{" "}
+        <button
+  type="button"
+  onClick={()=>{
+
+    if(
+      /Android/i.test(
+        navigator.userAgent
+      )
+    ){
+
+      window.location.href =
+        "intent:#Intent;action=android.settings.SETTINGS;end";
+
+      return;
+    }
+
+    alert(
+      "Open your device Settings app and manage permissions for MonniDrop."
+    );
+
+  }}
+  style={permissionSettingsLinkStyle}
+>
+  go to settings ›
+</button>
+      </div>
+    </div>
+  );
+}
+
+function PermissionBlockedItem({icon,title,text}) {
+  return (
+    <div style={permissionBlockedItemStyle}>
+      <div style={permissionBlockedTopStyle}>
+        <div style={permissionBlockedLeftStyle}>
+          <span style={permissionBlockedIconStyle}>
+            {icon}
+          </span>
+
+          <span style={permissionBlockedTitleStyle}>
+            {title}
+          </span>
+        </div>
+
+        <span style={permissionNoAccessStyle}>
+          ⊘
+        </span>
+      </div>
+
+      {text && (
+        <div style={permissionBlockedTextStyle}>
+          {text}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PrivacyToggle({enabled,onClick}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        ...privacyToggleStyle,
+        background:enabled ? "#16a34a" : "#cbd5e1"
+      }}
+    >
+      <span
+        style={{
+          ...privacyToggleDotStyle,
+          left:enabled ? "25px" : "4px"
+        }}
+      />
+    </button>
+  );
+}
+
+function PrivacyLinkRow({title,onClick,danger}) {
+  return (
+    <div
+      onClick={onClick}
+      style={privacyLinkRowStyle}
+    >
+      <div
+        style={{
+          ...privacyLinkTextStyle,
+          color:danger ? "#dc2626" : "#0f172a"
+        }}
+      >
+        {title}
+      </div>
+
+      <div style={privacyArrowStyle}>
+        ›
+      </div>
+    </div>
+  );
+}
+
 function InfoBox({ children }) {
   return (
     <div style={infoBoxStyle}>
@@ -2586,7 +3730,7 @@ const greenTitleStyle = {
   margin:"0 0 8px",
   fontSize:"30px",
   fontWeight:"900",
-  color:"#15803d"
+  color:"#1d4ed8"
 };
 
 const paragraphStyle = {
@@ -3258,15 +4402,15 @@ const securityCardStyle = {
 };
 
 const securityIconStyle = {
-  width:"42px",
-  height:"42px",
-  borderRadius:"14px",
-  background:"#dcfce7",
-  color:"#15803d",
+  width:"48px",
+  height:"48px",
+  borderRadius:"15px",
+  background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
+  color:"#facc15",
   display:"flex",
   alignItems:"center",
   justifyContent:"center",
-  fontSize:"22px",
+  fontSize:"24px",
   flexShrink:0
 };
 
@@ -3274,12 +4418,12 @@ const securityTextStyle = {
   flex:1,
   fontSize:"18px",
   fontWeight:"900",
-  color:"#15803d"
+  color:"#0f172a",
 };
 
 const securityArrowStyle = {
   fontSize:"28px",
-  color:"#15803d",
+  color:"#facc15",
   fontWeight:"700"
 };
 
@@ -3305,10 +4449,7 @@ const safetyBackStyle = {
 };
 
 const safetyHeroTitleStyle = {
-  fontSize:"28px",
-  fontWeight:"900",
-  marginBottom:"8px",
-  lineHeight:"1.1"
+  color:"#1d4ed8"
 };
 
 const safetyHeroTextStyle = {
@@ -3560,7 +4701,7 @@ const feedbackCheckStyle = {
   display:"inline-flex",
   alignItems:"center",
   justifyContent:"center",
-  color:"#15803d",
+  color:"#0f172a",
   fontSize:"30px",
   fontWeight:"900"
 };
@@ -3752,4 +4893,358 @@ const securityInfoTextStyle = {
   fontWeight:"700",
   color:"#64748b",
   lineHeight:"1.5"
+};
+
+const privacyTopRowStyle = {
+  display:"flex",
+  justifyContent:"space-between",
+  alignItems:"flex-start",
+  gap:"16px",
+  padding:"18px 0",
+  borderBottom:"1px solid #e5e7eb"
+};
+
+const privacyRowTitleStyle = {
+  fontSize:"16px",
+  fontWeight:"900",
+  color:"#0f172a",
+  marginBottom:"6px"
+};
+
+const privacySmallTextStyle = {
+  fontSize:"12px",
+  fontWeight:"700",
+  color:"#94a3b8",
+  lineHeight:"1.5"
+};
+
+const privacyAlwaysOnStyle = {
+  fontSize:"16px",
+  fontWeight:"800",
+  color:"#64748b",
+  whiteSpace:"nowrap"
+};
+
+const privacySectionStyle = {
+  padding:"20px 0",
+  borderBottom:"1px solid #e5e7eb"
+};
+
+const privacyTextStyle = {
+  margin:"0 0 12px",
+  fontSize:"12px",
+  fontWeight:"700",
+  color:"#94a3b8",
+  lineHeight:"1.5"
+};
+
+const privacyToggleStyle = {
+  width:"52px",
+  height:"30px",
+  border:"none",
+  borderRadius:"999px",
+  position:"relative",
+  cursor:"pointer",
+  transition:"0.25s ease"
+};
+
+const privacyToggleDotStyle = {
+  width:"22px",
+  height:"22px",
+  borderRadius:"50%",
+  background:"#ffffff",
+  position:"absolute",
+  top:"4px",
+  transition:"0.25s ease",
+  boxShadow:"0 2px 8px rgba(0,0,0,0.18)"
+};
+
+const privacySectionTitleStyle = {
+  fontSize:"17px",
+  fontWeight:"900",
+  color:"#0f172a",
+  margin:"20px 0 6px"
+};
+
+const privacyLinkRowStyle = {
+  display:"flex",
+  justifyContent:"space-between",
+  alignItems:"center",
+  padding:"18px 0",
+  borderBottom:"1px solid #e5e7eb",
+  cursor:"pointer"
+};
+
+const privacyLinkTextStyle = {
+  fontSize:"17px",
+  fontWeight:"800"
+};
+
+const privacyArrowStyle = {
+  fontSize:"28px",
+  color:"#94a3b8"
+};
+
+const privacyInfoBoxStyle = {
+  marginTop:"16px",
+  background:"#ffffff",
+  border:"1px solid #e5e7eb",
+  borderRadius:"16px",
+  padding:"16px"
+};
+
+const privacyInfoTitleStyle = {
+  fontSize:"18px",
+  fontWeight:"900",
+  color:"#0f172a",
+  marginBottom:"8px"
+};
+
+const permissionHeroStyle = {
+  textAlign:"center",
+  padding:"18px 0 20px",
+  borderBottom:"1px solid #e5e7eb",
+  marginBottom:"18px"
+};
+
+const permissionHeroIconStyle = {
+  width:"72px",
+  height:"72px",
+  borderRadius:"50%",
+  background:"#ecfdf5",
+  color:"#15803d",
+  display:"flex",
+  alignItems:"center",
+  justifyContent:"center",
+  margin:"0 auto 18px",
+  fontSize:"34px"
+};
+
+const permissionHeroTextStyle = {
+  fontSize:"14px",
+  fontWeight:"900",
+  color:"#15803d",
+  lineHeight:"1.4"
+};
+
+const permissionAllowedTitleStyle = {
+  fontSize:"15px",
+  fontWeight:"900",
+  color:"#0f172a"
+};
+
+const permissionAllowedTopStyle = {
+  display:"flex",
+  justifyContent:"space-between",
+  alignItems:"center",
+  gap:"12px",
+  marginBottom:"8px"
+};
+
+const permissionAllowedBadgeStyle = {
+  background:"#f97316",
+  color:"#ffffff",
+  borderRadius:"6px",
+  padding:"3px 7px",
+  fontSize:"11px",
+  fontWeight:"900"
+};
+
+const permissionAllowedTextStyle = {
+  fontSize:"12px",
+  fontWeight:"700",
+  color:"#737373",
+  lineHeight:"1.6"
+};
+
+const permissionSettingsLinkStyle = {
+  border:"none",
+  background:"transparent",
+  padding:"0",
+  margin:"0",
+  color:"#f97316",
+  fontWeight:"900",
+  fontSize:"12px",
+  cursor:"pointer"
+};
+
+const permissionLockedSectionStyle = {
+  textAlign:"center",
+  padding:"28px 0 18px",
+  marginTop:"10px"
+};
+
+const permissionLockIconStyle = {
+  width:"72px",
+  height:"72px",
+  borderRadius:"50%",
+  background:"#ecfdf5",
+  color:"#15803d",
+  display:"flex",
+  alignItems:"center",
+  justifyContent:"center",
+  margin:"0 auto 16px",
+  fontSize:"34px"
+};
+
+const permissionLockedTitleStyle = {
+  fontSize:"14px",
+  fontWeight:"900",
+  color:"#15803d",
+  lineHeight:"1.4"
+};
+
+const permissionBlockedItemStyle = {
+  background:"#ffffff",
+  border:"1px solid #e5e7eb",
+  borderRadius:"8px",
+  padding:"14px",
+  marginBottom:"12px"
+};
+
+const permissionBlockedTopStyle = {
+  display:"flex",
+  justifyContent:"space-between",
+  alignItems:"center",
+  gap:"12px"
+};
+
+const permissionBlockedLeftStyle = {
+  display:"flex",
+  alignItems:"center",
+  gap:"12px"
+};
+
+const permissionBlockedIconStyle = {
+  fontSize:"24px",
+  color:"#0f172a",
+  width:"30px",
+  display:"inline-flex",
+  justifyContent:"center"
+};
+
+const permissionBlockedTitleStyle = {
+  fontSize:"15px",
+  fontWeight:"900",
+  color:"#0f172a"
+};
+
+const permissionNoAccessStyle = {
+  fontSize:"24px",
+  color:"#ef4444",
+  fontWeight:"900"
+};
+
+const permissionBlockedTextStyle = {
+  marginTop:"8px",
+  fontSize:"12px",
+  fontWeight:"700",
+  color:"#737373",
+  lineHeight:"1.6"
+};
+
+const permissionFooterTextStyle = {
+  fontSize:"12px",
+  fontWeight:"700",
+  color:"#737373",
+  lineHeight:"1.6",
+  marginTop:"16px"
+};
+
+const permissionAllowedItemStyle = {
+  padding:"14px 0",
+  borderBottom:"1px solid #e5e7eb"
+};
+
+const suspiciousFormBoxStyle = {
+  background:"#ffffff",
+  border:"1px solid #e5e7eb",
+  borderRadius:"18px",
+  padding:"18px",
+  marginTop:"18px",
+  boxShadow:"0 10px 24px rgba(15,23,42,0.06)"
+};
+
+const suspiciousFormTitleStyle = {
+  fontSize:"18px",
+  fontWeight:"900",
+  color:"#0f172a",
+  marginBottom:"16px"
+};
+
+const suspiciousLabelStyle = {
+  display:"block",
+  fontSize:"13px",
+  fontWeight:"900",
+  color:"#0f172a",
+  margin:"12px 0 6px"
+};
+
+const suspiciousFieldRowStyle = {
+  display:"grid",
+  gridTemplateColumns:"1fr 82px",
+  gap:"8px",
+  alignItems:"center"
+};
+
+const suspiciousInputStyle = {
+  width:"100%",
+  height:"42px",
+  border:"1px solid #cbd5e1",
+  borderRadius:"12px",
+  padding:"0 12px",
+  fontSize:"13px",
+  fontWeight:"800",
+  color:"#0f172a",
+  outline:"none",
+  boxSizing:"border-box"
+};
+
+const suspiciousCancelButtonStyle = {
+  height:"42px",
+  border:"none",
+  borderRadius:"12px",
+  background:"#e5e7eb",
+  color:"#0f172a",
+  fontSize:"12px",
+  fontWeight:"900",
+  cursor:"pointer"
+};
+
+const suspiciousTextAreaStyle = {
+  width:"100%",
+  minHeight:"100px",
+  border:"1px solid #cbd5e1",
+  borderRadius:"12px",
+  padding:"12px",
+  fontSize:"13px",
+  fontWeight:"800",
+  color:"#0f172a",
+  outline:"none",
+  resize:"vertical",
+  boxSizing:"border-box"
+};
+
+const suspiciousSubmitButtonStyle = {
+  width:"100%",
+  border:"none",
+  borderRadius:"14px",
+  padding:"14px",
+  marginTop:"14px",
+  color:"#ffffff",
+  fontSize:"14px",
+  fontWeight:"900",
+  cursor:"pointer",
+  transition:"0.25s ease"
+};
+
+const fakeCheckboxRowStyle = {
+  display:"flex",
+  alignItems:"flex-start",
+  gap:"10px",
+  fontSize:"13px",
+  fontWeight:"800",
+  color:"#0f172a",
+  lineHeight:"1.5",
+  margin:"10px 0"
 };

@@ -1,6 +1,16 @@
-import React from "react";
+import React,{useRef} from "react";
 
 import { FiPackage } from "react-icons/fi";
+
+import {
+  Autocomplete,
+  GoogleMap,
+  Marker,
+  DirectionsRenderer,
+  useJsApiLoader
+} from "@react-google-maps/api";
+
+const libraries = ["places"];
 
 export default function CustomerCreateOrder({
   pickupLocation,
@@ -36,6 +46,18 @@ export default function CustomerCreateOrder({
 
   createOrder
 }) {
+
+ const pickupRef = useRef(null);
+const dropoffRef = useRef(null);
+
+const {
+  isLoaded
+} = useJsApiLoader({
+  googleMapsApiKey:
+    process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+  libraries
+});   
+
   return (
     <>
       <div
@@ -108,15 +130,41 @@ export default function CustomerCreateOrder({
           step="1"
           title="Pickup Location"
         >
-          <Input
-            type="text"
-            placeholder="Enter pickup location"
-            value={pickupLocation}
-            onChange={(e)=>{
-              setPickupLocation(e.target.value);
-              searchLocations(e.target.value,"pickup");
-            }}
-          />
+          {isLoaded ? (
+  <Autocomplete
+    onLoad={(autocomplete)=>{
+      pickupRef.current = autocomplete;
+    }}
+    onPlaceChanged={()=>{
+      const place =
+        pickupRef.current.getPlace();
+
+      const address =
+        place.formatted_address || place.name;
+
+      setPickupLocation(address);
+      calculateDistance(address,dropoffLocation);
+    }}
+  >
+    <Input
+      type="text"
+      placeholder="Enter pickup location"
+      value={pickupLocation}
+      onChange={(e)=>{
+        setPickupLocation(e.target.value);
+      }}
+    />
+  </Autocomplete>
+) : (
+  <Input
+    type="text"
+    placeholder="Loading Google pickup search..."
+    value={pickupLocation}
+    onChange={(e)=>{
+      setPickupLocation(e.target.value);
+    }}
+  />
+)}
 
           <LocationHint />
 
@@ -142,15 +190,44 @@ export default function CustomerCreateOrder({
           step="2"
           title="Dropoff Location"
         >
-          <Input
-            type="text"
-            placeholder="Enter dropoff location"
-            value={dropoffLocation}
-            onChange={(e)=>{
-              setDropoffLocation(e.target.value);
-              searchLocations(e.target.value,"dropoff");
-            }}
-          />
+          {isLoaded ? (
+  <Autocomplete
+    onLoad={(autocomplete)=>{
+      dropoffRef.current = autocomplete;
+    }}
+    onPlaceChanged={()=>{
+      const place =
+        dropoffRef.current.getPlace();
+
+      const address =
+        place.formatted_address || place.name;
+
+      setDropoffLocation(address);
+      calculateDistance(
+        pickupLocation,
+        address
+      );
+    }}
+  >
+    <Input
+      type="text"
+      placeholder="Enter dropoff location"
+      value={dropoffLocation}
+      onChange={(e)=>{
+        setDropoffLocation(e.target.value);
+      }}
+    />
+  </Autocomplete>
+) : (
+  <Input
+    type="text"
+    placeholder="Loading Google dropoff search..."
+    value={dropoffLocation}
+    onChange={(e)=>{
+      setDropoffLocation(e.target.value);
+    }}
+  />
+)}
 
           <LocationHint />
 

@@ -1,14 +1,10 @@
 import React from "react";
 
 import {
-  MapContainer,
-  TileLayer,
+  GoogleMap,
   Marker,
-  Popup,
-  Polyline
-} from "react-leaflet";
-
-import "leaflet/dist/leaflet.css";
+  useJsApiLoader
+} from "@react-google-maps/api";
 
 export default function CustomerOrders({
   orders,
@@ -28,6 +24,27 @@ export default function CustomerOrders({
   sendMessage,
   cancelOrder
 }) {
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey:
+      process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    libraries:["places"]
+  });
+
+ function getPickupPosition(order){
+  return {
+    lat:Number(order.pickupLat || 5.6037),
+    lng:Number(order.pickupLng || -0.1870)
+  };
+}
+
+function getDropoffPosition(order){
+  return {
+    lat:Number(order.dropoffLat || 5.6500),
+    lng:Number(order.dropoffLng || -0.1962)
+  };
+}
+
   return (
     <>
       <div
@@ -255,108 +272,91 @@ export default function CustomerOrders({
 
               <Timeline status={o.status} />
 
-              {!sidebarOpen &&
-                locationCoords[o.pickupLocation] &&
-                locationCoords[o.dropoffLocation] && (
+              {!sidebarOpen && (
+                <div
+                  style={{
+                    marginTop:"20px",
+                    borderRadius:"22px",
+                    overflow:"hidden",
+                    border:"1px solid rgba(29,78,216,0.16)",
+                    background:"#ffffff"
+                  }}
+                >
                   <div
                     style={{
-                      marginTop:"20px",
-                      borderRadius:"22px",
-                      overflow:"hidden",
-                      border:"1px solid rgba(29,78,216,0.16)",
-                      background:"#ffffff"
+                      display:"flex",
+                      alignItems:"center",
+                      justifyContent:"space-between",
+                      gap:"12px",
+                      padding:"12px 14px",
+                      background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
+                      color:"white"
                     }}
                   >
-                    <div
-                      style={{
-                        display:"flex",
-                        alignItems:"center",
-                        justifyContent:"space-between",
-                        gap:"12px",
-                        padding:"12px 14px",
-                        background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
-                        color:"white"
-                      }}
-                    >
-                      <div style={{fontWeight:"900",fontSize:"14px"}}>
-                        Live Delivery Map
-                      </div>
-
-                      <div
-                        style={{
-                          background:"#facc15",
-                          color:"#0f172a",
-                          padding:"6px 10px",
-                          borderRadius:"999px",
-                          fontSize:"12px",
-                          fontWeight:"900"
-                        }}
-                      >
-                        Tracking Active
-                      </div>
+                    <div style={{fontWeight:"900",fontSize:"14px"}}>
+                      Live Delivery Map
                     </div>
 
-                    <MapContainer
-                      center={[
-                        locationCoords[o.pickupLocation].lat,
-                        locationCoords[o.pickupLocation].lng
-                      ]}
-                      zoom={12}
+                    <div
                       style={{
+                        background:"#facc15",
+                        color:"#0f172a",
+                        padding:"6px 10px",
+                        borderRadius:"999px",
+                        fontSize:"12px",
+                        fontWeight:"900"
+                      }}
+                    >
+                      Tracking Active
+                    </div>
+                  </div>
+
+                  {isLoaded ? (
+                    <GoogleMap
+                      mapContainerStyle={{
                         height:window.innerWidth <= 480 ? "220px" : "300px",
                         width:"100%"
                       }}
+                      center={getPickupPosition(o)}
+                      zoom={12}
                     >
-                      <TileLayer
-                        attribution='&copy; OpenStreetMap contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      <Marker
+                        position={getPickupPosition(o)}
+                        label="P"
                       />
 
                       <Marker
-                        position={[
-                          locationCoords[o.pickupLocation].lat,
-                          locationCoords[o.pickupLocation].lng
-                        ]}
-                        icon={customerIcon}
-                      >
-                        <Popup>Pickup Location</Popup>
-                      </Marker>
-
-                      <Marker
-                        position={[
-                          locationCoords[o.dropoffLocation].lat,
-                          locationCoords[o.dropoffLocation].lng
-                        ]}
-                        icon={customerIcon}
-                      >
-                        <Popup>Dropoff Location</Popup>
-                      </Marker>
+                        position={getDropoffPosition(o)}
+                        label="D"
+                      />
 
                       {riderLocation &&
                         o.rider?._id &&
                         String(riderLocation.riderId) === String(o.rider._id) && (
                           <Marker
-                            position={[riderLocation.lat,riderLocation.lng]}
-                            icon={riderIcon}
-                          >
-                            <Popup>Rider Current Location</Popup>
-                          </Marker>
+                            position={{
+                              lat:riderLocation.lat,
+                              lng:riderLocation.lng
+                            }}
+                            label="R"
+                          />
                       )}
-
-                      <Polyline
-                        positions={[
-                          [
-                            locationCoords[o.pickupLocation].lat,
-                            locationCoords[o.pickupLocation].lng
-                          ],
-                          [
-                            locationCoords[o.dropoffLocation].lat,
-                            locationCoords[o.dropoffLocation].lng
-                          ]
-                        ]}
-                      />
-                    </MapContainer>
-                  </div>
+                    </GoogleMap>
+                  ) : (
+                    <div
+                      style={{
+                        height:window.innerWidth <= 480 ? "220px" : "300px",
+                        display:"flex",
+                        alignItems:"center",
+                        justifyContent:"center",
+                        fontWeight:"900",
+                        color:"#0f172a"
+                      }}
+                    >
+                      Loading Google Map...
+                    </div>
+                  )}
+                </div>
               )}
 
               <div
