@@ -13,7 +13,7 @@ export default function CustomerNotifications({
     return (
       note.title ||
       note.sender ||
-      "MonniDrop Alert"
+      "MB Swift Alert"
     );
   };
 

@@ -54,7 +54,7 @@ export default function CustomerDashboard({
           >
             <img
               src="/logo.png"
-              alt="MonniDrop Logo"
+              alt="MB Swift Logo"
               style={{
                 width:isMobile ? "84px" : "78px",
                 height:isMobile ? "84px" : "78px",
@@ -86,7 +86,7 @@ export default function CustomerDashboard({
                   maxWidth:"100%"
                 }}
               >
-                ⚡ MonniDrop Customer Dashboard
+                ⚡ MB Swift Customer Dashboard
               </div>
 
               <h1

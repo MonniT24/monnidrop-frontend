@@ -124,7 +124,7 @@ const {
             }}
           >
             Book a rider, track your delivery, and pay with ease —
-            all from your MonniDrop dashboard.
+            all from your MB Swift dashboard.
           </p>
         </div>
 

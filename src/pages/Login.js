@@ -46,7 +46,8 @@ const LogoWrap = styled.div`
 `;
 
 const Logo = styled.img`
-  width:95px;
+  width:220px;
+  max-width:100%;
   object-fit:contain;
 `;
 

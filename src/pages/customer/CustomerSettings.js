@@ -402,7 +402,7 @@ const openSecurityPanel = (panelName) => {
     text.includes("fake app")
   ){
     setSupportSearchResult(
-      "Avoid opening suspicious MonniDrop links. Only use the official MonniDrop app or website. Report fake links through Contact us."
+      "Avoid opening suspicious MB Swift links. Only use the official MB Swift app or website. Report fake links through Contact us."
     );
     return;
   }
@@ -414,7 +414,7 @@ const openSecurityPanel = (panelName) => {
     text.includes("pay")
   ){
     setSupportSearchResult(
-      "For payment safety, always confirm your payment status inside MonniDrop and avoid sending money outside the app."
+      "For payment safety, always confirm your payment status inside MB Swift and avoid sending money outside the app."
     );
     return;
   }
@@ -425,7 +425,7 @@ const openSecurityPanel = (panelName) => {
     text.includes("fraud")
   ){
     setSupportSearchResult(
-      "Be careful with fake calls, suspicious links, and people asking for payments outside MonniDrop."
+      "Be careful with fake calls, suspicious links, and people asking for payments outside MB Swift."
     );
     return;
   }
@@ -443,7 +443,7 @@ const openSecurityPanel = (panelName) => {
   }
 
   setSupportSearchResult(
-    "No exact answer found. Please contact MonniDrop support from Contact us."
+    "No exact answer found. Please contact MB Swift support from Contact us."
   );
 };
 
@@ -474,7 +474,7 @@ const openSecurityPanel = (panelName) => {
         </h2>
 
         <p style={paragraphStyle}>
-          MonniDrop protects your personal information and keeps it private,
+          MB Swift protects your personal information and keeps it private,
           safe and secure.
         </p>
       </div>
@@ -574,7 +574,7 @@ const openSecurityPanel = (panelName) => {
               <button
                 type="button"
                 onClick={
-                  selectedSetting === "About MonniDrop" ||
+                  selectedSetting === "About MB Swift" ||
                   selectedSetting === "Contact us"
 
                   ? () => setSelectedSetting("About this app")
@@ -910,7 +910,7 @@ const openSecurityPanel = (panelName) => {
 
             : selectedSetting === "About this app" ? (
               <div>
-                {["About MonniDrop", "Contact us"].map((item)=>(
+                {["About MB Swift", "Contact us"].map((item)=>(
                   <div
                     key={item}
                     onClick={()=>setSelectedSetting(item)}
@@ -928,10 +928,10 @@ const openSecurityPanel = (panelName) => {
               </div>
             )
 
-            : selectedSetting === "About MonniDrop" ? (
+            : selectedSetting === "About MB Swift" ? (
               <InfoBox>
                 <div style={smallHeadingStyle}>
-                  MonniDrop
+                  MB Swift
                 </div>
 
                 <div style={lastUpdatedStyle}>
@@ -939,7 +939,7 @@ const openSecurityPanel = (panelName) => {
                 </div>
 
                 <p style={smallTextStyle}>
-                  MonniDrop is a modern delivery platform designed to connect
+                  MB Swift is a modern delivery platform designed to connect
                   customers, riders and administrators through a fast, secure and
                   reliable delivery experience.
                 </p>
@@ -963,7 +963,7 @@ const openSecurityPanel = (panelName) => {
                 </p>
 
                 <p style={smallTextStyle}>
-                  MonniDrop is built with a focus on convenience, transparency,
+                  MB Swift is built with a focus on convenience, transparency,
                   security and operational efficiency to help customers receive
                   their items quickly and reliably.
                 </p>
@@ -973,7 +973,7 @@ const openSecurityPanel = (panelName) => {
             : selectedSetting === "Contact us" ? (
               <InfoBox>
                 <div style={smallHeadingStyle}>
-                  Contact MonniDrop
+                  Contact MB Swift
                 </div>
 
                 <div style={lastUpdatedStyle}>
@@ -987,7 +987,7 @@ const openSecurityPanel = (panelName) => {
                     </div>
 
                     <div style={contactTextStyle}>
-                      Speak directly with MonniDrop support.
+                      Speak directly with MB Swift support.
                     </div>
                   </div>
 
@@ -1017,7 +1017,7 @@ const openSecurityPanel = (panelName) => {
                     type="button"
                     onClick={()=>{
                       window.location.href =
-                        "mailto:support@monnidrop.com?subject=MonniDrop Support Request";
+                        "mailto:support@monnidrop.com?subject=MB Swift Support Request";
                     }}
                     style={contactButtonStyle}
                   >
@@ -1032,7 +1032,7 @@ const openSecurityPanel = (panelName) => {
                     </div>
 
                     <div style={contactTextStyle}>
-                      Chat with MonniDrop support on WhatsApp.
+                      Chat with MB Swift support on WhatsApp.
                     </div>
                   </div>
 
@@ -1040,7 +1040,7 @@ const openSecurityPanel = (panelName) => {
                     type="button"
                     onClick={()=>{
                       window.open(
-                        "https://wa.me/233244095101?text=Hello%20MonniDrop%20Support",
+                        "https://wa.me/233244095101?text=Hello%20MB Swift%20Support",
                         "_blank"
                       );
                     }}
@@ -1123,7 +1123,7 @@ const openSecurityPanel = (panelName) => {
 
                     <div style={supportChatWindowStyle}>
                       <div style={supportBubbleStyle}>
-                        Hello 👋 Welcome to MonniDrop Customer support. How can we help you?
+                        Hello 👋 Welcome to MB Swift Customer support. How can we help you?
                       </div>
 
                       {supportMessages.map((msg,index)=>{
@@ -1402,7 +1402,7 @@ const openSecurityPanel = (panelName) => {
                 </div>
 
                 <p style={smallTextStyle}>
-                  MonniDrop collects only the information needed to provide account,
+                  MB Swift collects only the information needed to provide account,
                   delivery, payment and customer support services.
                 </p>
 
@@ -1417,7 +1417,7 @@ const openSecurityPanel = (panelName) => {
                 </p>
 
                 <p style={smallTextStyle}>
-                  MonniDrop does not sell your personal information to third parties.
+                  MB Swift does not sell your personal information to third parties.
                 </p>
 
                 <p style={smallTextStyle}>
@@ -1453,7 +1453,7 @@ const openSecurityPanel = (panelName) => {
                 </p>
 
                 <p style={smallTextStyle}>
-                  MonniDrop reserves the right to suspend or permanently disable accounts
+                  MB Swift reserves the right to suspend or permanently disable accounts
                   that violate platform rules, engage in fraudulent activities or
                   compromise the safety of users.
                 </p>
@@ -1503,17 +1503,17 @@ const openSecurityPanel = (panelName) => {
                 </div>
 
                 <p style={smallTextStyle}>
-                  The MonniDrop name, logo, branding, app design, platform features,
+                  The MB Swift name, logo, branding, app design, platform features,
                   software and written content are protected intellectual property.
                 </p>
 
                 <p style={smallTextStyle}>
                   Users may not copy, reproduce, modify, distribute or commercially use
-                  MonniDrop materials without permission.
+                  MB Swift materials without permission.
                 </p>
 
                 <p style={smallTextStyle}>
-                  Unauthorized use of MonniDrop branding, screenshots, code or business
+                  Unauthorized use of MB Swift branding, screenshots, code or business
                   materials may result in account restriction or legal action.
                 </p>
               </InfoBox>
@@ -1537,7 +1537,7 @@ const openSecurityPanel = (panelName) => {
                         window.location.origin;
 
                       const shareText =
-                        `Check out MonniDrop: ${appLink}`;
+                        `Check out MB Swift: ${appLink}`;
 
                       if(item.name === "Message"){
                         window.location.href =
@@ -1567,14 +1567,14 @@ const openSecurityPanel = (panelName) => {
 
                       if(item.name === "Copy Link"){
                         navigator.clipboard.writeText(appLink);
-                        alert("MonniDrop link copied!");
+                        alert("MB Swift link copied!");
                       }
 
                       if(item.name === "More"){
                         if(navigator.share){
                           navigator.share({
-                            title:"MonniDrop",
-                            text:"Check out MonniDrop",
+                            title:"MB Swift",
+                            text:"Check out MB Swift",
                             url:appLink
                           });
                         }else{
@@ -1802,23 +1802,23 @@ const openSecurityPanel = (panelName) => {
     <PermissionBlockedItem
       icon="📍"
       title="Location"
-      text="MonniDrop only uses location access when it is needed for delivery tracking, route updates and accurate order movement."
+      text="MB Swift only uses location access when it is needed for delivery tracking, route updates and accurate order movement."
     />
 
     <PermissionBlockedItem
       icon="🖼️"
       title="Photos"
-      text="MonniDrop does not access your full photo library. You can still select specific photos when sending support images."
+      text="MB Swift does not access your full photo library. You can still select specific photos when sending support images."
     />
 
     <PermissionBlockedItem
       icon="•••"
       title="Others"
-      text="MonniDrop does not request access to other device features such as calendar, reminders or unrelated personal device data."
+      text="MB Swift does not request access to other device features such as calendar, reminders or unrelated personal device data."
     />
 
     <p style={permissionFooterTextStyle}>
-      MonniDrop believes in being transparent and requesting a minimal amount
+      MB Swift believes in being transparent and requesting a minimal amount
       of permissions. You can learn more in the Privacy policy.
     </p>
 
@@ -1906,7 +1906,7 @@ const openSecurityPanel = (panelName) => {
         </div>
 
         <div style={accountSecurityTextStyle}>
-          Your MonniDrop account is protected by secure login,
+          Your MB Swift account is protected by secure login,
           account verification and delivery safety checks.
         </div>
       </div>
@@ -2036,7 +2036,7 @@ const openSecurityPanel = (panelName) => {
         />
 
         <div style={securityGroupTitleStyle}>
-          MonniDrop security
+          MB Swift security
         </div>
 
         <SecurityPlainRow
@@ -2071,7 +2071,7 @@ const openSecurityPanel = (panelName) => {
         />
 
         <SecurityPlainRow
-          title="Delete your MonniDrop account"
+          title="Delete your MB Swift account"
           danger
           onClick={()=>openSecurityPanel("delete")}
         />
@@ -2225,7 +2225,7 @@ const openSecurityPanel = (panelName) => {
         title="Delivery verification OTP"
         onBack={()=>setSecurityPanel("")}
    Back     items={[
-          ["Delivery safety","MonniDrop uses delivery OTP verification to confirm that packages are delivered to the correct customer before a delivery is completed."]
+          ["Delivery safety","MB Swift uses delivery OTP verification to confirm that packages are delivered to the correct customer before a delivery is completed."]
         ]}
       />
     )}
@@ -2235,7 +2235,7 @@ const openSecurityPanel = (panelName) => {
         title="Payment protection"
         onBack={()=>setSecurityPanel("")}
         items={[
-          ["Payment safety","MonniDrop protects payments by confirming payment status inside the app and helping customers avoid payments outside the platform."]
+          ["Payment safety","MB Swift protects payments by confirming payment status inside the app and helping customers avoid payments outside the platform."]
         ]}
       />
     )}
@@ -2245,7 +2245,7 @@ const openSecurityPanel = (panelName) => {
         title="Rider verification status"
         onBack={()=>setSecurityPanel("")}
         items={[
-          ["Rider safety","MonniDrop allows riders to be monitored and verified by admins. Customers can report suspicious delivery activity through support."]
+          ["Rider safety","MB Swift allows riders to be monitored and verified by admins. Customers can report suspicious delivery activity through support."]
         ]}
       />
     )}
@@ -2261,7 +2261,7 @@ const openSecurityPanel = (panelName) => {
     </button>
 
     <div style={securityPanelTitleStyle}>
-      Delete your MonniDrop account
+      Delete your MB Swift account
     </div>
 
     <div
@@ -2388,7 +2388,7 @@ const openSecurityPanel = (panelName) => {
         </div>
 
         <div style={safetyHeroTextStyle}>
-          MonniDrop is committed to creating a safe delivery environment.
+          MB Swift is committed to creating a safe delivery environment.
           Learn how we protect your account, payments and personal information.
         </div>
       </div>
@@ -2399,7 +2399,7 @@ const openSecurityPanel = (panelName) => {
     </div>
 
     <div style={safetySectionTitleStyle}>
-      We protect your information on MonniDrop
+      We protect your information on MB Swift
     </div>
 
     <div style={safetyGridStyle}>
@@ -2476,7 +2476,7 @@ const openSecurityPanel = (panelName) => {
 
     {[
   "Report a suspicious phone call, email or SMS/text message",
-  "Report a fake website or app similar to MonniDrop",
+  "Report a fake website or app similar to MB Swift",
   "Report suspicious rider or delivery activity"
 ].map((item)=>(
   <div
@@ -2494,7 +2494,7 @@ const openSecurityPanel = (panelName) => {
 
      if(
   item ===
-  "Report a fake website or app similar to MonniDrop"
+  "Report a fake website or app similar to MB Swift"
 ){
   setSelectedSetting(
     "Fake website report"
@@ -2555,7 +2555,7 @@ if(
         <option value="WhatsApp">WhatsApp</option>
         <option value="SMS">SMS</option>
         <option value="Phone call">Phone call</option>
-        <option value="Inside MonniDrop">Inside MonniDrop</option>
+        <option value="Inside MB Swift">Inside MB Swift</option>
         <option value="Others">Others</option>
       </select>
 
@@ -2612,119 +2612,7 @@ if(
   </InfoBox>
 )
 
-: selectedSetting === "Rider activity report" ? (
-  <InfoBox>
 
-    <div style={articleHeaderStyle}>
-      <button
-        type="button"
-        onClick={()=>setSelectedSetting("Safety center")}
-        style={articleBackButtonStyle}
-      >
-        ←
-      </button>
-
-      <div style={articleTitleBarStyle}>
-        Report suspicious rider or delivery activity
-      </div>
-    </div>
-
-    <div style={suspiciousFormBoxStyle}>
-
-      <div style={suspiciousFormTitleStyle}>
-        🔒 All data is safeguarded
-      </div>
-
-      <label style={suspiciousLabelStyle}>
-        How did you receive the suspicious activity?*
-      </label>
-
-      <select
-        value={riderReportSource}
-        onChange={(e)=>setRiderReportSource(e.target.value)}
-        style={suspiciousInputStyle}
-      >
-        <option value="Facebook">Facebook</option>
-        <option value="WhatsApp">WhatsApp</option>
-        <option value="SMS">SMS</option>
-        <option value="Phone call">Phone call</option>
-        <option value="Inside MonniDrop">
-          Inside MonniDrop
-        </option>
-        <option value="Others">
-          Others
-        </option>
-      </select>
-
-      <label style={suspiciousLabelStyle}>
-        Rider name, rider phone number, order ID or delivery reference*
-      </label>
-
-      <input
-        value={riderReportLink}
-        onChange={(e)=>setRiderReportLink(e.target.value)}
-        placeholder="Enter rider name, phone number or order ID"
-        style={suspiciousInputStyle}
-      />
-
-      <label style={suspiciousLabelStyle}>
-        Has there been a loss of money or property?
-      </label>
-
-      <input
-        value={riderReportLossAmount}
-        onChange={(e)=>setRiderReportLossAmount(e.target.value)}
-        placeholder="Example: GHS 50"
-        style={suspiciousInputStyle}
-      />
-
-      <label style={suspiciousLabelStyle}>
-        Summarize the suspicious activity in a few sentences*
-      </label>
-
-      <textarea
-        value={riderReportSummary}
-        onChange={(e)=>setRiderReportSummary(e.target.value)}
-        placeholder="Explain what happened..."
-        style={suspiciousTextAreaStyle}
-      />
-
-      <button
-        type="button"
-        onMouseEnter={()=>
-          setRiderReportSubmitHover(true)
-        }
-        onMouseLeave={()=>
-          setRiderReportSubmitHover(false)
-        }
-        onClick={()=>{
-          alert(
-            "Suspicious rider activity report submitted."
-          );
-
-          setSelectedSetting(
-            "Safety center"
-          );
-        }}
-        style={{
-          ...suspiciousSubmitButtonStyle,
-          background:
-            riderReportSubmitHover
-            ? "#991b1b"
-            : "#dc2626",
-          transform:
-            riderReportSubmitHover
-            ? "translateY(-2px)"
-            : "translateY(0)"
-        }}
-      >
-        Submit
-      </button>
-
-    </div>
-
-  </InfoBox>
-)
 
 : selectedSetting === "Fake website report" ? (
   <InfoBox>
@@ -2776,7 +2664,7 @@ if(
       </label>
 
       {[
-        "I mentioned my MonniDrop account information.",
+        "I mentioned my MB Swift account information.",
         "I submitted my bank information.",
         "I submitted my personal email, phone number, or home address.",
         "I did not submit any information.",
@@ -3027,13 +2915,13 @@ if(
     </h1>
 
     <p style={articleParagraphStyle}>
-      Be careful when someone asks you to make payment outside MonniDrop,
+      Be careful when someone asks you to make payment outside MB Swift,
       share your password, send OTP codes, or click unknown links.
     </p>
 
     <ul style={articleListStyle}>
       <li>Never share your password or OTP code.</li>
-      <li>Do not pay outside MonniDrop.</li>
+      <li>Do not pay outside MB Swift.</li>
       <li>Avoid suspicious links from unknown people.</li>
       <li>Report suspicious delivery activity to support.</li>
     </ul>
@@ -3061,7 +2949,7 @@ if(
     </h1>
 
     <p style={articleParagraphStyle}>
-      Scam emails may pretend to be from MonniDrop and ask you to click links,
+      Scam emails may pretend to be from MB Swift and ask you to click links,
       confirm payments, reset your password, or share account details.
     </p>
 
@@ -3069,7 +2957,7 @@ if(
       <li>Check the sender email carefully.</li>
       <li>Do not click suspicious links.</li>
       <li>Do not share login details by email.</li>
-      <li>Report suspicious emails to MonniDrop support.</li>
+      <li>Report suspicious emails to MB Swift support.</li>
     </ul>
   </InfoBox>
 )
@@ -3102,7 +2990,7 @@ if(
     <ul style={articleListStyle}>
       <li>Do not send OTP codes through SMS or WhatsApp.</li>
       <li>Do not open unknown delivery links.</li>
-      <li>Confirm order updates only inside MonniDrop.</li>
+      <li>Confirm order updates only inside MB Swift.</li>
       <li>Contact support if a message looks suspicious.</li>
     </ul>
   </InfoBox>
@@ -3125,11 +3013,11 @@ if(
     </div>
 
     <h1 style={articleMainTitleStyle}>
-      How MonniDrop protects your data
+      How MB Swift protects your data
     </h1>
 
     <p style={articleParagraphStyle}>
-      MonniDrop protects your personal data by using secure login sessions,
+      MB Swift protects your personal data by using secure login sessions,
       controlled account access, and protected delivery records.
     </p>
 
@@ -3159,16 +3047,16 @@ if(
     </div>
 
     <h1 style={articleMainTitleStyle}>
-      How MonniDrop protects payments
+      How MB Swift protects payments
     </h1>
 
     <p style={articleParagraphStyle}>
-      MonniDrop helps protect payments by tracking payment status,
+      MB Swift helps protect payments by tracking payment status,
       delivery cost, mobile money payment records, and cash settlement status.
     </p>
 
     <ul style={articleListStyle}>
-      <li>Always confirm payment status inside MonniDrop.</li>
+      <li>Always confirm payment status inside MB Swift.</li>
       <li>Do not send money outside the app.</li>
       <li>Report suspicious payment requests to support.</li>
       <li>Admins can verify payment records when needed.</li>
@@ -3221,7 +3109,7 @@ if(
       "How do I protect my payment?",
       "How do I recognize scams?",
       "How do I report a fake rider?",
-      "How do I avoid fake MonniDrop links?"
+      "How do I avoid fake MB Swift links?"
     ]
       .filter((item)=>
         item.toLowerCase().includes(
@@ -3246,21 +3134,21 @@ if(
 
   if(selectedText.includes("payment")){
     setSupportSearchResult(
-      "For payment safety, always confirm your payment status inside MonniDrop and avoid sending money outside the app."
+      "For payment safety, always confirm your payment status inside MB Swift and avoid sending money outside the app."
     );
     return;
   }
 
   if(selectedText.includes("scam")){
     setSupportSearchResult(
-      "Be careful with fake calls, suspicious links, and people asking for payments outside MonniDrop."
+      "Be careful with fake calls, suspicious links, and people asking for payments outside MB Swift."
     );
     return;
   }
 
   if(selectedText.includes("fake monnidrop links")){
     setSupportSearchResult(
-      "Avoid opening suspicious MonniDrop links. Only use the official MonniDrop app or website. Report fake links through Contact us."
+      "Avoid opening suspicious MB Swift links. Only use the official MB Swift app or website. Report fake links through Contact us."
     );
     return;
   }
@@ -3377,7 +3265,7 @@ if(
                     marginBottom:"8px"
                   }}
                 >
-                  Sign out of MonniDrop?
+                  Sign out of MB Swift?
                 </div>
 
                 <p style={smallTextStyle}>
@@ -3619,7 +3507,7 @@ function PermissionAllowedItem({title,text}) {
     }
 
     alert(
-      "Open your device Settings app and manage permissions for MonniDrop."
+      "Open your device Settings app and manage permissions for MB Swift."
     );
 
   }}

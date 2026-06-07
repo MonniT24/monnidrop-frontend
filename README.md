@@ -1,6 +1,6 @@
-# MonniDrop
+# MB Swift
 
-MonniDrop is a delivery web app for customers and riders.
+MB Swift is a delivery web app for customers and riders.
 
 ## Features
 

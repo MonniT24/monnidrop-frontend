@@ -28,7 +28,7 @@ if("serviceWorker" in navigator){
       .then(() => {
 
         console.log(
-          "MonniDrop service worker registered"
+          "MB Swift service worker registered"
         );
       })
       .catch((error) => {
