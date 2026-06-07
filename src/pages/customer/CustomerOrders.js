@@ -331,16 +331,16 @@ function getDropoffPosition(order){
                       />
 
                       {riderLocation &&
-                        o.rider?._id &&
-                        String(riderLocation.riderId) === String(o.rider._id) && (
-                          <Marker
-                            position={{
-                              lat:riderLocation.lat,
-                              lng:riderLocation.lng
-                            }}
-                            label="R"
-                          />
-                      )}
+  riderLocation.lat &&
+  riderLocation.lng && (
+    <Marker
+      position={{
+        lat:Number(riderLocation.lat),
+        lng:Number(riderLocation.lng)
+      }}
+      label="R"
+    />
+)}
                     </GoogleMap>
                   ) : (
                     <div

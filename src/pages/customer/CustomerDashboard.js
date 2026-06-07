@@ -426,7 +426,7 @@ export default function CustomerDashboard({
                           color:"#64748b"
                         }}
                       >
-                        ASSIGNED RIDER NAME
+                        Assigned Rider Name
                       </div>
 
                       <div
@@ -451,6 +451,17 @@ export default function CustomerDashboard({
                         Motor Name: {o.rider?.motorName || "Not added"}
                       </div>
 
+                     <div
+  style={{
+    fontSize:"12px",
+    fontWeight:"800",
+    color:"#475569",
+    marginTop:"2px"
+  }}
+>
+  Motor Color: {o.rider?.motorColor || "Not added"}
+</div> 
+
                       <div
                         style={{
                           fontSize:"12px",
@@ -459,7 +470,7 @@ export default function CustomerDashboard({
                           marginTop:"2px"
                         }}
                       >
-                        Motor: {o.rider?.motorNumber || "Not added"}
+                        Motor Number: {o.rider?.motorNumber || "Not added"}
                       </div>
                     </div>
                   </div>

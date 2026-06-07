@@ -1098,6 +1098,9 @@ const [riderEmergency,setRiderEmergency] =
 const [motorNumber,setMotorNumber] =
   useState("");
 
+  const [motorColor,setMotorColor] =
+  useState("");
+
   const [motorName,setMotorName] =
   useState("");
 
@@ -1574,6 +1577,10 @@ useEffect(()=>{
 
 setMotorName(
   user.motorName || ""
+);
+
+setMotorColor(
+  user.motorColor || ""
 );
 
 setRiderIdType(
@@ -5973,7 +5980,8 @@ user?.status !== "busy" && (
   emergencyContact:riderEmergency,
   motorNumber:motorNumber,
   motorName:motorName,
-  idType:riderIdType,
+  motorColor:motorColor,
+ idType:riderIdType,
   idNumber:riderIdNumber
 }
   );
@@ -6241,6 +6249,27 @@ user?.status !== "busy" && (
 
 <input
   type="text"
+  placeholder="Motor Color"
+  value={motorColor}
+  onChange={(e)=>
+    setMotorColor(
+      e.target.value
+    )
+  }
+  disabled={!riderProfileEditing}
+  style={{
+    width:"100%",
+    padding:"13px",
+    borderRadius:"14px",
+    border:"1px solid #cbd5e1",
+    outline:"none",
+    fontWeight:"800",
+    marginBottom:"12px"
+  }}
+/>
+
+<input
+  type="text"
   placeholder="Motor Number"
   value={motorNumber}
   onChange={(e)=>
@@ -6445,6 +6474,36 @@ user?.status !== "busy" && (
     }}
   >
     {motorName || "Not added"}
+  </div>
+</div>
+
+<div
+  style={{
+    background:"#f8fafc",
+    border:"1px solid #e5e7eb",
+    borderRadius:"16px",
+    padding:"14px"
+  }}
+>
+  <div
+    style={{
+      color:"#64748b",
+      fontSize:"12px",
+      fontWeight:"900",
+      marginBottom:"6px"
+    }}
+  >
+    MOTOR COLOR
+  </div>
+
+  <div
+    style={{
+      color:"#0f172a",
+      fontSize:"15px",
+      fontWeight:"900"
+    }}
+  >
+    {motorColor || "Not added"}
   </div>
 </div>
 
