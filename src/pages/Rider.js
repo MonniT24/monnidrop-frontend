@@ -1437,10 +1437,10 @@ useEffect(()=>{
               note.message || "New notification",
 
             title:
-              note.title || "MonniDrop Notice",
+              note.title || "MB Swift Notice",
 
             sender:
-              "MonniDrop Admin",
+              "MB Swift Admin",
 
             time:
               note.createdAt
@@ -2476,7 +2476,7 @@ fetchOrders();
     color:"#94a3b8"
   }}
 >
-  MonniDrop v1.0.0
+  MB Swift v1.0.0
 </div>
 
 
@@ -2562,13 +2562,13 @@ fetchOrders();
 
     <HeroLogo
       src={logo}
-      alt="MonniDrop Logo"
+      alt="MB Swift Logo"
     />
 
     <HeroTextBlock>
 
         <HeroBadge>
-          ⚡ MonniDrop Rider Dashboard
+          ⚡ MB Swift Rider Dashboard
         </HeroBadge>
 
         <DashboardHeroTitle>
@@ -5198,7 +5198,7 @@ user?.status !== "busy" && (
                       {
                         msg.sender === "customer"
                         ? "Customer"
-                        : msg.sender || "MonniDrop"
+                        : msg.sender || "MB Swift"
                       }
                     </div>
 
@@ -5368,7 +5368,7 @@ user?.status !== "busy" && (
 
               <Row>
                 <strong>
-                  {note.title || "MonniDrop Notice"}
+                  {note.title || "MB Swift Notice"}
                 </strong>
               </Row>
 
@@ -5535,7 +5535,7 @@ user?.status !== "busy" && (
                         color:"#0f172a"
                       }}
                     >
-                      {note.sender || "MonniDrop"}
+                      {note.sender || "MB Swift"}
                     </div>
 
                     <div
@@ -5981,7 +5981,7 @@ user?.status !== "busy" && (
   motorNumber:motorNumber,
   motorName:motorName,
   motorColor:motorColor,
- idType:riderIdType,
+  idType:riderIdType,
   idNumber:riderIdNumber
 }
   );

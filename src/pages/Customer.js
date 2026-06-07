@@ -3841,6 +3841,12 @@ const [distance,setDistance] =
 const [amount,setAmount] =
   useState("");
 
+  const [weatherSurcharge,setWeatherSurcharge] =
+  useState(0);
+
+const [weatherCondition,setWeatherCondition] =
+  useState("Normal");
+
   const [pickupCoords,setPickupCoords] = 
   useState(null);
 
@@ -4270,7 +4276,7 @@ setProfileImage(
         {
           type:"order",
           orderId:data.orderId,
-          sender:data.sender || "MonniDrop",
+          sender:data.sender || "MB Swift",
           text:data.message || data.text,
           time:new Date()
             .toLocaleTimeString()
@@ -4678,7 +4684,7 @@ async function sendSupportMessage(){
 
     addCustomerNotification(
       "Support Message Sent",
-      "Your message has been sent to MonniDrop support.",
+      "Your message has been sent to MB Swift support.",
       "success"
     );
 
@@ -4835,7 +4841,7 @@ async function fetchSupportMessages(){
 
         addCustomerNotification(
           "Support Reply Received",
-          "MonniDrop support has replied to your message.",
+          "MB Swift support has replied to your message.",
           "info"
         );
       }
@@ -5186,6 +5192,53 @@ function getDistanceKm(
   return R * c;
 }
 
+function getWeatherSurchargePercent(){
+
+  const hour =
+    new Date().getHours();
+
+  const isNight =
+    hour >= 19 || hour < 6;
+
+  const isRainySeason =
+    [4,5,6,7,8,9].includes(
+      new Date().getMonth() + 1
+    );
+
+  if(isNight && isRainySeason){
+
+    setWeatherCondition(
+      "Night/Rainy Season"
+    );
+
+    return 20;
+  }
+
+  if(isRainySeason){
+
+    setWeatherCondition(
+      "Rainy Season"
+    );
+
+    return 10;
+  }
+
+  if(isNight){
+
+    setWeatherCondition(
+      "Night Delivery"
+    );
+
+    return 15;
+  }
+
+  setWeatherCondition(
+    "Normal"
+  );
+
+  return 0;
+}
+
  async function calculateDistance(
   pickupValue = pickupLocation,
   dropoffValue = dropoffLocation
@@ -5349,14 +5402,25 @@ function getDistanceKm(
           serviceFee +
           longDistanceFee;
 
-        const finalFee =
-          Math.ceil(
-            deliveryFee
-          );
+        const weatherPercent =
+  getWeatherSurchargePercent();
 
-        setAmount(
-          finalFee.toFixed(2)
-        );
+const weatherFee =
+  deliveryFee *
+  (weatherPercent / 100);
+
+setWeatherSurcharge(
+  Math.ceil(weatherFee)
+);
+
+const finalFee =
+  Math.ceil(
+    deliveryFee + weatherFee
+  );
+
+setAmount(
+  finalFee.toFixed(2)
+);
       }
     );
 
@@ -5614,7 +5678,7 @@ async function sendMessage(
     .map((o)=>({
       type:"status",
       orderId:o._id,
-      sender:"MonniDrop",
+      sender:"MB Swift",
       text:`Your order from ${o.pickupLocation} to ${o.dropoffLocation} is now ${o.status}`,
       time:"Order update"
     })),
@@ -5993,7 +6057,7 @@ async function sendMessage(
             color:"#94a3b8"
           }}
         >
-          MonniDrop v1.0.0
+          MB Swift v1.0.0
         </div>
 
       </Sidebar>
@@ -6077,6 +6141,9 @@ async function sendMessage(
     distance={distance}
     amount={amount}
     deliveryTime={deliveryTime}
+
+    weatherSurcharge={weatherSurcharge}
+    weatherCondition={weatherCondition}
 
     paymentMethod={paymentMethod}
     setPaymentMethod={setPaymentMethod}
@@ -6520,7 +6587,7 @@ async function sendMessage(
               fontWeight:"700"
             }}
           >
-            Hello 👋 Welcome to MonniDrop Customer support. How can we help you?
+            Hello 👋 Welcome to MB Swift Customer support. How can we help you?
           </div>
 
           {
@@ -6661,7 +6728,7 @@ async function sendMessage(
           lineHeight:"1.5"
         }}
       >
-        MonniDrop protects your personal information and keeps it private,
+        MB Swift protects your personal information and keeps it private,
         safe and secure.
       </p>
 
@@ -7126,7 +7193,7 @@ overflowY:"auto"
   >
     Do you want to sign out of the account{" "}
     <span style={{ color:"#f97316", fontWeight:"800" }}>
-      {user?.name || "MonniDrop User"}
+      {user?.name || "MB Swift User"}
     </span>{" "}
     or switch to a different one?
   </div>
@@ -7567,7 +7634,7 @@ onClick={() => {
     "Facebook",
     "Notifications",
     "About this app",
-    "About MonniDrop",
+    "About MB Swift",
     "Contact us",
     "Switch Account",
     "Switch account",
@@ -7614,7 +7681,7 @@ onClick={() => {
     </h2>
 
     <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
-      MonniDrop collects basic account information such as your name, phone number,
+      MB Swift collects basic account information such as your name, phone number,
       email address, delivery locations, payment method, and profile details to help
       process deliveries, secure your account, and improve customer support.
     </p>
@@ -7626,7 +7693,7 @@ onClick={() => {
     </p>
 
     <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
-      MonniDrop does not sell your personal information. Access to your data is
+      MB Swift does not sell your personal information. Access to your data is
       controlled and used only by authorized platform users such as admins, support
       staff, and assigned riders where necessary.
     </p>
@@ -7649,17 +7716,17 @@ onClick={() => {
     </h2>
 
     <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
-      By using MonniDrop, customers agree to provide accurate delivery details,
+      By using MB Swift, customers agree to provide accurate delivery details,
       correct contact information, and lawful delivery requests.
     </p>
 
     <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
       Users must not misuse the platform, create false orders, harass riders,
-      attempt payment fraud, or use MonniDrop for restricted or illegal items.
+      attempt payment fraud, or use MB Swift for restricted or illegal items.
     </p>
 
     <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
-      MonniDrop may suspend or restrict accounts that violate platform rules,
+      MB Swift may suspend or restrict accounts that violate platform rules,
       abuse riders, create fake orders, or attempt unsafe delivery activity.
     </p>
   </div>
@@ -7681,7 +7748,7 @@ onClick={() => {
     </h2>
 
     <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
-      MonniDrop expects customers, riders, and admins to communicate respectfully,
+      MB Swift expects customers, riders, and admins to communicate respectfully,
       act honestly, and support safe delivery experiences.
     </p>
 
@@ -7713,17 +7780,17 @@ onClick={() => {
     </h2>
 
     <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
-      MonniDrop name, logo, interface design, platform content, delivery workflow,
-      and system features belong to MonniDrop unless otherwise stated.
+      MB Swift name, logo, interface design, platform content, delivery workflow,
+      and system features belong to MB Swift unless otherwise stated.
     </p>
 
     <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
-      Users may not copy, reproduce, misuse, sell, or present MonniDrop branding,
+      Users may not copy, reproduce, misuse, sell, or present MB Swift branding,
       design, code, or content as their own.
     </p>
 
     <p style={{fontSize:"15px",fontWeight:"700",lineHeight:"1.7",color:"#475569"}}>
-      Any reports of intellectual property misuse can be sent through MonniDrop
+      Any reports of intellectual property misuse can be sent through MB Swift
       support for review.
     </p>
   </div>
@@ -7731,28 +7798,28 @@ onClick={() => {
 
 :
     selectedSetting === "How Your Data Is Protected"
-    ? "MonniDrop protects your data with secure login sessions, encrypted communication, and controlled access. Your personal details are only used to support deliveries, account access, and customer service."
+    ? "MB Swift protects your data with secure login sessions, encrypted communication, and controlled access. Your personal details are only used to support deliveries, account access, and customer service."
 
     : selectedSetting === "Account Protection"
     ? "Your account is protected with password-based authentication, phone verification, secure login tokens, and account monitoring to help prevent unauthorized access."
 
     : selectedSetting === "Payment Protection"
-    ? "MonniDrop protects payment activity by tracking payment status, separating cash and mobile money records, and allowing admins to verify settlement before closing payment records."
+    ? "MB Swift protects payment activity by tracking payment status, separating cash and mobile money records, and allowing admins to verify settlement before closing payment records."
 
     : selectedSetting === "Camera"
-    ? "Camera permission allows you to upload or update your profile photo. MonniDrop will only use your camera when you choose to take or upload an image."
+    ? "Camera permission allows you to upload or update your profile photo. MB Swift will only use your camera when you choose to take or upload an image."
 
     : selectedSetting === "Notifications"
-    ? "Notification permission allows MonniDrop to send delivery updates, rider messages, payment alerts, and important account notifications."
+    ? "Notification permission allows MB Swift to send delivery updates, rider messages, payment alerts, and important account notifications."
 
     : selectedSetting === "Live Activities"
     ? "Live Activities help you follow active deliveries in real time, including rider movement, delivery progress, and important order updates."
 
     : selectedSetting === "Required Cookies & Technologies"
-    ? "Required cookies and technologies help MonniDrop keep you signed in, protect your account, remember important settings, and support secure delivery activity."
+    ? "Required cookies and technologies help MB Swift keep you signed in, protect your account, remember important settings, and support secure delivery activity."
 
     : selectedSetting === "Personalized Advertised Listing"
-    ? "Personalized listings help MonniDrop show relevant delivery offers, service updates, and useful app information based on your activity and preferences."
+    ? "Personalized listings help MB Swift show relevant delivery offers, service updates, and useful app information based on your activity and preferences."
 
     : selectedSetting === "Additional Privacy Option"
     ? "Additional privacy options allow you to manage how your information is used for account support, delivery improvement, communication, and app personalization."
@@ -7804,7 +7871,7 @@ cursor: "pointer"
 
 <img
  src="/logo.png"
- alt="MonniDrop"
+ alt="MB Swift"
  style={{
 width: "58px",
 height: "58px",
@@ -7822,7 +7889,7 @@ marginBottom: "10px"
           marginBottom: "5px"
         }}
       >
-        MonniDrop
+        MB Swift
       </div>
 
       <div
@@ -7835,7 +7902,7 @@ marginBottom: "10px"
       </div>
     </div>
 
-    {["About MonniDrop", "Contact us"].map((item) => (
+    {["About MB Swift", "Contact us"].map((item) => (
       <div
         key={item}
         onClick={() => setSelectedSetting(item)}
@@ -7869,7 +7936,7 @@ marginBottom: "10px"
   </div>
 )
 
-: selectedSetting === "About MonniDrop"
+: selectedSetting === "About MB Swift"
 ? (
   <div
     style={{
@@ -7915,7 +7982,7 @@ marginBottom: "10px"
           color:"#0f172a"
         }}
       >
-        About MonniDrop
+        About MB Swift
       </div>
     </div>
 
@@ -7927,7 +7994,7 @@ marginBottom: "10px"
         fontWeight:"600"
       }}
     >
-      MonniDrop is a delivery platform that connects customers with riders for fast, reliable, and secure deliveries.
+      MB Swift is a delivery platform that connects customers with riders for fast, reliable, and secure deliveries.
     </p>
  </div>
 )
@@ -7986,7 +8053,7 @@ marginBottom: "10px"
   }}
 >
   <p style={{ marginTop:0 }}>
-    For support, delivery issues, payment questions, or account help, contact the MonniDrop support team.
+    For support, delivery issues, payment questions, or account help, contact the MB Swift support team.
   </p>
 
   <div
@@ -8068,7 +8135,7 @@ marginBottom: "10px"
       fontWeight:"700"
     }}
   >
-    Hello 👋 Welcome to MonniDrop Customer support. How can we help you?
+    Hello 👋 Welcome to MB Swift Customer support. How can we help you?
   </div>
 
   {
@@ -8418,7 +8485,7 @@ marginBottom: "10px"
           icon:<FiMessageCircle size={38} />,
           action:() => {
             const shareText =
-              "Download MonniDrop and enjoy fast, reliable deliveries across Ghana. " +
+              "Download MB Swift and enjoy fast, reliable deliveries across Ghana. " +
               window.location.origin;
 
             window.location.href =
@@ -8444,7 +8511,7 @@ marginBottom: "10px"
           icon:<FaWhatsapp size={38} />,
           action:() => {
             const shareText =
-              "Download MonniDrop and enjoy fast, reliable deliveries across Ghana. " +
+              "Download MB Swift and enjoy fast, reliable deliveries across Ghana. " +
               window.location.origin;
 
             window.open(
@@ -8459,7 +8526,7 @@ marginBottom: "10px"
           icon:<FaXTwitter size={36} />,
           action:() => {
             const shareText =
-              "Download MonniDrop and enjoy fast, reliable deliveries across Ghana. " +
+              "Download MB Swift and enjoy fast, reliable deliveries across Ghana. " +
               window.location.origin;
 
             window.open(
@@ -8491,9 +8558,9 @@ marginBottom: "10px"
           action:() => {
             if(navigator.share){
               navigator.share({
-                title:"MonniDrop",
+                title:"MB Swift",
                 text:
-                  "Download MonniDrop and enjoy fast, reliable deliveries across Ghana.",
+                  "Download MB Swift and enjoy fast, reliable deliveries across Ghana.",
                 url:window.location.origin
               });
             }

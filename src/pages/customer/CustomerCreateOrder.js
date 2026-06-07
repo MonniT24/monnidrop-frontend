@@ -34,6 +34,8 @@ export default function CustomerCreateOrder({
   distance,
   amount,
   deliveryTime,
+  weatherSurcharge,
+  weatherCondition,
 
   paymentMethod,
   setPaymentMethod,

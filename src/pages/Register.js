@@ -463,11 +463,11 @@ return;
 
           <Logo
             src={logo}
-            alt="MonniDrop Logo"
+            alt="MB Swift Logo"
           />
 
           <Title>
-            Welcome to MonniDrop 🎉
+            Welcome to MB Swift 🎉
           </Title>
 
           <Text>
@@ -503,7 +503,7 @@ return;
 
         <Logo
           src={logo}
-          alt="MonniDrop Logo"
+          alt="MB Swift Logo"
         />
 
         <Title>

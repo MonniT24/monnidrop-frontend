@@ -1754,7 +1754,7 @@ function exportRiderStatusFileToExcel(){
 
   XLSX.writeFile(
     workbook,
-    `MonniDrop_Rider_Status_File_${today}.xlsx`
+    `MB Swift_Rider_Status_File_${today}.xlsx`
   );
 }
 
@@ -2216,13 +2216,13 @@ function clearRiderStatusFilters(){
 
               <HeroLogo
                 src={logo}
-                alt="MonniDrop Logo"
+                alt="MB Swift Logo"
               />
 
               <HeroTextBlock>
 
                 <HeroBadge>
-                  ⚡ MonniDrop Admin Control
+                  ⚡ MB Swift Admin Control
                 </HeroBadge>
 
                 <DashboardHeroTitle>

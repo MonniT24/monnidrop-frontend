@@ -330,9 +330,9 @@ function getDropoffPosition(order){
                         label="D"
                       />
 
-                      {riderLocation &&
-  riderLocation.lat &&
-  riderLocation.lng && (
+  {riderLocation &&
+   riderLocation.lat &&
+   riderLocation.lng && (
     <Marker
       position={{
         lat:Number(riderLocation.lat),

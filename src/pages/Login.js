@@ -224,7 +224,7 @@ export default function Login(){
         <LogoWrap>
           <Logo
             src={logo}
-            alt="MonniDrop Logo"
+            alt="MB Swift Logo"
           />
         </LogoWrap>
 
