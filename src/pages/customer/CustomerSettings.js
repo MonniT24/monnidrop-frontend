@@ -1017,7 +1017,7 @@ const openSecurityPanel = (panelName) => {
                     type="button"
                     onClick={()=>{
                       window.location.href =
-                        "mailto:support@monnidrop.com?subject=MB Swift Support Request";
+                        "mailto:support@mbswiftgh.com?subject=MB Swift Support Request";
                     }}
                     style={contactButtonStyle}
                   >
