@@ -1197,6 +1197,10 @@ const [completingOrderId,
   setCompletingOrderId] =
     useState(null);
 
+const [deliveryPhotos,
+  setDeliveryPhotos] =
+    useState({});    
+
     const [notifications,
   setNotifications] =
     useState([]);
@@ -2124,15 +2128,67 @@ fetchOrders();
         orderId
       );
 
-      const res =
-        await API.put(
+     const deliveryPhoto =
+  deliveryPhotos[orderId];
 
-          `/orders/${orderId}/complete-delivery`,
+if(!deliveryPhoto){
 
-          {
-            deliveryCode
-          }
-        );
+  alert(
+    "Please take or upload a delivery proof photo"
+  );
+
+  setCompletingOrderId(null);
+
+  return;
+}
+
+const position =
+  await new Promise((resolve,reject)=>{
+
+    navigator.geolocation.getCurrentPosition(
+      resolve,
+      reject,
+      {
+        enableHighAccuracy:true,
+        timeout:15000,
+        maximumAge:0
+      }
+    );
+  });
+
+const formData =
+  new FormData();
+
+formData.append(
+  "deliveryCode",
+  deliveryCode
+);
+
+formData.append(
+  "deliveryLatitude",
+  position.coords.latitude
+);
+
+formData.append(
+  "deliveryLongitude",
+  position.coords.longitude
+);
+
+formData.append(
+  "deliveryPhoto",
+  deliveryPhoto
+);
+
+const res =
+  await API.put(
+    `/orders/${orderId}/complete-delivery`,
+    formData,
+    {
+      headers:{
+        "Content-Type":"multipart/form-data"
+      }
+    }
+  );
 
       alert(
         res.data.message ||
@@ -4439,6 +4495,29 @@ user?.status !== "busy" && (
           color:"#0f172a"
         }}
       />
+
+      <input
+  type="file"
+  accept="image/*"
+  capture="environment"
+  onChange={(e)=>{
+
+    const file =
+      e.target.files[0];
+
+    if(file){
+
+      setDeliveryPhotos({
+        ...deliveryPhotos,
+        [order._id]:file
+      });
+    }
+  }}
+  style={{
+    marginTop:"10px",
+    width:"100%"
+  }}
+/>
 
       <Button
         onClick={()=>

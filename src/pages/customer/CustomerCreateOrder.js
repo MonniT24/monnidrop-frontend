@@ -363,6 +363,19 @@ const {
         <button
           type="button"
           onClick={()=>setShowConfirm(true)}
+          onMouseEnter={(e)=>{
+  e.currentTarget.style.transform =
+    "translateY(-3px)";
+  e.currentTarget.style.boxShadow =
+    "0 14px 30px rgba(29,78,216,0.28)";
+}}
+
+onMouseLeave={(e)=>{
+  e.currentTarget.style.transform =
+    "translateY(0)";
+  e.currentTarget.style.boxShadow =
+    "0 12px 26px rgba(29,78,216,0.22)";
+}}
           style={{
             width:"220px",
             border:"none",
@@ -374,6 +387,7 @@ const {
             fontSize:"15px",
             fontWeight:"900",
             cursor:"pointer",
+            transition:"0.25s ease",
             boxShadow:"0 12px 26px rgba(29,78,216,0.22)"
           }}
         >
@@ -663,6 +677,18 @@ function PayButton({children,active,onClick}) {
     <button
       type="button"
       onClick={onClick}
+      onMouseEnter={(e)=>{
+        e.currentTarget.style.transform =
+          "translateY(-3px)";
+        e.currentTarget.style.boxShadow =
+          "0 14px 30px rgba(29,78,216,0.28)";
+      }}
+      onMouseLeave={(e)=>{
+        e.currentTarget.style.transform =
+          "translateY(0)";
+        e.currentTarget.style.boxShadow =
+          "none";
+      }}
       style={{
         borderRadius:"14px",
         padding:"12px 16px",
@@ -675,7 +701,8 @@ function PayButton({children,active,onClick}) {
         color:active ? "#0f172a" : "white",
         fontWeight:"900",
         cursor:"pointer",
-        flex:1
+        flex:1,
+        transition:"0.25s ease"
       }}
     >
       {children}
