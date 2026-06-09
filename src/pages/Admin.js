@@ -15,42 +15,11 @@ import socket from "../socket";
 
 import logo from "../assets/logo.png";
 
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-
 import {
-  MapContainer,
-  TileLayer,
+  GoogleMap,
   Marker,
-  Popup
-} from "react-leaflet";
-
-const GlobalLeafletFix = createGlobalStyle`
-  .leaflet-container{
-    position:relative !important;
-    z-index:0 !important;
-  }
-
-  .leaflet-pane,
-  .leaflet-map-pane,
-  .leaflet-tile-pane,
-  .leaflet-overlay-pane,
-  .leaflet-marker-pane,
-  .leaflet-tooltip-pane,
-  .leaflet-popup-pane{
-    z-index:0 !important;
-  }
-
-  .leaflet-control-container{
-    position:relative !important;
-    z-index:1 !important;
-  }
-`;
-
-const riderIcon = new L.Icon({
-  iconUrl:"https://cdn-icons-png.flaticon.com/512/684/684908.png",
-  iconSize:[40,40]
-});
+  useJsApiLoader
+} from "@react-google-maps/api";
 
 const Page = styled.div`
   min-height:100vh;
@@ -1184,6 +1153,13 @@ const DetailAmount = styled.div`
 
 export default function Admin(){
 
+  const {
+  isLoaded
+} = useJsApiLoader({
+  googleMapsApiKey:
+    process.env.REACT_APP_GOOGLE_MAPS_API_KEY
+});
+
   const [orders,setOrders] =
     useState([]);
 
@@ -2204,8 +2180,6 @@ function clearRiderStatusFilters(){
 
     <Page>
 
-      <GlobalLeafletFix />
-
       <Wrapper>
 
         <DashboardHero>
@@ -2294,7 +2268,8 @@ function clearRiderStatusFilters(){
 
         </DashboardHero>
 
-        <Stats>
+        {!activeAdminView && (
+       <Stats>
 
   <StatCard
   
@@ -2604,6 +2579,7 @@ function clearRiderStatusFilters(){
 </StatCard>
 
 </Stats>
+)}
 
 {
   activeAdminView && (
@@ -2634,13 +2610,13 @@ function clearRiderStatusFilters(){
     )
   }
 
-  <ClosePanelButton
-    onClick={()=>
-      setActiveAdminView("")
-    }
-  >
-    Close
-  </ClosePanelButton>
+ <ClosePanelButton
+  onClick={()=>
+    setActiveAdminView("")
+  }
+>
+  ← Back
+</ClosePanelButton>
 
 </HeaderActions>
 
@@ -3480,7 +3456,8 @@ function clearRiderStatusFilters(){
   )
 }
 
-        <AnalyticsGrid>
+        {!activeAdminView && (
+<AnalyticsGrid>
 
          <AnalyticsCard $light>
 
@@ -3568,9 +3545,11 @@ function clearRiderStatusFilters(){
 
           </AnalyticsCard>
 
-        </AnalyticsGrid>
+         </AnalyticsGrid>
+         )}
 
-        <MapBox>
+        {!activeAdminView && (
+       <MapBox>
 
           <SectionTitle>
 
@@ -3592,49 +3571,62 @@ function clearRiderStatusFilters(){
             }}
           >
 
-            <MapContainer
-  center={[
-    7.9465,
-    -1.0232
-  ]}
-  zoom={7}
-  minZoom={6}
-  style={{
-    height:"420px",
-    width:"100%"
-  }}
->
+  {
+  isLoaded ? (
 
-              <TileLayer
-                attribution='&copy; OpenStreetMap contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
+    <GoogleMap
+      center={{
+        lat:5.6037,
+        lng:-0.1870
+      }}
+      zoom={12}
+      mapContainerStyle={{
+        height:"420px",
+        width:"100%"
+      }}
+      options={{
+        streetViewControl:false,
+        mapTypeControl:false,
+        fullscreenControl:true
+      }}
+    >
 
-              {
-                Object.values(liveRiders).map((rider)=>(
+      {
+        Object.values(liveRiders).map((rider)=>(
 
-                  <Marker
-                    key={rider.riderId}
-                    position={[
-                      rider.lat,
-                      rider.lng
-                    ]}
-                    icon={riderIcon}
-                  >
+          <Marker
+            key={rider.riderId}
+            position={{
+              lat:Number(rider.lat),
+              lng:Number(rider.lng)
+            }}
+          />
 
-                    <Popup>
-                      Live Rider Location
-                    </Popup>
+        ))
+      }
 
-                  </Marker>
-                ))
-              }
+    </GoogleMap>
 
-            </MapContainer>
+  ) : (
+
+    <div
+      style={{
+        height:"420px",
+        display:"flex",
+        alignItems:"center",
+        justifyContent:"center",
+        fontWeight:"900"
+      }}
+    >
+      Loading Google Map...
+    </div>
+  )
+}
 
           </div>
 
         </MapBox>
+          )}
 
         {
   riderStatusModal && selectedRider && (
