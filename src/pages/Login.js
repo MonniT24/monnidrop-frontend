@@ -19,8 +19,6 @@ import API from "../api/api";
 
 import logo from "../assets/logo.png";
 
-// ================= STYLES =================
-
 const Page = styled.div`
   min-height:100vh;
   display:flex;
@@ -215,6 +213,15 @@ export default function Login(){
   const [loading,setLoading] =
     useState(false);
 
+  const [adminOtpMode,setAdminOtpMode] =
+    useState(false);
+
+  const [adminLoginToken,setAdminLoginToken] =
+    useState("");
+
+  const [adminOtp,setAdminOtp] =
+    useState("");
+
   async function login(e){
 
     e.preventDefault();
@@ -231,6 +238,21 @@ export default function Login(){
             password
           }
         );
+
+      if(res.data.requiresAdminOtp){
+
+        setAdminLoginToken(
+          res.data.adminLoginToken
+        );
+
+        setAdminOtpMode(true);
+
+        alert(
+          "Admin OTP sent to your phone"
+        );
+
+        return;
+      }
 
       localStorage.setItem(
         "token",
@@ -277,6 +299,63 @@ export default function Login(){
       alert(
         err.response?.data?.message ||
         "Login failed"
+      );
+
+    }finally{
+
+      setLoading(false);
+    }
+  }
+
+  async function verifyAdminOtp(){
+
+    try{
+
+      if(!adminOtp){
+
+        return alert(
+          "Enter admin OTP"
+        );
+      }
+
+      setLoading(true);
+
+      const res =
+        await API.post(
+          "/auth/verify-admin-login-otp",
+          {
+            adminLoginToken,
+            otp:adminOtp
+          }
+        );
+
+      localStorage.setItem(
+        "token",
+        res.data.token
+      );
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(
+          res.data.user
+        )
+      );
+
+      localStorage.setItem(
+        "role",
+        res.data.user.role
+      );
+
+      window.location.href =
+        "/admin";
+
+    }catch(err){
+
+      console.log(err);
+
+      alert(
+        err.response?.data?.message ||
+        "Admin OTP verification failed"
       );
 
     }finally{
@@ -426,6 +505,83 @@ export default function Login(){
 
       setLoading(false);
     }
+  }
+
+  if(adminOtpMode){
+
+    return(
+
+      <Page>
+
+        <Card>
+
+          <LogoWrap>
+            <Logo
+              src={logo}
+              alt="MB Swift Logo"
+            />
+          </LogoWrap>
+
+          <Title>
+            Admin Verification
+          </Title>
+
+          <Subtitle>
+            Enter the OTP sent to your admin phone number.
+          </Subtitle>
+
+          <SuccessText>
+            Admin password verified. OTP is required to continue.
+          </SuccessText>
+
+          <InputWrap>
+
+            <Icon>
+              <FiLock />
+            </Icon>
+
+            <Input
+              type="text"
+              placeholder="Enter admin OTP"
+              value={adminOtp}
+              onChange={(e)=>
+                setAdminOtp(
+                  e.target.value.replace(/\D/g,"")
+                )
+              }
+            />
+
+          </InputWrap>
+
+          <Button
+            type="button"
+            onClick={verifyAdminOtp}
+            disabled={loading}
+            $space
+          >
+            {
+              loading
+              ? "Verifying..."
+              : "Verify Admin OTP"
+            }
+          </Button>
+
+          <SecondaryButton
+            type="button"
+            onClick={()=>{
+              setAdminOtpMode(false);
+              setAdminLoginToken("");
+              setAdminOtp("");
+              setPassword("");
+            }}
+          >
+            Back to Login
+          </SecondaryButton>
+
+        </Card>
+
+      </Page>
+    );
   }
 
   if(forgotMode){
