@@ -652,7 +652,7 @@ export default function Login(){
         </Title>
 
         <Subtitle>
-          Login to continue delivering smarter.
+          Login to continue.
         </Subtitle>
 
         <form onSubmit={login}>
