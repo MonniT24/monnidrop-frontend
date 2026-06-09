@@ -40,13 +40,18 @@ const Card = styled.div`
 const LogoWrap = styled.div`
   display:flex;
   justify-content:center;
-  margin-bottom:20px;
+  margin-bottom:26px;
 `;
 
 const Logo = styled.img`
-  width:220px;
+  width:260px;
   max-width:100%;
   object-fit:contain;
+
+  filter:
+    drop-shadow(0 12px 24px rgba(0,0,0,0.15));
+
+  transition:0.3s ease;
 `;
 
 const Title = styled.h1`
