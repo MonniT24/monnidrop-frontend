@@ -88,6 +88,7 @@ const Input = styled.input`
   font-size:15px;
   outline:none;
   transition:0.25s ease;
+  box-sizing:border-box;
 
   &:focus{
     border-color:#2563eb;
@@ -99,11 +100,14 @@ const Forgot = styled.div`
   text-align:right;
   margin-bottom:24px;
 
-  a{
+  button{
     color:#2563eb;
     font-size:14px;
     text-decoration:none;
-    font-weight:600;
+    font-weight:700;
+    background:none;
+    border:none;
+    cursor:pointer;
   }
 `;
 
@@ -122,9 +126,33 @@ const Button = styled.button`
   align-items:center;
   justify-content:center;
   gap:10px;
+  margin-bottom:${props =>
+    props.$space ? "12px" : "0"};
 
   &:hover{
     background:#dc2626;
+  }
+
+  &:disabled{
+    opacity:0.65;
+    cursor:not-allowed;
+  }
+`;
+
+const SecondaryButton = styled.button`
+  width:100%;
+  border:none;
+  border-radius:18px;
+  padding:15px;
+  background:#f1f5f9;
+  color:#0f172a;
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+  transition:0.25s ease;
+
+  &:hover{
+    background:#e2e8f0;
   }
 `;
 
@@ -141,6 +169,17 @@ const BottomText = styled.div`
   }
 `;
 
+const SuccessText = styled.div`
+  background:#dcfce7;
+  color:#166534;
+  padding:12px;
+  border-radius:14px;
+  font-size:14px;
+  font-weight:800;
+  text-align:center;
+  margin-bottom:16px;
+`;
+
 export default function Login(){
 
   const [email,setEmail] =
@@ -152,11 +191,37 @@ export default function Login(){
   const [showPassword,setShowPassword] =
     useState(false);
 
+  const [forgotMode,setForgotMode] =
+    useState(false);
+
+  const [forgotStep,setForgotStep] =
+    useState("email");
+
+  const [forgotEmail,setForgotEmail] =
+    useState("");
+
+  const [otp,setOtp] =
+    useState("");
+
+  const [resetToken,setResetToken] =
+    useState("");
+
+  const [newPassword,setNewPassword] =
+    useState("");
+
+  const [showNewPassword,setShowNewPassword] =
+    useState(false);
+
+  const [loading,setLoading] =
+    useState(false);
+
   async function login(e){
 
     e.preventDefault();
 
     try{
+
+      setLoading(true);
 
       const res =
         await API.post(
@@ -213,7 +278,360 @@ export default function Login(){
         err.response?.data?.message ||
         "Login failed"
       );
+
+    }finally{
+
+      setLoading(false);
     }
+  }
+
+  async function sendForgotOtp(){
+
+    try{
+
+      if(!forgotEmail){
+
+        return alert(
+          "Enter your account email"
+        );
+      }
+
+      setLoading(true);
+
+      await API.post(
+        "/auth/forgot-password-send-otp",
+        {
+          email:forgotEmail
+        }
+      );
+
+      setForgotStep("otp");
+
+      alert(
+        "OTP sent to your registered phone number"
+      );
+
+    }catch(err){
+
+      console.log(err);
+
+      alert(
+        err.response?.data?.message ||
+        "Failed to send OTP"
+      );
+
+    }finally{
+
+      setLoading(false);
+    }
+  }
+
+  async function verifyForgotOtp(){
+
+    try{
+
+      if(!otp){
+
+        return alert(
+          "Enter OTP"
+        );
+      }
+
+      setLoading(true);
+
+      const res =
+        await API.post(
+          "/auth/forgot-password-verify-otp",
+          {
+            email:forgotEmail,
+            otp
+          }
+        );
+
+      setResetToken(
+        res.data.resetToken
+      );
+
+      setForgotStep("password");
+
+      alert(
+        "OTP verified successfully"
+      );
+
+    }catch(err){
+
+      console.log(err);
+
+      alert(
+        err.response?.data?.message ||
+        "OTP verification failed"
+      );
+
+    }finally{
+
+      setLoading(false);
+    }
+  }
+
+  async function resetPassword(){
+
+    try{
+
+      if(!newPassword){
+
+        return alert(
+          "Enter new password"
+        );
+      }
+
+      if(newPassword.length < 6){
+
+        return alert(
+          "Password must be at least 6 characters"
+        );
+      }
+
+      setLoading(true);
+
+      await API.post(
+        "/auth/reset-password",
+        {
+          resetToken,
+          newPassword
+        }
+      );
+
+      alert(
+        "Password reset successfully. Please login."
+      );
+
+      setForgotMode(false);
+      setForgotStep("email");
+      setForgotEmail("");
+      setOtp("");
+      setResetToken("");
+      setNewPassword("");
+      setPassword("");
+
+    }catch(err){
+
+      console.log(err);
+
+      alert(
+        err.response?.data?.message ||
+        "Password reset failed"
+      );
+
+    }finally{
+
+      setLoading(false);
+    }
+  }
+
+  if(forgotMode){
+
+    return(
+
+      <Page>
+
+        <Card>
+
+          <LogoWrap>
+            <Logo
+              src={logo}
+              alt="MB Swift Logo"
+            />
+          </LogoWrap>
+
+          <Title>
+            Reset Password
+          </Title>
+
+          <Subtitle>
+            We will send an OTP to the phone number linked to your account.
+          </Subtitle>
+
+          {
+            forgotStep === "email" && (
+              <>
+
+                <InputWrap>
+
+                  <Icon>
+                    <FiMail />
+                  </Icon>
+
+                  <Input
+                    type="email"
+                    placeholder="Enter your account email"
+                    value={forgotEmail}
+                    onChange={(e)=>
+                      setForgotEmail(e.target.value)
+                    }
+                  />
+
+                </InputWrap>
+
+                <Button
+                  type="button"
+                  onClick={sendForgotOtp}
+                  disabled={loading}
+                  $space
+                >
+                  {
+                    loading
+                    ? "Sending..."
+                    : "Send OTP"
+                  }
+                </Button>
+
+              </>
+            )
+          }
+
+          {
+            forgotStep === "otp" && (
+              <>
+
+                <SuccessText>
+                  OTP sent. Enter the code from your phone.
+                </SuccessText>
+
+                <InputWrap>
+
+                  <Icon>
+                    <FiLock />
+                  </Icon>
+
+                  <Input
+                    type="text"
+                    placeholder="Enter OTP"
+                    value={otp}
+                    onChange={(e)=>
+                      setOtp(
+                        e.target.value.replace(/\D/g,"")
+                      )
+                    }
+                  />
+
+                </InputWrap>
+
+                <Button
+                  type="button"
+                  onClick={verifyForgotOtp}
+                  disabled={loading}
+                  $space
+                >
+                  {
+                    loading
+                    ? "Verifying..."
+                    : "Verify OTP"
+                  }
+                </Button>
+
+                <SecondaryButton
+                  type="button"
+                  onClick={sendForgotOtp}
+                  disabled={loading}
+                >
+                  Resend OTP
+                </SecondaryButton>
+
+              </>
+            )
+          }
+
+          {
+            forgotStep === "password" && (
+              <>
+
+                <SuccessText>
+                  OTP verified. Create your new password.
+                </SuccessText>
+
+                <InputWrap>
+
+                  <Icon>
+                    <FiLock />
+                  </Icon>
+
+                  <Input
+                    type={
+                      showNewPassword
+                      ? "text"
+                      : "password"
+                    }
+                    placeholder="New password"
+                    value={newPassword}
+                    onChange={(e)=>
+                      setNewPassword(e.target.value)
+                    }
+                    style={{
+                      paddingRight:"52px"
+                    }}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={()=>
+                      setShowNewPassword(
+                        !showNewPassword
+                      )
+                    }
+                    style={{
+                      position:"absolute",
+                      right:"16px",
+                      top:"50%",
+                      transform:"translateY(-50%)",
+                      border:"none",
+                      background:"none",
+                      cursor:"pointer",
+                      color:"#64748b"
+                    }}
+                  >
+                    {
+                      showNewPassword
+                      ? <EyeOff size={20} />
+                      : <Eye size={20} />
+                    }
+                  </button>
+
+                </InputWrap>
+
+                <Button
+                  type="button"
+                  onClick={resetPassword}
+                  disabled={loading}
+                  $space
+                >
+                  {
+                    loading
+                    ? "Resetting..."
+                    : "Reset Password"
+                  }
+                </Button>
+
+              </>
+            )
+          }
+
+          <SecondaryButton
+            type="button"
+            onClick={()=>{
+              setForgotMode(false);
+              setForgotStep("email");
+              setOtp("");
+              setResetToken("");
+              setNewPassword("");
+            }}
+          >
+            Back to Login
+          </SecondaryButton>
+
+        </Card>
+
+      </Page>
+    );
   }
 
   return(
@@ -308,14 +726,28 @@ export default function Login(){
           </InputWrap>
 
           <Forgot>
-            <a href="/forgot-password">
+            <button
+              type="button"
+              onClick={()=>{
+                setForgotEmail(email);
+                setForgotMode(true);
+              }}
+            >
               Forgot Password?
-            </a>
+            </button>
           </Forgot>
 
-          <Button type="submit">
+          <Button
+            type="submit"
+            disabled={loading}
+          >
             <FiLogIn />
-            Login
+
+            {
+              loading
+              ? "Logging in..."
+              : "Login"
+            }
           </Button>
 
         </form>
