@@ -1428,6 +1428,43 @@ useEffect(() => {
 
 }, []);
 
+useEffect(() => {
+
+  function handleNewOrderAlert(order){
+
+    playNotification();
+
+    alert(
+      `🚨 NEW DELIVERY REQUEST
+
+Pickup:
+${order.pickupLocation}
+
+Dropoff:
+${order.dropoffLocation}
+
+Amount:
+₵${order.total}`
+    );
+
+    fetchOrders();
+  }
+
+  socket.on(
+    "newOrderAlert",
+    handleNewOrderAlert
+  );
+
+  return () => {
+
+    socket.off(
+      "newOrderAlert",
+      handleNewOrderAlert
+    );
+  };
+
+}, []);
+
 useEffect(()=>{
 
   socket.on(
