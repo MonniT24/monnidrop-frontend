@@ -33,39 +33,42 @@ const Card = styled.div`
   max-width:430px;
   background:white;
   border-radius:32px;
-  padding:40px 34px;
+  padding:24px 34px;
   box-shadow:0 10px 40px rgba(15,23,42,0.08);
 `;
 
 const LogoWrap = styled.div`
   display:flex;
   justify-content:center;
-  margin-bottom:26px;
+  align-items:center;
+  width:100%;
+  margin-bottom:8px;
 `;
 
 const Logo = styled.img`
-  width:260px;
-  max-width:100%;
+  width:100%;
+  max-width:420px;
+  height:auto;
   object-fit:contain;
 
   filter:
-    drop-shadow(0 12px 24px rgba(0,0,0,0.15));
-
-  transition:0.3s ease;
+    drop-shadow(0 8px 18px rgba(0,0,0,0.12));
 `;
 
 const Title = styled.h1`
-  font-size:30px;
+  font-size:28px;
   font-weight:800;
   text-align:center;
   color:#0f172a;
-  margin-bottom:8px;
+
+  margin-top:-45px;
+  margin-bottom:4px;
 `;
 
 const Subtitle = styled.p`
   text-align:center;
   color:#64748b;
-  margin-bottom:28px;
+  margin-bottom:18px;
   font-size:15px;
 `;
 
@@ -85,7 +88,7 @@ const Icon = styled.div`
 
 const Input = styled.input`
   width:100%;
-  padding:16px 16px 16px 48px;
+  padding:14px 14px 14px 48px;
   border:1px solid #e2e8f0;
   border-radius:16px;
   font-size:15px;
