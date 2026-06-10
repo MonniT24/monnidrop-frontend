@@ -188,8 +188,8 @@ const SuccessText = styled.div`
 
 export default function Login(){
 
-  const [email,setEmail] =
-    useState("");
+  const [loginInput,setLoginInput] =
+  useState("");
 
   const [password,setPassword] =
     useState("");
@@ -240,12 +240,12 @@ export default function Login(){
 
       const res =
         await API.post(
-          "/auth/login",
-          {
-            email,
-            password
-          }
-        );
+  "/auth/login",
+  {
+    login:loginInput,
+    password
+  }
+);
 
       if(res.data.requiresAdminOtp){
 
@@ -828,12 +828,14 @@ export default function Login(){
             </Icon>
 
             <Input
-              type="email"
-              placeholder="Email address"
-              value={email}
-              onChange={(e)=>
-                setEmail(e.target.value)
-              }
+              type="text"
+             placeholder="Email or Phone Number"
+             value={loginInput}
+            onChange={(e)=>
+            setLoginInput(
+            e.target.value
+             )
+            }
               required
             />
 
@@ -893,7 +895,7 @@ export default function Login(){
             <button
               type="button"
               onClick={()=>{
-                setForgotEmail(email);
+                setForgotEmail(loginInput);
                 setForgotMode(true);
               }}
             >
