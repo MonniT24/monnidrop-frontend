@@ -1054,6 +1054,19 @@ const HistoryRow = styled.div`
   }
 `;
 
+const DetailList = styled.div`
+  display:grid;
+  gap:12px;
+
+  ${Row}{
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    padding:14px;
+    font-weight:700;
+  }
+`;
+
 const MobileStackGrid = styled.div`
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -1071,6 +1084,9 @@ export default function Rider(){
 
   const [activeRiderCard,setActiveRiderCard] =
   useState("");
+
+const [riderPage,setRiderPage] =
+  useState("home");  
 
   const [
   selectedProfileImage,
@@ -2728,13 +2744,19 @@ const res =
 
   </DashboardHero>
 
- <StatsGrid>
+ {riderPage === "home" && (
+
+<StatsGrid>
 
   <div
+    onClick={()=>
+      setRiderPage("activeDeliveries")
+    }
     style={{
+      cursor:"pointer",
       background:
         "linear-gradient(135deg, #0f172a, #1d4ed8)",
-      padding:"16px",
+      padding:"14px",
       borderRadius:"18px",
       color:"white",
       border:"1px solid rgba(250,204,21,0.28)",
@@ -2745,67 +2767,63 @@ const res =
     }}
   >
 
-    <div
-      style={{
-        width:"46px",
-        height:"46px",
-        borderRadius:"16px",
-        background:"#facc15",
-        color:"#0f172a",
-        display:"flex",
-        alignItems:"center",
-        justifyContent:"center",
-        fontSize:"23px",
-        marginBottom:"16px",
-        fontWeight:"900"
-      }}
-    >
+    <div style={{
+      width:"46px",
+      height:"46px",
+      borderRadius:"16px",
+      background:"#facc15",
+      color:"#0f172a",
+      display:"flex",
+      alignItems:"center",
+      justifyContent:"center",
+      fontSize:"23px",
+      marginBottom:"16px",
+      fontWeight:"900"
+    }}>
       🛵
     </div>
 
-    <div
-      style={{
-        fontSize:"13px",
-        color:"rgba(255,255,255,0.82)",
-        fontWeight:"900",
-        letterSpacing:"0.5px",
-        textTransform:"uppercase"
-      }}
-    >
+    <div style={{
+      fontSize:"13px",
+      color:"rgba(255,255,255,0.82)",
+      fontWeight:"900",
+      letterSpacing:"0.5px",
+      textTransform:"uppercase"
+    }}>
       Active Deliveries
     </div>
 
-    <div
-      style={{
-        fontSize:"30px",
-        fontWeight:"900",
-        marginTop:"8px",
-        color:"#facc15"
-      }}
-    >
+    <div style={{
+      fontSize:"26px",
+      fontWeight:"900",
+      marginTop:"8px",
+      color:"#facc15"
+    }}>
       {activeOrders.length}
     </div>
 
-    <div
-      style={{
-        fontSize:"13px",
-        color:"rgba(255,255,255,0.78)",
-        marginTop:"8px",
-        fontWeight:"700",
-        lineHeight:"1.4"
-      }}
-    >
+    <div style={{
+      fontSize:"13px",
+      color:"rgba(255,255,255,0.78)",
+      marginTop:"8px",
+      fontWeight:"700",
+      lineHeight:"1.4"
+    }}>
       Orders you are currently handling.
     </div>
 
   </div>
 
   <div
+    onClick={()=>
+      setRiderPage("completedDeliveries")
+    }
     style={{
+      cursor:"pointer",
       background:
         "linear-gradient(135deg, #facc15, #f59e0b)",
-      padding:"22px",
-      borderRadius:"24px",
+      padding:"14px",
+      borderRadius:"18px",
       color:"#0f172a",
       border:"1px solid rgba(15,23,42,0.12)",
       boxShadow:
@@ -2815,67 +2833,63 @@ const res =
     }}
   >
 
-    <div
-      style={{
-        width:"36px",
-        height:"36px",
-        borderRadius:"16px",
-        background:"#0f172a",
-        color:"#facc15",
-        display:"flex",
-        alignItems:"center",
-        justifyContent:"center",
-        fontSize:"17px",
-        marginBottom:"16px",
-        fontWeight:"900"
-      }}
-    >
+    <div style={{
+      width:"42px",
+      height:"42px",
+      borderRadius:"16px",
+      background:"#0f172a",
+      color:"#facc15",
+      display:"flex",
+      alignItems:"center",
+      justifyContent:"center",
+      fontSize:"19px",
+      marginBottom:"16px",
+      fontWeight:"900"
+    }}>
       ✅
     </div>
 
-    <div
-      style={{
-        fontSize:"13px",
-        color:"#0f172a",
-        fontWeight:"900",
-        letterSpacing:"0.5px",
-        textTransform:"uppercase"
-      }}
-    >
+    <div style={{
+      fontSize:"13px",
+      color:"#0f172a",
+      fontWeight:"900",
+      letterSpacing:"0.5px",
+      textTransform:"uppercase"
+    }}>
       Completed Deliveries
     </div>
 
-    <div
-      style={{
-        fontSize:"42px",
-        fontWeight:"900",
-        marginTop:"8px",
-        color:"#0f172a"
-      }}
-    >
+    <div style={{
+      fontSize:"26px",
+      fontWeight:"900",
+      marginTop:"8px",
+      color:"#0f172a"
+    }}>
       {completedOrders.length}
     </div>
 
-    <div
-      style={{
-        fontSize:"13px",
-        color:"#334155",
-        marginTop:"8px",
-        fontWeight:"800",
-        lineHeight:"1.4"
-      }}
-    >
+    <div style={{
+      fontSize:"13px",
+      color:"#334155",
+      marginTop:"8px",
+      fontWeight:"800",
+      lineHeight:"1.4"
+    }}>
       Successful deliveries completed by you.
     </div>
 
   </div>
 
   <div
+    onClick={()=>
+      setRiderPage("earnings")
+    }
     style={{
+      cursor:"pointer",
       background:
         "linear-gradient(135deg, #0f172a, #111827)",
-      padding:"20px",
-      borderRadius:"24px",
+      padding:"14px",
+      borderRadius:"18px",
       color:"white",
       border:"1px solid rgba(250,204,21,0.35)",
       boxShadow:
@@ -2885,62 +2899,176 @@ const res =
     }}
   >
 
-    <div
-      style={{
-        width:"46px",
-        height:"46px",
-        borderRadius:"16px",
-        background:"#facc15",
-        color:"#0f172a",
-        display:"flex",
-        alignItems:"center",
-        justifyContent:"center",
-        fontSize:"23px",
-        marginBottom:"16px",
-        fontWeight:"900"
-      }}
-    >
+    <div style={{
+      width:"46px",
+      height:"46px",
+      borderRadius:"16px",
+      background:"#facc15",
+      color:"#0f172a",
+      display:"flex",
+      alignItems:"center",
+      justifyContent:"center",
+      fontSize:"23px",
+      marginBottom:"16px",
+      fontWeight:"900"
+    }}>
       ₵
     </div>
 
-    <div
-      style={{
-        fontSize:"13px",
-        color:"#facc15",
-        fontWeight:"900",
-        letterSpacing:"0.5px",
-        textTransform:"uppercase"
-      }}
-    >
+    <div style={{
+      fontSize:"13px",
+      color:"#facc15",
+      fontWeight:"900",
+      letterSpacing:"0.5px",
+      textTransform:"uppercase"
+    }}>
       Total Earnings
     </div>
 
-    <div
-      style={{
-        fontSize:"42px",
-        fontWeight:"900",
-        marginTop:"8px",
-        color:"#facc15"
-      }}
-    >
+    <div style={{
+      fontSize:"26px",
+      fontWeight:"900",
+      marginTop:"8px",
+      color:"#facc15"
+    }}>
       ₵{earnings}
     </div>
 
-    <div
-      style={{
-        fontSize:"12px",
-        color:"rgba(255,255,255,0.76)",
-        marginTop:"8px",
-        fontWeight:"700",
-        lineHeight:"1.4"
-      }}
-    >
+    <div style={{
+      fontSize:"12px",
+      color:"rgba(255,255,255,0.76)",
+      marginTop:"8px",
+      fontWeight:"700",
+      lineHeight:"1.4"
+    }}>
       Total money earned from delivered orders.
     </div>
 
   </div>
 
 </StatsGrid>
+
+)}
+
+{riderPage !== "home" && (
+
+  <OrderCard
+    style={{
+      marginBottom:"22px"
+    }}
+  >
+
+    <button
+      type="button"
+      onClick={()=>
+        setRiderPage("home")
+      }
+      style={{
+        border:"none",
+        borderRadius:"12px",
+        padding:"10px 14px",
+        background:"#f1f5f9",
+        color:"#0f172a",
+        fontWeight:"900",
+        cursor:"pointer",
+        marginBottom:"16px"
+      }}
+    >
+      ← Back
+    </button>
+
+    <h2
+      style={{
+        marginTop:0,
+        color:"#0f172a",
+        fontWeight:"900"
+      }}
+    >
+      {
+        riderPage === "activeDeliveries"
+        ? "Active Deliveries"
+        : riderPage === "completedDeliveries"
+        ? "Completed Deliveries"
+        : "Total Earnings"
+      }
+    </h2>
+
+    {
+      riderPage === "activeDeliveries" && (
+        activeOrders.length === 0
+        ? (
+          <Empty>
+            No active deliveries found.
+          </Empty>
+        )
+        : (
+          <DetailList>
+            {
+              activeOrders.map((o)=>(
+                <Row key={o._id}>
+                  <strong>Pickup:</strong> {o.pickupLocation}
+                  <br />
+                  <strong>Dropoff:</strong> {o.dropoffLocation}
+                  <br />
+                  <strong>Status:</strong> {o.status}
+                  <br />
+                  <strong>Amount:</strong> ₵{o.total || 0}
+                </Row>
+              ))
+            }
+          </DetailList>
+        )
+      )
+    }
+
+    {
+      riderPage === "completedDeliveries" && (
+        completedOrders.length === 0
+        ? (
+          <Empty>
+            No completed deliveries found.
+          </Empty>
+        )
+        : (
+          <DetailList>
+            {
+              completedOrders.map((o)=>(
+                <Row key={o._id}>
+                  <strong>Pickup:</strong> {o.pickupLocation}
+                  <br />
+                  <strong>Dropoff:</strong> {o.dropoffLocation}
+                  <br />
+                  <strong>Amount:</strong> ₵{o.total || 0}
+                  <br />
+                  <strong>Status:</strong> {o.status}
+                </Row>
+              ))
+            }
+          </DetailList>
+        )
+      )
+    }
+
+    {
+      riderPage === "earnings" && (
+
+        <div
+          style={{
+            background:"#0f172a",
+            color:"#facc15",
+            borderRadius:"20px",
+            padding:"22px",
+            fontSize:"34px",
+            fontWeight:"900"
+          }}
+        >
+          ₵{earnings}
+        </div>
+      )
+    }
+
+  </OrderCard>
+)}
 
 <ResponsiveTwoColumn>
 

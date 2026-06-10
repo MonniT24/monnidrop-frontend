@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 
 import {
   FiTruck,
@@ -17,8 +17,52 @@ export default function CustomerDashboard({
   setActiveSection
 }) {
 
+  const [customerPage,setCustomerPage] =
+    useState("home");
+
   const isMobile =
     window.innerWidth <= 768;
+
+  const pendingOrders =
+    orders.filter((o)=>o.status === "pending");
+
+  function getPageTitle(){
+
+    if(customerPage === "activeOrders"){
+      return "Active Orders";
+    }
+
+    if(customerPage === "completedOrders"){
+      return "Completed Orders";
+    }
+
+    if(customerPage === "notifications"){
+      return "Notifications";
+    }
+
+    if(customerPage === "pendingOrders"){
+      return "Pending Orders";
+    }
+
+    return "";
+  }
+
+  function getPageOrders(){
+
+    if(customerPage === "activeOrders"){
+      return activeOrders;
+    }
+
+    if(customerPage === "completedOrders"){
+      return completedOrders;
+    }
+
+    if(customerPage === "pendingOrders"){
+      return pendingOrders;
+    }
+
+    return [];
+  }
 
   return (
     <>
@@ -107,7 +151,7 @@ export default function CustomerDashboard({
                 style={{
                   maxWidth:isMobile ? "100%" : "460px",
                   color:"#dbeafe",
-                  fontSize:isMobile ? "15px" : "15px",
+                  fontSize:"15px",
                   lineHeight:"1.55",
                   margin:isMobile ? "0 auto" : "0",
                   fontWeight:"600"
@@ -241,394 +285,301 @@ export default function CustomerDashboard({
         </div>
       </div>
 
-      <div
-        style={{
-          display:"grid",
-          gridTemplateColumns:isMobile
-            ? "repeat(2,minmax(0,1fr))"
-            : "repeat(auto-fit,minmax(190px,1fr))",
-          gap:"12px",
-          marginBottom:"20px"
-        }}
-      >
-        <StatCard
-          title="Active Orders"
-          value={activeOrders.length}
-          icon={<FiTruck />}
-        />
+      {customerPage === "home" && (
+        <div
+          style={{
+            display:"grid",
+            gridTemplateColumns:isMobile
+              ? "repeat(2,minmax(0,1fr))"
+              : "repeat(auto-fit,minmax(190px,1fr))",
+            gap:"12px",
+            marginBottom:"20px"
+          }}
+        >
+          <StatCard
+            title="Active Orders"
+            value={activeOrders.length}
+            icon={<FiTruck />}
+            onClick={() => setCustomerPage("activeOrders")}
+          />
 
-        <StatCard
-          title="Completed Orders"
-          value={completedOrders.length}
-          icon={<FiPackage />}
-        />
+          <StatCard
+            title="Completed Orders"
+            value={completedOrders.length}
+            icon={<FiPackage />}
+            onClick={() => setCustomerPage("completedOrders")}
+          />
 
-        <StatCard
-          title="Notifications"
-          value={notifications.length}
-          icon={<FiBell />}
-        />
+          <StatCard
+            title="Notifications"
+            value={notifications.length}
+            icon={<FiBell />}
+            onClick={() => setCustomerPage("notifications")}
+          />
 
-        <StatCard
-          title="Pending Orders"
-          value={orders.filter((o) => o.status === "pending").length}
-          icon={<FiClock />}
-        />
-      </div>
+          <StatCard
+            title="Pending Orders"
+            value={pendingOrders.length}
+            icon={<FiClock />}
+            onClick={() => setCustomerPage("pendingOrders")}
+          />
+        </div>
+      )}
 
-      <div
-        style={{
-          display:"grid",
-          gridTemplateColumns:isMobile ? "1fr" : "1.4fr 0.9fr",
-          gap:"22px"
-        }}
-      >
+      {customerPage !== "home" && (
         <div
           style={{
             background:"#ffffff",
             borderRadius:"24px",
-            padding:isMobile ? "18px" : "24px",
-            boxShadow:"0 10px 30px rgba(15,23,42,0.06)",
-            border:"1px solid #eef2f7"
+            padding:isMobile ? "18px" : "22px",
+            border:"1px solid #e5e7eb",
+            boxShadow:"0 10px 28px rgba(15,23,42,0.06)",
+            marginBottom:"20px"
           }}
         >
-          <h3
-            style={{
-              fontSize:isMobile ? "18px" : "20px",
-              fontWeight:"900",
-              color:"#0f172a",
-              margin:"0 0 16px",
-              display:"flex",
-              alignItems:"center",
-              gap:"10px"
-            }}
-          >
-            <span
-              style={{
-                width:"38px",
-                height:"38px",
-                borderRadius:"14px",
-                display:"inline-flex",
-                alignItems:"center",
-                justifyContent:"center",
-                background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
-                color:"#facc15",
-                flexShrink:0
-              }}
-            >
-              <FiTruck />
-            </span>
-            Recent Delivery Activity
-          </h3>
-
-          {orders.length === 0 ? (
-            <div
-              style={{
-                background:"#f8fafc",
-                padding:"24px",
-                borderRadius:"18px",
-                textAlign:"center",
-                color:"#64748b",
-                fontWeight:"800"
-              }}
-            >
-              No recent delivery yet. Create your first order.
-            </div>
-          ) : (
-            orders.slice(0,3).map((o)=>(
-              <div
-                key={o._id}
-                style={{
-                  padding:"16px",
-                  borderRadius:"18px",
-                  background:"#f8fafc",
-                  border:"1px solid #e5e7eb",
-                  marginBottom:"12px"
-                }}
-              >
-                <div
-                  style={{
-                    background:"#eff6ff",
-                    border:"1px solid #dbeafe",
-                    borderRadius:"14px",
-                    padding:"12px",
-                    color:"#0f172a",
-                    fontWeight:"800",
-                    marginBottom:"10px",
-                    overflowWrap:"anywhere"
-                  }}
-                >
-                  <strong style={{color:"#1d4ed8"}}>Route:</strong>{" "}
-                  {o.pickupLocation} → {o.dropoffLocation}
-                </div>
-
-                <div
-                  style={{
-                    color:"#0f172a",
-                    fontWeight:"800",
-                    marginBottom:"10px"
-                  }}
-                >
-                  <strong style={{color:"#ca8a04"}}>Amount:</strong>{" "}
-                  <span
-                    style={{
-                      background:"#fef3c7",
-                      color:"#0f172a",
-                      padding:"6px 12px",
-                      borderRadius:"999px",
-                      fontWeight:"900"
-                    }}
-                  >
-                    ₵{o.total}
-                  </span>
-                </div>
-
-                <div
-                  style={{
-                    display:"grid",
-                    gridTemplateColumns:isMobile ? "1fr" : "1fr auto auto",
-                    alignItems:"center",
-                    gap:"14px",
-                    width:"100%",
-                    marginTop:"12px"
-                  }}
-                >
-                  <div
-                    style={{
-                      display:"flex",
-                      alignItems:"center",
-                      gap:"12px",
-                      minWidth:0
-                    }}
-                  >
-                    <img
-                      src={
-                        o.rider?.profileImage ||
-                        "https://ui-avatars.com/api/?name=Rider&background=facc15&color=0f172a&size=128"
-                      }
-                      alt="Rider"
-                      style={{
-                        width:"52px",
-                        height:"52px",
-                        borderRadius:"50%",
-                        objectFit:"cover",
-                        border:"3px solid #facc15",
-                        background:"white",
-                        flexShrink:0
-                      }}
-                    />
-
-                    <div style={{minWidth:0}}>
-                      <div
-                        style={{
-                          fontSize:"11px",
-                          fontWeight:"900",
-                          color:"#64748b"
-                        }}
-                      >
-                        Assigned Rider Name
-                      </div>
-
-                      <div
-                        style={{
-                          fontSize:"15px",
-                          fontWeight:"900",
-                          color:"#0f172a",
-                          overflowWrap:"anywhere"
-                        }}
-                      >
-                        {o.rider?.name || "Searching for rider"}
-                      </div>
-
-                      <div
-                        style={{
-                          fontSize:"12px",
-                          fontWeight:"800",
-                          color:"#475569",
-                          marginTop:"3px"
-                        }}
-                      >
-                        Motor Name: {o.rider?.motorName || "Not added"}
-                      </div>
-
-                     <div
-  style={{
-    fontSize:"12px",
-    fontWeight:"800",
-    color:"#475569",
-    marginTop:"2px"
-  }}
->
-  Motor Color: {o.rider?.motorColor || "Not added"}
-</div> 
-
-                      <div
-                        style={{
-                          fontSize:"12px",
-                          fontWeight:"800",
-                          color:"#475569",
-                          marginTop:"2px"
-                        }}
-                      >
-                        Motor Number: {o.rider?.motorNumber || "Not added"}
-                      </div>
-                    </div>
-                  </div>
-
-                  <span
-                    style={{
-                      padding:"9px 16px",
-                      borderRadius:"999px",
-                      fontSize:"12px",
-                      fontWeight:"900",
-                      textTransform:"uppercase",
-                      background:"#dbeafe",
-                      color:"#0f172a",
-                      whiteSpace:"nowrap",
-                      textAlign:"center"
-                    }}
-                  >
-                    {o.status}
-                  </span>
-
-                  <span
-                    style={{
-                      display:"inline-flex",
-                      justifyContent:"center",
-                      padding:"7px 12px",
-                      borderRadius:"999px",
-                      background:o.isPaid ? "#dcfce7" : "#fef3c7",
-                      color:o.isPaid ? "#166534" : "#92400e",
-                      fontSize:"12px",
-                      fontWeight:"900",
-                      whiteSpace:"nowrap"
-                    }}
-                  >
-                    {o.isPaid ? "Paid" : "Not Paid"}
-                  </span>
-                </div>
-              </div>
-            ))
-          )}
-
           <button
             type="button"
-            onClick={() => setActiveSection("orders")}
+            onClick={() => setCustomerPage("home")}
             style={{
-              marginTop:"8px",
-              width:"100%",
               border:"none",
-              borderRadius:"14px",
-              padding:"12px 16px",
-              background:"#2563eb",
-              color:"white",
+              borderRadius:"12px",
+              padding:"10px 14px",
+              background:"#f1f5f9",
+              color:"#0f172a",
               fontWeight:"900",
-              cursor:"pointer"
+              cursor:"pointer",
+              marginBottom:"16px"
             }}
           >
-            View All Orders
+            ← Back
           </button>
-        </div>
 
-        <div
-          style={{
-            background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
-            color:"white",
-            border:"1px solid rgba(250,204,21,0.22)",
-            boxShadow:"0 10px 24px rgba(29,78,216,0.16)",
-            padding:"18px",
-            borderRadius:"20px",
-            alignSelf:"start"
-          }}
-        >
-          <h3
+          <h2
             style={{
-              display:"flex",
-              alignItems:"center",
-              gap:"7px",
-              color:"white",
-              fontSize:"16px",
-              margin:"0 0 12px",
+              marginTop:0,
+              color:"#0f172a",
               fontWeight:"900"
             }}
           >
-            <span
+            {getPageTitle()}
+          </h2>
+
+          {customerPage === "notifications" ? (
+            notifications.length === 0 ? (
+              <EmptyBox text="No notifications found." />
+            ) : (
+              notifications.map((note,index)=>(
+                <InfoCard key={note.id || index}>
+                  <strong>
+                    {note.title || "Notification"}
+                  </strong>
+                  <br />
+                  {note.message || note.text || "No message"}
+                </InfoCard>
+              ))
+            )
+          ) : (
+            getPageOrders().length === 0 ? (
+              <EmptyBox text="No records found here." />
+            ) : (
+              getPageOrders().map((o)=>(
+                <OrderListCard
+                  key={o._id}
+                  order={o}
+                />
+              ))
+            )
+          )}
+        </div>
+      )}
+
+      {customerPage === "home" && (
+        <div
+          style={{
+            display:"grid",
+            gridTemplateColumns:isMobile ? "1fr" : "1.4fr 0.9fr",
+            gap:"22px"
+          }}
+        >
+          <div
+            style={{
+              background:"#ffffff",
+              borderRadius:"24px",
+              padding:isMobile ? "18px" : "24px",
+              boxShadow:"0 10px 30px rgba(15,23,42,0.06)",
+              border:"1px solid #eef2f7"
+            }}
+          >
+            <h3
               style={{
-                width:"28px",
-                height:"28px",
-                borderRadius:"9px",
-                display:"inline-flex",
-                alignItems:"center",
-                justifyContent:"center",
-                background:"#facc15",
+                fontSize:isMobile ? "18px" : "20px",
+                fontWeight:"900",
                 color:"#0f172a",
-                fontSize:"14px",
-                flexShrink:0
+                margin:"0 0 16px",
+                display:"flex",
+                alignItems:"center",
+                gap:"10px"
               }}
             >
-              <FiPackage />
-            </span>
-            Smart Delivery Summary
-          </h3>
+              <span
+                style={{
+                  width:"38px",
+                  height:"38px",
+                  borderRadius:"14px",
+                  display:"inline-flex",
+                  alignItems:"center",
+                  justifyContent:"center",
+                  background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
+                  color:"#facc15",
+                  flexShrink:0
+                }}
+              >
+                <FiTruck />
+              </span>
+              Recent Delivery Activity
+            </h3>
 
-          <InfoRow title="Payment Ready:" text="Mobile Money enabled" />
-          <InfoRow title="Test MoMo:" text="0551234987" />
-          <InfoRow title="Default Area:" text="Accra" />
+            {orders.length === 0 ? (
+              <EmptyBox text="No recent delivery yet. Create your first order." />
+            ) : (
+              orders.slice(0,3).map((o)=>(
+                <OrderListCard
+                  key={o._id}
+                  order={o}
+                />
+              ))
+            )}
+
+            <button
+              type="button"
+              onClick={() => setActiveSection("orders")}
+              style={{
+                marginTop:"8px",
+                width:"100%",
+                border:"none",
+                borderRadius:"14px",
+                padding:"12px 16px",
+                background:"#2563eb",
+                color:"white",
+                fontWeight:"900",
+                cursor:"pointer"
+              }}
+            >
+              View All Orders
+            </button>
+          </div>
 
           <div
             style={{
-              background:"rgba(250,204,21,0.16)",
-              border:"1px solid rgba(250,204,21,0.35)",
-              color:"#fef3c7",
-              borderRadius:"18px",
-              padding:"16px",
-              lineHeight:"1.6",
-              fontWeight:"700",
-              marginTop:"12px"
+              background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
+              color:"white",
+              border:"1px solid rgba(250,204,21,0.22)",
+              boxShadow:"0 10px 24px rgba(29,78,216,0.16)",
+              padding:"18px",
+              borderRadius:"20px",
+              alignSelf:"start"
             }}
           >
-            Tip: Use Mobile Money for faster checkout.
-            Once Paystack confirms payment, your order
-            is automatically marked as paid.
-          </div>
+            <h3
+              style={{
+                display:"flex",
+                alignItems:"center",
+                gap:"7px",
+                color:"white",
+                fontSize:"16px",
+                margin:"0 0 12px",
+                fontWeight:"900"
+              }}
+            >
+              <span
+                style={{
+                  width:"28px",
+                  height:"28px",
+                  borderRadius:"9px",
+                  display:"inline-flex",
+                  alignItems:"center",
+                  justifyContent:"center",
+                  background:"#facc15",
+                  color:"#0f172a",
+                  fontSize:"14px",
+                  flexShrink:0
+                }}
+              >
+                <FiPackage />
+              </span>
+              Smart Delivery Summary
+            </h3>
 
-          <button
-            type="button"
-            onClick={() => setActiveSection("createOrder")}
-            style={{
-              marginTop:"18px",
-              width:"100%",
-              border:"none",
-              borderRadius:"14px",
-              padding:"12px 16px",
-              background:"#facc15",
-              color:"#0f172a",
-              fontWeight:"900",
-              cursor:"pointer"
-            }}
-          >
-            Send a Package Now
-          </button>
+            <InfoRow title="Payment Ready:" text="Mobile Money enabled" />
+            <InfoRow title="Test MoMo:" text="0551234987" />
+            <InfoRow title="Default Area:" text="Accra" />
+
+            <div
+              style={{
+                background:"rgba(250,204,21,0.16)",
+                border:"1px solid rgba(250,204,21,0.35)",
+                color:"#fef3c7",
+                borderRadius:"18px",
+                padding:"16px",
+                lineHeight:"1.6",
+                fontWeight:"700",
+                marginTop:"12px"
+              }}
+            >
+              Tip: Use Mobile Money for faster checkout.
+              Once Paystack confirms payment, your order
+              is automatically marked as paid.
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setActiveSection("createOrder")}
+              style={{
+                marginTop:"18px",
+                width:"100%",
+                border:"none",
+                borderRadius:"14px",
+                padding:"12px 16px",
+                background:"#facc15",
+                color:"#0f172a",
+                fontWeight:"900",
+                cursor:"pointer"
+              }}
+            >
+              Send a Package Now
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 }
 
-function StatCard({title,value,icon}) {
+function StatCard({title,value,icon,onClick}) {
 
   const isMobile =
     window.innerWidth <= 768;
 
   return (
     <div
+      onClick={onClick}
       style={{
         background:"white",
         borderRadius:"18px",
         padding:isMobile ? "16px" : "18px",
         boxShadow:"0 8px 20px rgba(15,23,42,0.06)",
         border:"1px solid #eef2f7",
-        minHeight:isMobile ? "120px" : "130px"
+        minHeight:isMobile ? "120px" : "130px",
+        cursor:"pointer",
+        transition:"0.25s ease"
+      }}
+      onMouseEnter={(e)=>{
+        e.currentTarget.style.transform =
+          "translateY(-3px)";
+      }}
+      onMouseLeave={(e)=>{
+        e.currentTarget.style.transform =
+          "translateY(0)";
       }}
     >
       <div
@@ -668,6 +619,101 @@ function StatCard({title,value,icon}) {
       >
         {value}
       </div>
+    </div>
+  );
+}
+
+function OrderListCard({order}) {
+  return (
+    <div
+      style={{
+        padding:"16px",
+        borderRadius:"18px",
+        background:"#f8fafc",
+        border:"1px solid #e5e7eb",
+        marginBottom:"12px"
+      }}
+    >
+      <div
+        style={{
+          background:"#eff6ff",
+          border:"1px solid #dbeafe",
+          borderRadius:"14px",
+          padding:"12px",
+          color:"#0f172a",
+          fontWeight:"800",
+          marginBottom:"10px",
+          overflowWrap:"anywhere"
+        }}
+      >
+        <strong style={{color:"#1d4ed8"}}>Route:</strong>{" "}
+        {order.pickupLocation} → {order.dropoffLocation}
+      </div>
+
+      <div
+        style={{
+          color:"#0f172a",
+          fontWeight:"800",
+          marginBottom:"10px"
+        }}
+      >
+        <strong style={{color:"#ca8a04"}}>Amount:</strong>{" "}
+        ₵{order.total}
+      </div>
+
+      <div
+        style={{
+          color:"#475569",
+          fontWeight:"800",
+          fontSize:"13px",
+          lineHeight:"1.7"
+        }}
+      >
+        <strong>Status:</strong> {order.status || "N/A"}
+        <br />
+        <strong>Rider:</strong> {order.rider?.name || "Searching for rider"}
+        <br />
+        <strong>Motor Name:</strong> {order.rider?.motorName || "Not added"}
+        <br />
+        <strong>Motor Color:</strong> {order.rider?.motorColor || "Not added"}
+        <br />
+        <strong>Motor Number:</strong> {order.rider?.motorNumber || "Not added"}
+      </div>
+    </div>
+  );
+}
+
+function EmptyBox({text}) {
+  return (
+    <div
+      style={{
+        background:"#f8fafc",
+        padding:"24px",
+        borderRadius:"18px",
+        textAlign:"center",
+        color:"#64748b",
+        fontWeight:"800"
+      }}
+    >
+      {text}
+    </div>
+  );
+}
+
+function InfoCard({children}) {
+  return (
+    <div
+      style={{
+        background:"#f8fafc",
+        border:"1px solid #e5e7eb",
+        borderRadius:"16px",
+        padding:"14px",
+        marginBottom:"10px",
+        color:"#0f172a",
+        fontWeight:"700"
+      }}
+    >
+      {children}
     </div>
   );
 }
