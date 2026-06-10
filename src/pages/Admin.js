@@ -1166,6 +1166,12 @@ export default function Admin(){
   const [riders,setRiders] =
     useState([]);
 
+  const [riderApplications,setRiderApplications] =
+  useState([]);
+
+ const [riderApplicationsLoading,setRiderApplicationsLoading] =
+  useState(false);  
+
     const [riderStatusHistories, setRiderStatusHistories] = 
     useState([]);
 
@@ -1466,6 +1472,79 @@ useEffect(()=>{
     console.log(
       "RIDER FETCH ERROR:",
       err
+    );
+  }
+}
+
+async function fetchRiderApplications(){
+
+  try{
+
+    setRiderApplicationsLoading(true);
+
+    const res =
+      await API.get(
+        "/admin/rider-applications"
+      );
+
+    setRiderApplications(
+      res.data?.riders || []
+    );
+
+  }catch(err){
+
+    console.log(
+      "RIDER APPLICATIONS ERROR:",
+      err.response?.data || err.message
+    );
+
+  }finally{
+
+    setRiderApplicationsLoading(false);
+  }
+}
+
+async function updateRiderApplication(
+  riderId,
+  riderApprovalStatus
+){
+
+  try{
+
+    const confirmAction =
+      window.confirm(
+        `Are you sure you want to ${riderApprovalStatus} this rider application?`
+      );
+
+    if(!confirmAction){
+      return;
+    }
+
+    await API.put(
+      `/admin/rider-applications/${riderId}`,
+      {
+        riderApprovalStatus
+      }
+    );
+
+    alert(
+      `Rider ${riderApprovalStatus} successfully`
+    );
+
+    fetchRiderApplications();
+
+    fetchRiders();
+
+  }catch(err){
+
+    console.log(
+      "UPDATE RIDER APPLICATION ERROR:",
+      err.response?.data || err.message
+    );
+
+    alert(
+      err.response?.data?.message ||
+      "Failed to update rider application"
     );
   }
 }
@@ -2071,7 +2150,9 @@ const selectedTitle =
   ? "Pending Orders"
   : activeAdminView === "fraud"
   ? "Fraud / Cancel Alerts"
- : activeAdminView === "riders"
+  : activeAdminView === "riderApplications"
+  ? "Rider Applications"
+  : activeAdminView === "riders"
   ? "Riders Activities"
   : activeAdminView === "riderStatusFile"
   ? "Rider Status File"
@@ -2342,6 +2423,35 @@ function clearRiderStatusFilters(){
 
   <StatSmall>
     Click to view customer support messages.
+  </StatSmall>
+
+</StatCard>
+
+<StatCard
+  $active={activeAdminView === "riderApplications"}
+  onClick={()=>{
+    setActiveAdminView(
+      "riderApplications"
+    );
+
+    fetchRiderApplications();
+  }}
+>
+
+  <StatIcon>
+    📝
+  </StatIcon>
+
+  <StatTitle>
+    Rider Applications
+  </StatTitle>
+
+  <StatValue>
+    {riderApplications.length}
+  </StatValue>
+
+  <StatSmall>
+    Review rider applications awaiting approval.
   </StatSmall>
 
 </StatCard>
@@ -2668,6 +2778,105 @@ function clearRiderStatusFilters(){
 
       </DetailGrid>
     )
+
+  ) : activeAdminView === "riderApplications"
+? (
+
+  riderApplicationsLoading
+  ? (
+
+    <Empty>
+      Loading rider applications...
+    </Empty>
+
+  ) : riderApplications.length === 0
+  ? (
+
+    <Empty>
+      No pending rider applications found.
+    </Empty>
+
+  ) : (
+
+    <DetailGrid>
+
+      {
+        riderApplications.map((r)=>(
+
+          <DetailCard key={r._id}>
+
+            <DetailTitle>
+              {r.name || "Unnamed Rider"}
+            </DetailTitle>
+
+            <DetailMeta>
+              <strong>Phone:</strong>{" "}
+              {r.phone || "N/A"}
+              <br />
+
+              <strong>Email:</strong>{" "}
+              {r.email || "Not provided"}
+              <br />
+
+              <strong>Ghana Card Number:</strong>{" "}
+              {r.ghanaCardNumber || "N/A"}
+              <br />
+
+              <strong>Motor Name:</strong>{" "}
+              {r.motorName || "N/A"}
+              <br />
+
+              <strong>Registration Number:</strong>{" "}
+              {r.motorNumber || "N/A"}
+              <br />
+
+              <strong>Motor Color:</strong>{" "}
+              {r.motorColor || "N/A"}
+              <br />
+
+              <strong>Status:</strong>{" "}
+              {r.riderApprovalStatus || "pending"}
+            </DetailMeta>
+
+            <div
+              style={{
+                display:"flex",
+                gap:"10px",
+                marginTop:"14px"
+              }}
+            >
+              <ActionButton
+                $green
+                type="button"
+                onClick={()=>
+                  updateRiderApplication(
+                    r._id,
+                    "approved"
+                  )
+                }
+              >
+                Approve
+              </ActionButton>
+
+              <ActionButton
+                type="button"
+                onClick={()=>
+                  updateRiderApplication(
+                    r._id,
+                    "rejected"
+                  )
+                }
+              >
+                Reject
+              </ActionButton>
+            </div>
+
+          </DetailCard>
+        ))
+      }
+
+    </DetailGrid>
+  )  
 
   ) : activeAdminView === "riders"
   ? (

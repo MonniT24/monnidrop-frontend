@@ -703,6 +703,19 @@ return;
             }
           </Button>
 
+        <Button
+  type="button"
+  onClick={()=>
+    navigate("/become-rider")
+  }
+  style={{
+    background:"#1d4ed8",
+    marginTop:"14px"
+  }}
+>
+  Become a Rider
+</Button> 
+
         </form>
 
         <Bottom>

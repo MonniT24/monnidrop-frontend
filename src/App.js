@@ -13,6 +13,8 @@ import ForgotPassword from "./pages/ForgotPassword";
 
 import Register from "./pages/Register";
 
+import BecomeRider from "./pages/BecomeRider";
+
 import Customer from "./pages/Customer";
 
 import Rider from "./pages/Rider";
@@ -146,6 +148,17 @@ export default function App(){
             <Register/>
           }
         />
+
+        {/* BECOME RIDER */}
+
+     <Route
+
+     path="/become-rider"
+
+     element={
+    <BecomeRider/>
+     }
+     />
 
         {/* CUSTOMER */}
 
