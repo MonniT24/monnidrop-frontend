@@ -5488,56 +5488,6 @@ async function createOrder(){
     let dropoffLng =
       dropoffCoords?.lng || null;
 
-    const orderRes =
-      await API.post(
-        "/orders",
-        {
-          pickupLocation,
-          pickupLat,
-          pickupLng,
-
-          dropoffLocation,
-          dropoffLat,
-          dropoffLng,
-
-          distance:distance,
-          deliveryTime:deliveryTime,
-          total:amount,
-          paymentMethod,
-
-          momoNumber:
-            paymentMethod === "momo"
-            ? momoNumber
-            : "",
-
-          isPaid:
-            paymentMethod === "cash"
-            ? false
-            : false,
-
-          paymentStatus:
-            paymentMethod === "cash"
-            ? "cash_on_delivery"
-            : "pending",
-
-          items:[
-            {
-              name:itemNotes || "Delivery Item",
-              quantity:1
-            }
-          ]
-        }
-      );
-
-    const createdOrder =
-      orderRes.data.order ||
-      orderRes.data;
-
-    console.log(
-      "CREATED ORDER RESPONSE:",
-      createdOrder
-    );
-
     if(paymentMethod === "momo"){
 
       const momoRes =
@@ -5548,7 +5498,6 @@ async function createOrder(){
             amount:Number(amount),
             phone:momoNumber,
             provider:"mtn",
-            orderId:createdOrder._id
           }
         );
 
@@ -5565,15 +5514,55 @@ async function createOrder(){
 
       if(!reference){
 
-        alert(
-          `Order created, but payment reference was not returned. Your OTP Number is ${createdOrder.deliveryCode || "not generated"}`
-        );
+       alert(
+  "Payment was not completed. Order was not created."
+);
 
       }else{
 
         alert(
           "MoMo payment request sent. Approve the payment on your phone, then click OK to verify."
         );
+
+        const paystackOtp =
+  window.prompt(
+    "Enter the Paystack OTP sent to your phone"
+  );
+
+if(!paystackOtp){
+
+  const retryOtp =
+    window.prompt(
+      "You cancelled the OTP box. Enter the Paystack OTP now to continue payment."
+    );
+
+  if(!retryOtp){
+
+    alert(
+      "Payment OTP was not entered. Your order was created but payment is still pending. You may need to create the payment again."
+    );
+
+    return;
+  }
+
+  await API.post(
+    "/payments/momo/submit-otp",
+    {
+      reference,
+      otp:retryOtp
+    }
+  );
+
+}else{
+
+  await API.post(
+    "/payments/momo/submit-otp",
+    {
+      reference,
+      otp:paystackOtp
+    }
+  );
+}
 
         const verifyRes =
           await API.get(
@@ -5590,24 +5579,95 @@ async function createOrder(){
 
         if(verifiedStatus === "success"){
 
-          alert(
-            `Payment successful. Order marked as paid. Your OTP Number is ${createdOrder.deliveryCode || "not generated"}`
-          );
+  const orderRes =
+    await API.post(
+      "/orders",
+      {
+        pickupLocation,
+        pickupLat,
+        pickupLng,
 
-        }else{
+        dropoffLocation,
+        dropoffLat,
+        dropoffLng,
+
+        distance:distance,
+        deliveryTime:deliveryTime,
+        total:amount,
+        paymentMethod,
+
+        momoNumber:momoNumber,
+
+        isPaid:true,
+        paymentStatus:"paid",
+        paymentReference:reference,
+
+        items:[
+          {
+            name:itemNotes || "Delivery Item",
+            quantity:1
+          }
+        ]
+      }
+    );
+
+  const createdOrder =
+    orderRes.data.order ||
+    orderRes.data;
+
+  alert(
+    `Payment successful. Order created and marked as paid. Your OTP Number is ${createdOrder.deliveryCode || "not generated"}`
+  );
+
+}else{
 
           alert(
-            `Order created, but payment is ${verifiedStatus || "not successful yet"}. Your OTP Number is ${createdOrder.deliveryCode || "not generated"}`
+          "Payment was not completed. Order was not created."
           );
         }
       }
 
-    }else{
+   }else{
 
-      alert(
-        `Order created successfully. Payment will be collected on delivery. Your OTP Number is ${createdOrder.deliveryCode || "not generated"}`
-      );
-    }
+  const orderRes =
+    await API.post(
+      "/orders",
+      {
+        pickupLocation,
+        pickupLat,
+        pickupLng,
+
+        dropoffLocation,
+        dropoffLat,
+        dropoffLng,
+
+        distance:distance,
+        deliveryTime:deliveryTime,
+        total:amount,
+        paymentMethod,
+
+        momoNumber:"",
+
+        isPaid:false,
+        paymentStatus:"cash_on_delivery",
+
+        items:[
+          {
+            name:itemNotes || "Delivery Item",
+            quantity:1
+          }
+        ]
+      }
+    );
+
+  const createdOrder =
+    orderRes.data.order ||
+    orderRes.data;
+
+  alert(
+    `Order created successfully. Payment will be collected on delivery. Your OTP Number is ${createdOrder.deliveryCode || "not generated"}`
+  );
+}
 
     setPickupLocation("");
     setDropoffLocation("");
