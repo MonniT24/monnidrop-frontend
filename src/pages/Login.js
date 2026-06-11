@@ -240,12 +240,12 @@ export default function Login(){
 
       const res =
         await API.post(
-  "/auth/login",
-  {
-    login:loginInput,
-    password
-  }
-);
+        "/auth/login",
+   {
+        login:loginInput,
+         password
+    }
+   );
 
       if(res.data.requiresAdminOtp){
 

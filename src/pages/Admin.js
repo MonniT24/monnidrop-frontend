@@ -21,6 +21,10 @@ import {
   useJsApiLoader
 } from "@react-google-maps/api";
 
+import {
+  FiMessageCircle
+} from "react-icons/fi";
+
 const Page = styled.div`
   min-height:100vh;
   background:#f5f7fb;
@@ -1193,6 +1197,15 @@ export default function Admin(){
     const [activeAdminView,setActiveAdminView] =
   useState("");
 
+  const [currentPassword,setCurrentPassword] =
+  useState("");
+
+const [newPassword,setNewPassword] =
+  useState("");
+
+const [confirmPassword,setConfirmPassword] =
+  useState("");
+
   const [onlineUsers,setOnlineUsers] =
   useState([]);
 
@@ -1972,6 +1985,69 @@ async function updateRiderAccountStatus(){
   }
 }
 
+async function changeAdminPassword(){
+
+  try{
+
+    if(!currentPassword || !newPassword || !confirmPassword){
+
+      alert(
+        "Please fill all password fields"
+      );
+
+      return;
+    }
+
+    if(newPassword !== confirmPassword){
+
+      alert(
+        "New password and confirm password do not match"
+      );
+
+      return;
+    }
+
+    if(newPassword.length < 6){
+
+      alert(
+        "New password must be at least 6 characters"
+      );
+
+      return;
+    }
+
+    await API.put(
+      "/admin/change-password",
+      {
+        currentPassword,
+        newPassword
+      }
+    );
+
+    alert(
+      "Password changed successfully"
+    );
+
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+
+    setActiveAdminView("");
+
+  }catch(err){
+
+    console.log(
+      "ADMIN CHANGE PASSWORD ERROR:",
+      err.response?.data || err.message
+    );
+
+    alert(
+      err.response?.data?.message ||
+      "Failed to change password"
+    );
+  }
+}
+
   function logout(){
 
     localStorage.clear();
@@ -2293,6 +2369,20 @@ function clearRiderStatusFilters(){
                   Monitor All Activities
                 </DashboardHeroText>
 
+              <HeroLogoutButton
+  type="button"
+  onClick={()=>
+    setActiveAdminView("adminProfile")
+  }
+  style={{
+    background:"#facc15",
+    color:"#0f172a",
+    marginRight:"10px"
+  }}
+>
+  Admin Profile
+</HeroLogoutButton>
+
                 <HeroLogoutButton
                   onClick={logout}
                 >
@@ -2410,20 +2500,25 @@ function clearRiderStatusFilters(){
 >
 
   <StatIcon>
-    💬
-  </StatIcon>
+  <FiMessageCircle size={24} />
+</StatIcon>
 
   <StatTitle>
-    Customer Support
+  Customer Support
   </StatTitle>
 
-  <StatValue>
-    Support
-  </StatValue>
+  <StatValue
+  style={{
+    fontSize:"16px",
+    lineHeight:"1.1"
+  }}
+>
+  Messages
+</StatValue>
 
   <StatSmall>
-    Click to view customer support messages.
-  </StatSmall>
+  View messages and replies.
+</StatSmall>
 
 </StatCard>
 
@@ -2451,7 +2546,7 @@ function clearRiderStatusFilters(){
   </StatValue>
 
   <StatSmall>
-    Review rider applications awaiting approval.
+  Applications awaiting approval.
   </StatSmall>
 
 </StatCard>
@@ -2692,6 +2787,129 @@ function clearRiderStatusFilters(){
 )}
 
 {
+  activeAdminView === "adminProfile"
+  ? (
+
+    <div
+      style={{
+        maxWidth:"500px",
+        margin:"0 auto"
+      }}
+    >
+
+     <button
+  type="button"
+  onClick={()=>
+    setActiveAdminView("")
+  }
+  onMouseEnter={(e)=>{
+    e.target.style.background =
+      "#1d4ed8";
+    e.target.style.color =
+      "#ffffff";
+    e.target.style.transform =
+      "translateY(-2px)";
+  }}
+  onMouseLeave={(e)=>{
+    e.target.style.background =
+      "#f1f5f9";
+    e.target.style.color =
+      "#0f172a";
+    e.target.style.transform =
+      "translateY(0)";
+  }}
+  style={{
+    border:"none",
+    background:"#f1f5f9",
+    color:"#0f172a",
+    fontWeight:"900",
+    fontSize:"16px",
+    cursor:"pointer",
+    marginBottom:"18px",
+    borderRadius:"12px",
+    padding:"10px 14px",
+    transition:"0.25s ease"
+  }}
+>
+  ← Back
+</button> 
+
+      <div
+        style={{
+          fontSize:"24px",
+          fontWeight:"900",
+          color:"#0f172a",
+          marginBottom:"20px"
+        }}
+      >
+        Change Admin Password
+      </div>
+
+      <input
+        type="password"
+        placeholder="Current Password"
+        value={currentPassword}
+        onChange={(e)=>
+          setCurrentPassword(
+            e.target.value
+          )
+        }
+        style={{
+          width:"100%",
+          padding:"14px",
+          borderRadius:"14px",
+          border:"1px solid #dbeafe",
+          marginBottom:"12px"
+        }}
+      />
+
+      <input
+        type="password"
+        placeholder="New Password"
+        value={newPassword}
+        onChange={(e)=>
+          setNewPassword(
+            e.target.value
+          )
+        }
+        style={{
+          width:"100%",
+          padding:"14px",
+          borderRadius:"14px",
+          border:"1px solid #dbeafe",
+          marginBottom:"12px"
+        }}
+      />
+
+      <input
+        type="password"
+        placeholder="Confirm New Password"
+        value={confirmPassword}
+        onChange={(e)=>
+          setConfirmPassword(
+            e.target.value
+          )
+        }
+        style={{
+          width:"100%",
+          padding:"14px",
+          borderRadius:"14px",
+          border:"1px solid #dbeafe",
+          marginBottom:"16px"
+        }}
+      />
+
+      <ActionButton
+        $green
+        onClick={changeAdminPassword}
+      >
+        Change Password
+      </ActionButton>
+
+    </div>
+
+  ) :
+
   activeAdminView && (
 
     <DetailPanel>

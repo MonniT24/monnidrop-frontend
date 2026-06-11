@@ -5510,6 +5510,16 @@ async function createOrder(){
             ? momoNumber
             : "",
 
+          isPaid:
+            paymentMethod === "cash"
+            ? false
+            : false,
+
+          paymentStatus:
+            paymentMethod === "cash"
+            ? "cash_on_delivery"
+            : "pending",
+
           items:[
             {
               name:itemNotes || "Delivery Item",
@@ -5548,39 +5558,54 @@ async function createOrder(){
       );
 
       const paymentData =
-        momoRes.data.data;
+        momoRes.data?.data;
 
-      if(
-        paymentData &&
-        paymentData.status === "success"
-      ){
+      const reference =
+        paymentData?.reference;
 
-        await API.put(
-          `/orders/${createdOrder._id}/pay`,
-          {
-            reference:paymentData.reference,
-            status:paymentData.status,
-            channel:paymentData.channel,
-            amount:paymentData.amount,
-            currency:paymentData.currency
-          }
-        );
+      if(!reference){
 
         alert(
-          `MoMo payment successful. Order created and marked as paid. Your OTP Number is ${createdOrder.deliveryCode}`
+          `Order created, but payment reference was not returned. Your OTP Number is ${createdOrder.deliveryCode || "not generated"}`
         );
 
       }else{
 
         alert(
-          `Order created, but MoMo payment was not successful. Your OTP Number is ${createdOrder.deliveryCode}`
+          "MoMo payment request sent. Approve the payment on your phone, then click OK to verify."
         );
+
+        const verifyRes =
+          await API.get(
+            `/payments/verify/${reference}`
+          );
+
+        console.log(
+          "PAYMENT VERIFY RESPONSE:",
+          verifyRes.data
+        );
+
+        const verifiedStatus =
+          verifyRes.data?.paystack?.data?.status;
+
+        if(verifiedStatus === "success"){
+
+          alert(
+            `Payment successful. Order marked as paid. Your OTP Number is ${createdOrder.deliveryCode || "not generated"}`
+          );
+
+        }else{
+
+          alert(
+            `Order created, but payment is ${verifiedStatus || "not successful yet"}. Your OTP Number is ${createdOrder.deliveryCode || "not generated"}`
+          );
+        }
       }
 
     }else{
 
       alert(
-        `Order created successfully. Your OTP Number is ${createdOrder.deliveryCode || "not generated"}`
+        `Order created successfully. Payment will be collected on delivery. Your OTP Number is ${createdOrder.deliveryCode || "not generated"}`
       );
     }
 
