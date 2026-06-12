@@ -510,8 +510,8 @@ export default function CustomerDashboard({
               Smart Delivery Summary
             </h3>
 
-            <InfoRow title="Payment Ready:" text="Mobile Money enabled" />
-            <InfoRow title="Test MoMo:" text="0551234987" />
+            <InfoRow title="Use This For Payment:" text="Mobile Money enabled" />
+            <InfoRow title="MoMo Number:" text="0244095101" />
             <InfoRow title="Default Area:" text="Accra" />
 
             <div

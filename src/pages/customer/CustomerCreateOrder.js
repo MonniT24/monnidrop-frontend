@@ -1,5 +1,7 @@
 import React,{useRef} from "react";
 
+import GoogleLiveMap from "../../components/GoogleLiveMap";
+
 import { FiPackage } from "react-icons/fi";
 
 import {
@@ -46,7 +48,10 @@ export default function CustomerCreateOrder({
   showConfirm,
   setShowConfirm,
 
-  createOrder
+  createOrder,
+
+ pickupCoords,
+ dropoffCoords
 }) {
 
  const pickupRef = useRef(null);
@@ -128,21 +133,36 @@ const {
           </p>
         </div>
 
+      <GoogleLiveMap
+  pickupCoords={pickupCoords}
+  dropoffCoords={dropoffCoords}
+/>  
+
         <OrderSection
           step="1"
           title="Pickup Location"
         >
           {isLoaded ? (
   <Autocomplete
-    onLoad={(autocomplete)=>{
-      pickupRef.current = autocomplete;
-    }}
+  options={{
+    componentRestrictions:{
+      country:"gh"
+    },
+    fields:[
+      "formatted_address",
+      "geometry",
+      "name"
+    ]
+  }}
+  onLoad={(autocomplete)=>{
+    pickupRef.current = autocomplete;
+  }}
     onPlaceChanged={()=>{
       const place =
         pickupRef.current.getPlace();
 
-      const address =
-        place.formatted_address || place.name;
+     const address =
+  `${place.name}, ${place.formatted_address}`;
 
       setPickupLocation(address);
       calculateDistance(address,dropoffLocation);
@@ -193,16 +213,26 @@ const {
           title="Dropoff Location"
         >
           {isLoaded ? (
-  <Autocomplete
-    onLoad={(autocomplete)=>{
-      dropoffRef.current = autocomplete;
-    }}
+ <Autocomplete
+  options={{
+    componentRestrictions:{
+      country:"gh"
+    },
+    fields:[
+      "formatted_address",
+      "geometry",
+      "name"
+    ]
+  }}
+  onLoad={(autocomplete)=>{
+    dropoffRef.current = autocomplete;
+  }}
     onPlaceChanged={()=>{
       const place =
         dropoffRef.current.getPlace();
 
       const address =
-        place.formatted_address || place.name;
+  `${place.name}, ${place.formatted_address}`;
 
       setDropoffLocation(address);
       calculateDistance(

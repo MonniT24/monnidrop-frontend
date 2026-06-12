@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useRef} from "react";
-import styled,{createGlobalStyle} from "styled-components";
+import styled from "styled-components";
 
 import API from "../api/api";
 import socket from "../socket";
@@ -38,62 +38,8 @@ import {
 } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  Polyline,
-} from "react-leaflet";
-
-import "leaflet/dist/leaflet.css";
-
-import L from "leaflet";
-
 const customerImage =
   "https://ui-avatars.com/api/?name=Customer&background=2563eb&color=ffffff&size=256";
-
-const GlobalLeafletFix = createGlobalStyle`
-
-  .leaflet-container{
-    position:relative !important;
-    z-index:0 !important;
-  }
-
-  .leaflet-pane,
-  .leaflet-map-pane,
-  .leaflet-tile-pane,
-  .leaflet-overlay-pane,
-  .leaflet-shadow-pane,
-  .leaflet-marker-pane,
-  .leaflet-tooltip-pane,
-  .leaflet-popup-pane{
-  z-index:0 !important;
-  }
-
-  .leaflet-top,
-  .leaflet-bottom,
-  .leaflet-control-container{
-    z-index:1 !important;
-  }
-
-  @media(max-width:768px){
-
-    .leaflet-container{
-      pointer-events:${props =>
-        props.sidebarOpen
-        ? "none"
-        : "auto"} !important;
-
-      opacity:${props =>
-        props.sidebarOpen
-        ? "0"
-        : "1"} !important;
-
-      transition:opacity 0.2s ease;
-    }
-  }
-`;
 
 const Layout = styled.div`
   display:flex;
@@ -2938,22 +2884,6 @@ const RatingSubmitButton = styled.button`
     : "1"};
 `;
 
-const riderIcon = new L.Icon({
-
-  iconUrl:
-    "https://cdn-icons-png.flaticon.com/512/684/684908.png",
-
-  iconSize:[40,40]
-});
-
-const customerIcon = new L.Icon({
-
-  iconUrl:
-    "https://cdn-icons-png.flaticon.com/512/3177/3177440.png",
-
-  iconSize:[40,40]
-});
-
 export default function Customer(){
 
   const [activeSection,setActiveSection] =
@@ -3097,6 +3027,36 @@ const [ratedOrderIds,setRatedOrderIds] =
   lat:5.6037,
   lng:-0.1870
 });
+
+useEffect(()=>{
+
+  if(!navigator.geolocation){
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (position)=>{
+
+      setCustomerLocation({
+        lat:position.coords.latitude,
+        lng:position.coords.longitude
+      });
+    },
+    (error)=>{
+
+      console.log(
+        "CUSTOMER LOCATION ERROR:",
+        error.message
+      );
+    },
+    {
+      enableHighAccuracy:true,
+      timeout:10000,
+      maximumAge:0
+    }
+  );
+
+},[]);
 
   const [chatText,setChatText] =
     useState({});
@@ -4502,6 +4462,17 @@ localStorage.setItem(
       loggedUser
     );
 
+  socket.emit(
+  "userOnline",
+  {
+    _id:res.data._id,
+    name:res.data.name,
+    phone:res.data.phone,
+    email:res.data.email,
+    role:res.data.role
+  }
+);  
+
     setProfileName(
       loggedUser.name || ""
     );
@@ -5267,12 +5238,20 @@ function getWeatherSurchargePercent(){
     const directionsService =
       new window.google.maps.DirectionsService();
 
-    directionsService.route(
-      {
-        origin:pickupValue,
-        destination:dropoffValue,
-        travelMode:window.google.maps.TravelMode.DRIVING
-      },
+    const ghanaPickup =
+  `${pickupValue}, Accra, Ghana`;
+
+const ghanaDropoff =
+  `${dropoffValue}, Accra, Ghana`;
+  
+
+directionsService.route(
+  {
+    origin:ghanaPickup,
+    destination:ghanaDropoff,
+    travelMode:window.google.maps.TravelMode.DRIVING,
+    region:"GH"
+  },
       (result,status)=>{
 
         if(
@@ -5848,9 +5827,7 @@ async function sendMessage(
       }
     >
 
-  <GlobalLeafletFix
-  sidebarOpen={sidebarOpen}
-/>
+
 
       <Sidebar
   open={sidebarOpen}
@@ -6187,8 +6164,6 @@ async function sendMessage(
     orders={orders}
     sidebarOpen={sidebarOpen}
     locationCoords={locationCoords}
-    customerIcon={customerIcon}
-    riderIcon={riderIcon}
     riderLocation={riderLocation}
     ratedOrderIds={ratedOrderIds}
     setRatingModalOrder={setRatingModalOrder}
@@ -6205,8 +6180,11 @@ async function sendMessage(
 
 {activeSection === "createOrder" && (
   <CustomerCreateOrder
-    pickupLocation={pickupLocation}
-    setPickupLocation={setPickupLocation}
+
+     pickupCoords={pickupCoords}
+     dropoffCoords={dropoffCoords}
+     pickupLocation={pickupLocation}
+     setPickupLocation={setPickupLocation}
 
     dropoffLocation={dropoffLocation}
     setDropoffLocation={setDropoffLocation}
