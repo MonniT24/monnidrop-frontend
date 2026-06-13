@@ -1173,14 +1173,20 @@ export default function Admin(){
   const [riderApplications,setRiderApplications] =
   useState([]);
 
- const [riderApplicationsLoading,setRiderApplicationsLoading] =
+const [riderApplicationsCount,setRiderApplicationsCount] =
+  useState(0);
+
+const [riderApplicationsLoading,setRiderApplicationsLoading] =
   useState(false);  
 
-    const [riderStatusHistories, setRiderStatusHistories] = 
-    useState([]);
-
-    const [supportMessages,setSupportMessages] =
+const [riderStatusHistories, setRiderStatusHistories] = 
   useState([]);
+
+const [supportMessages,setSupportMessages] =
+  useState([]);
+
+const [supportMessagesCount,setSupportMessagesCount] =
+  useState(0);
 
   const [supportReply,setSupportReply] =
   useState({});
@@ -1269,6 +1275,8 @@ const [riderStatusSort,setRiderStatusSort] =
 
   fetchSupportMessages();
 
+  fetchRiderApplications();
+
   const interval =
     setInterval(()=>{
 
@@ -1277,6 +1285,8 @@ const [riderStatusSort,setRiderStatusSort] =
       fetchRiders();
 
       fetchSupportMessages();
+
+      fetchRiderApplications();
 
     },3000);
 
@@ -1455,7 +1465,14 @@ useEffect(()=>{
     const res =
       await API.get("/support");
 
-    setSupportMessages(res.data);
+    const messages =
+  Array.isArray(res.data)
+  ? res.data
+  : [];
+
+setSupportMessages(messages);
+
+setSupportMessagesCount(messages.length);
 
   }catch(error){
 
@@ -1500,9 +1517,16 @@ async function fetchRiderApplications(){
         "/admin/rider-applications"
       );
 
-    setRiderApplications(
-      res.data?.riders || []
-    );
+    const applications =
+  res.data?.riders || [];
+
+setRiderApplications(
+  applications
+);
+
+setRiderApplicationsCount(
+  applications.length
+);
 
   }catch(err){
 
@@ -2513,7 +2537,7 @@ function clearRiderStatusFilters(){
     lineHeight:"1.1"
   }}
 >
-  Messages
+ {supportMessagesCount}
 </StatValue>
 
   <StatSmall>
@@ -2542,7 +2566,7 @@ function clearRiderStatusFilters(){
   </StatTitle>
 
   <StatValue>
-    {riderApplications.length}
+    {riderApplicationsCount}
   </StatValue>
 
   <StatSmall>

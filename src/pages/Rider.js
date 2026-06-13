@@ -6,6 +6,7 @@ import API from "../api/api";
 import socket from "../socket";
 import riderImage from "../assets/rider.png";
 import logo from "../assets/logo.png";
+import GoogleLiveMap from "../components/GoogleLiveMap";
 
 import {
   FiHome,
@@ -1085,6 +1086,9 @@ export default function Rider(){
   const [activeRiderCard,setActiveRiderCard] =
   useState("");
 
+const [messageText,setMessageText] =
+  useState({});  
+
 const [riderPage,setRiderPage] =
   useState("home");  
 
@@ -1722,8 +1726,8 @@ setRiderIdNumber(
   }
 }
 
-  async function fetchOrders(){
-
+  
+async function fetchOrders(){
     try{
 
       const res =
@@ -2016,6 +2020,45 @@ fetchOrders();
   }
 }
 
+async function sendMessage(
+  orderId
+){
+
+  try{
+
+    const text =
+      messageText[orderId];
+
+    if(
+      !text ||
+      !text.trim()
+    ){
+      return;
+    }
+
+    await API.post(
+      `/orders/${orderId}/message`,
+      {
+        text
+      }
+    );
+
+    setMessageText({
+      ...messageText,
+      [orderId]:""
+    });
+
+    fetchOrders();
+
+  }catch(error){
+
+    console.log(
+      "SEND MESSAGE ERROR:",
+      error
+    );
+  }
+}
+
   //REJECT
 
  async function rejectOrder(orderId){
@@ -2268,66 +2311,6 @@ const res =
 
       setCompletingOrderId(
         null
-      );
-    }
-  }
-
-  //SEND MESSAGE 
-
-  async function sendMessage(
-    orderId,
-    text
-  ){
-
-    try{
-
-      if(!orderId){
-
-        alert(
-          "Order ID missing"
-        );
-
-        return;
-      }
-
-      if(
-        !text ||
-        text.trim() === ""
-      ){
-
-        return;
-      }
-
-      await API.post(
-
-        `/orders/${orderId}/message`,
-
-        {
-
-          sender:"rider",
-
-          text:text.trim()
-        }
-      );
-
-      setChatText({
-
-        ...chatText,
-
-        [orderId]:""
-      });
-
-      fetchOrders();
-
-    }catch(err){
-
-      console.log(err);
-
-      alert(
-
-        err.response?.data?.message ||
-
-        "Failed to send message"
       );
     }
   }
@@ -3003,19 +2986,68 @@ const res =
         )
         : (
           <DetailList>
-            {
-              activeOrders.map((o)=>(
-                <Row key={o._id}>
-                  <strong>Pickup:</strong> {o.pickupLocation}
-                  <br />
-                  <strong>Dropoff:</strong> {o.dropoffLocation}
-                  <br />
-                  <strong>Status:</strong> {o.status}
-                  <br />
-                  <strong>Amount:</strong> ₵{o.total || 0}
-                </Row>
-              ))
+           {
+  activeOrders.map((o)=>{
+
+    const pickupCoords =
+      o.pickupCoords ||
+      (
+        o.pickupLatitude &&
+        o.pickupLongitude
+        ? {
+            lat:Number(o.pickupLatitude),
+            lng:Number(o.pickupLongitude)
+          }
+        : null
+      );
+
+    const dropoffCoords =
+      o.dropoffCoords ||
+      (
+        o.dropoffLatitude &&
+        o.dropoffLongitude
+        ? {
+            lat:Number(o.dropoffLatitude),
+            lng:Number(o.dropoffLongitude)
+          }
+        : null
+      );
+
+    return (
+
+      <Row key={o._id}>
+
+        <strong>Pickup:</strong> {o.pickupLocation}
+        <br />
+
+        <strong>Dropoff:</strong> {o.dropoffLocation}
+        <br />
+
+        <strong>Status:</strong> {o.status}
+        <br />
+
+        <strong>Amount:</strong> ₵{o.total || 0}
+
+        <div
+          style={{
+            marginTop:"14px"
+          }}
+        >
+          <GoogleLiveMap
+            pickupCoords={pickupCoords}
+            dropoffCoords={dropoffCoords}
+            mode={
+              o.status === "accepted"
+              ? "pickup"
+              : "dropoff"
             }
+          />
+        </div>
+
+      </Row>
+    );
+  })
+}
           </DetailList>
         )
       )
@@ -3444,6 +3476,24 @@ const res =
                     <strong>Customer:</strong>{" "}
                     {o.customer?.name || "Customer"}
                     <br />
+
+                  {o.customer?.phone && (
+
+  <>
+    <strong>Phone:</strong>{" "}
+    <a
+      href={`tel:${o.customer.phone}`}
+      style={{
+        color:"#15803d",
+        fontWeight:"900",
+        textDecoration:"none"
+      }}
+    >
+      {o.customer.phone}
+    </a>
+    <br />
+  </>
+)} 
 
                     <strong>Pickup:</strong>{" "}
                     {o.pickupLocation || "N/A"}
@@ -3934,6 +3984,54 @@ const res =
                               </div>
                             )
                           }
+
+                          <div
+  style={{
+    display:"flex",
+    gap:"8px",
+    marginTop:"10px",
+    marginBottom:"15px"
+  }}
+>
+
+  <input
+    value={messageText[o._id] || ""}
+    onChange={(e)=>
+      setMessageText({
+        ...messageText,
+        [o._id]:e.target.value
+      })
+    }
+    placeholder="Reply customer..."
+    style={{
+      flex:1,
+      padding:"12px",
+      borderRadius:"14px",
+      border:"1px solid #cbd5e1",
+      outline:"none",
+      fontWeight:"700"
+    }}
+  />
+
+  <button
+    type="button"
+    onClick={()=>
+      sendMessage(o._id)
+    }
+    style={{
+      border:"none",
+      borderRadius:"14px",
+      padding:"0 16px",
+      background:"#1d4ed8",
+      color:"white",
+      fontWeight:"900",
+      cursor:"pointer"
+    }}
+  >
+    Send
+  </button>
+
+</div>
 
                           <div
                             style={{
@@ -4543,6 +4641,75 @@ user?.status !== "busy" && (
   </div>
 
 </MobileStackGrid>
+
+<pre>
+  {JSON.stringify(order.pickupCoords,null,2)}
+  {JSON.stringify(order.dropoffCoords,null,2)}
+</pre>
+
+<div
+  style={{
+    marginTop:"16px",
+    borderRadius:"18px",
+    overflow:"hidden"
+  }}
+>
+  <GoogleLiveMap
+  pickupCoords={
+    order.pickupCoords ||
+    (
+      order.pickupLat &&
+      order.pickupLng
+      ? {
+          lat:Number(order.pickupLat),
+          lng:Number(order.pickupLng)
+        }
+      : null
+    )
+  }
+  dropoffCoords={
+    order.dropoffCoords ||
+    (
+      order.dropoffLat &&
+      order.dropoffLng
+      ? {
+          lat:Number(order.dropoffLat),
+          lng:Number(order.dropoffLng)
+        }
+      : null
+    )
+  }
+  mode={
+    order.status === "accepted"
+    ? "pickup"
+    : "dropoff"
+  }
+/>
+
+<a
+  href={`https://www.google.com/maps/dir/?api=1&destination=${
+    order.dropoffCoords
+      ? `${order.dropoffCoords.lat},${order.dropoffCoords.lng}`
+      : `${order.dropoffLat},${order.dropoffLng}`
+  }`}
+  target="_blank"
+  rel="noreferrer"
+  style={{
+    display:"block",
+    marginTop:"10px",
+    background:"#1d4ed8",
+    color:"white",
+    textAlign:"center",
+    padding:"12px",
+    borderRadius:"12px",
+    fontWeight:"900",
+    textDecoration:"none"
+  }}
+>
+  Open Navigation
+</a>
+
+</div>
 
             {
               order.status === "accepted" && (

@@ -50,9 +50,7 @@ const Logo = styled.img`
   max-width:420px;
   height:auto;
   object-fit:contain;
-
-  filter:
-    drop-shadow(0 8px 18px rgba(0,0,0,0.12));
+  filter:drop-shadow(0 8px 18px rgba(0,0,0,0.12));
 `;
 
 const Title = styled.h1`
@@ -60,7 +58,6 @@ const Title = styled.h1`
   font-weight:800;
   text-align:center;
   color:#0f172a;
-
   margin-top:-45px;
   margin-bottom:4px;
 `;
@@ -189,7 +186,7 @@ const SuccessText = styled.div`
 export default function Login(){
 
   const [loginInput,setLoginInput] =
-  useState("");
+    useState("");
 
   const [password,setPassword] =
     useState("");
@@ -240,12 +237,12 @@ export default function Login(){
 
       const res =
         await API.post(
-        "/auth/login",
-   {
-        login:loginInput,
-         password
-    }
-   );
+          "/auth/login",
+          {
+            login:loginInput,
+            password
+          }
+        );
 
       if(res.data.requiresAdminOtp){
 
@@ -829,13 +826,13 @@ export default function Login(){
 
             <Input
               type="text"
-             placeholder="Email or Phone Number"
-             value={loginInput}
-            onChange={(e)=>
-            setLoginInput(
-            e.target.value
-             )
-            }
+              placeholder="Email or Phone Number"
+              value={loginInput}
+              onChange={(e)=>
+                setLoginInput(
+                  e.target.value
+                )
+              }
               required
             />
 

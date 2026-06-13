@@ -32,7 +32,8 @@ const ghanaBounds = {
 
 function GoogleLiveMap({
   pickupCoords,
-  dropoffCoords
+  dropoffCoords,
+  mode = "pickup"
 }){
 
   const [currentLocation,setCurrentLocation] =
@@ -54,27 +55,35 @@ function GoogleLiveMap({
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      (position)=>{
+    const watchId =
+      navigator.geolocation.watchPosition(
+        (position)=>{
 
-        setCurrentLocation({
-          lat:position.coords.latitude,
-          lng:position.coords.longitude
-        });
-      },
-      (error)=>{
+          setCurrentLocation({
+            lat:position.coords.latitude,
+            lng:position.coords.longitude
+          });
+        },
+        (error)=>{
 
-        console.log(
-          "CUSTOMER MAP LOCATION ERROR:",
-          error.message
-        );
-      },
-      {
-        enableHighAccuracy:true,
-        timeout:10000,
-        maximumAge:0
-      }
-    );
+          console.log(
+            "RIDER MAP LOCATION ERROR:",
+            error.message
+          );
+        },
+        {
+          enableHighAccuracy:true,
+          timeout:10000,
+          maximumAge:0
+        }
+      );
+
+    return ()=>{
+
+      navigator.geolocation.clearWatch(
+        watchId
+      );
+    };
 
   },[]);
 
@@ -82,9 +91,36 @@ function GoogleLiveMap({
 
     if(
       !isLoaded ||
-      !pickupCoords ||
-      !dropoffCoords ||
       !window.google
+    ){
+      setDirections(null);
+      return;
+    }
+
+    let origin = null;
+    let destination = null;
+
+    if(mode === "pickup"){
+
+      origin =
+        currentLocation;
+
+      destination =
+        pickupCoords;
+    }
+
+   if(mode === "dropoff"){
+
+  origin =
+    currentLocation;
+
+  destination =
+    dropoffCoords;
+}
+
+    if(
+      !origin ||
+      !destination
     ){
       setDirections(null);
       return;
@@ -95,8 +131,8 @@ function GoogleLiveMap({
 
     directionsService.route(
       {
-        origin:pickupCoords,
-        destination:dropoffCoords,
+        origin,
+        destination,
         travelMode:
           window.google.maps.TravelMode.DRIVING
       },
@@ -121,7 +157,9 @@ function GoogleLiveMap({
   },[
     isLoaded,
     pickupCoords,
-    dropoffCoords
+    dropoffCoords,
+    currentLocation,
+    mode
   ]);
 
   if(loadError){
@@ -144,8 +182,9 @@ function GoogleLiveMap({
     <GoogleMap
       mapContainerStyle={mapContainerStyle}
       center={
+        currentLocation ||
         pickupCoords ||
-        currentLocation
+        accraCenter
       }
       zoom={13}
       options={{
