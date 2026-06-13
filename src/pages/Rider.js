@@ -458,12 +458,17 @@ const StatsGrid = styled.div`
   display:grid;
 
   grid-template-columns:
-  repeat(auto-fit,minmax(210px,1fr));
+    repeat(3,1fr);
 
-gap:14px;
+  gap:12px;
 
-margin-bottom:20px;
+  margin-bottom:20px;
+
+  @media(max-width:760px){
+    grid-template-columns:1fr;
+  }
 `;
+
 
 const StatCard = styled.div`
   background:white;
@@ -2785,204 +2790,57 @@ const res =
 
  {riderPage === "home" && (
 
-<StatsGrid>
+<StatsGrid style={{gap:"12px"}}>
 
   <div
-    onClick={()=>
-      setRiderPage("activeDeliveries")
-    }
+    onClick={()=>setRiderPage("activeDeliveries")}
     style={{
       cursor:"pointer",
-      background:
-        "linear-gradient(135deg, #0f172a, #1d4ed8)",
-      padding:"14px",
-      borderRadius:"18px",
+      background:"linear-gradient(135deg, #0f172a, #1d4ed8)",
+      padding:"12px",
+      borderRadius:"16px",
       color:"white",
-      border:"1px solid rgba(250,204,21,0.28)",
-      boxShadow:
-        "0 14px 32px rgba(29,78,216,0.20)",
-      position:"relative",
-      overflow:"hidden"
+      minHeight:"120px"
     }}
   >
-
-    <div style={{
-      width:"46px",
-      height:"46px",
-      borderRadius:"16px",
-      background:"#facc15",
-      color:"#0f172a",
-      display:"flex",
-      alignItems:"center",
-      justifyContent:"center",
-      fontSize:"23px",
-      marginBottom:"16px",
-      fontWeight:"900"
-    }}>
-      🛵
-    </div>
-
-    <div style={{
-      fontSize:"13px",
-      color:"rgba(255,255,255,0.82)",
-      fontWeight:"900",
-      letterSpacing:"0.5px",
-      textTransform:"uppercase"
-    }}>
-      Active Deliveries
-    </div>
-
-    <div style={{
-      fontSize:"26px",
-      fontWeight:"900",
-      marginTop:"8px",
-      color:"#facc15"
-    }}>
-      {activeOrders.length}
-    </div>
-
-    <div style={{
-      fontSize:"13px",
-      color:"rgba(255,255,255,0.78)",
-      marginTop:"8px",
-      fontWeight:"700",
-      lineHeight:"1.4"
-    }}>
-      Orders you are currently handling.
-    </div>
-
+    <div style={{fontSize:"22px",marginBottom:"8px"}}>🛵</div>
+    <div style={{fontSize:"12px",fontWeight:"900"}}>ACTIVE DELIVERIES</div>
+    <div style={{fontSize:"24px",fontWeight:"900",color:"#facc15"}}>{activeOrders.length}</div>
+    <div style={{fontSize:"12px",fontWeight:"700"}}>Current handling.</div>
   </div>
 
   <div
-    onClick={()=>
-      setRiderPage("completedDeliveries")
-    }
+    onClick={()=>setRiderPage("completedDeliveries")}
     style={{
       cursor:"pointer",
-      background:
-        "linear-gradient(135deg, #facc15, #f59e0b)",
-      padding:"14px",
-      borderRadius:"18px",
+      background:"linear-gradient(135deg, #facc15, #f59e0b)",
+      padding:"12px",
+      borderRadius:"16px",
       color:"#0f172a",
-      border:"1px solid rgba(15,23,42,0.12)",
-      boxShadow:
-        "0 14px 32px rgba(250,204,21,0.24)",
-      position:"relative",
-      overflow:"hidden"
+      minHeight:"120px"
     }}
   >
-
-    <div style={{
-      width:"42px",
-      height:"42px",
-      borderRadius:"16px",
-      background:"#0f172a",
-      color:"#facc15",
-      display:"flex",
-      alignItems:"center",
-      justifyContent:"center",
-      fontSize:"19px",
-      marginBottom:"16px",
-      fontWeight:"900"
-    }}>
-      ✅
-    </div>
-
-    <div style={{
-      fontSize:"13px",
-      color:"#0f172a",
-      fontWeight:"900",
-      letterSpacing:"0.5px",
-      textTransform:"uppercase"
-    }}>
-      Completed Deliveries
-    </div>
-
-    <div style={{
-      fontSize:"26px",
-      fontWeight:"900",
-      marginTop:"8px",
-      color:"#0f172a"
-    }}>
-      {completedOrders.length}
-    </div>
-
-    <div style={{
-      fontSize:"13px",
-      color:"#334155",
-      marginTop:"8px",
-      fontWeight:"800",
-      lineHeight:"1.4"
-    }}>
-      Successful deliveries completed by you.
-    </div>
-
+    <div style={{fontSize:"22px",marginBottom:"8px"}}>✅</div>
+    <div style={{fontSize:"12px",fontWeight:"900"}}>COMPLETED</div>
+    <div style={{fontSize:"24px",fontWeight:"900"}}>{completedOrders.length}</div>
+    <div style={{fontSize:"12px",fontWeight:"800"}}>Successful deliveries.</div>
   </div>
 
   <div
-    onClick={()=>
-      setRiderPage("earnings")
-    }
+    onClick={()=>setRiderPage("earnings")}
     style={{
       cursor:"pointer",
-      background:
-        "linear-gradient(135deg, #0f172a, #111827)",
-      padding:"14px",
-      borderRadius:"18px",
+      background:"linear-gradient(135deg, #0f172a, #111827)",
+      padding:"12px",
+      borderRadius:"16px",
       color:"white",
-      border:"1px solid rgba(250,204,21,0.35)",
-      boxShadow:
-        "0 14px 32px rgba(15,23,42,0.24)",
-      position:"relative",
-      overflow:"hidden"
+      minHeight:"120px"
     }}
   >
-
-    <div style={{
-      width:"46px",
-      height:"46px",
-      borderRadius:"16px",
-      background:"#facc15",
-      color:"#0f172a",
-      display:"flex",
-      alignItems:"center",
-      justifyContent:"center",
-      fontSize:"23px",
-      marginBottom:"16px",
-      fontWeight:"900"
-    }}>
-      ₵
-    </div>
-
-    <div style={{
-      fontSize:"13px",
-      color:"#facc15",
-      fontWeight:"900",
-      letterSpacing:"0.5px",
-      textTransform:"uppercase"
-    }}>
-      Total Earnings
-    </div>
-
-    <div style={{
-      fontSize:"26px",
-      fontWeight:"900",
-      marginTop:"8px",
-      color:"#facc15"
-    }}>
-      ₵{earnings}
-    </div>
-
-    <div style={{
-      fontSize:"12px",
-      color:"rgba(255,255,255,0.76)",
-      marginTop:"8px",
-      fontWeight:"700",
-      lineHeight:"1.4"
-    }}>
-      Total money earned from delivered orders.
-    </div>
-
+    <div style={{fontSize:"22px",marginBottom:"8px",color:"#facc15"}}>₵</div>
+    <div style={{fontSize:"12px",fontWeight:"900",color:"#facc15"}}>EARNINGS</div>
+    <div style={{fontSize:"24px",fontWeight:"900",color:"#facc15"}}>₵{earnings}</div>
+    <div style={{fontSize:"12px",fontWeight:"700"}}>Delivered orders.</div>
   </div>
 
 </StatsGrid>
@@ -3633,105 +3491,110 @@ const res =
   </OrderCard>
 
   <OrderCard
-    style={{
-      background:
-        "linear-gradient(135deg, #0f172a, #1d4ed8)",
-      color:"white",
-      border:"1px solid rgba(250,204,21,0.28)",
-      boxShadow:
-        "0 14px 32px rgba(29,78,216,0.18)"
-    }}
-  >
-
-    <div
-      style={{
-        width:"50px",
-        height:"50px",
-        borderRadius:"18px",
-        background:"#facc15",
-        color:"#0f172a",
-        display:"flex",
-        alignItems:"center",
-        justifyContent:"center",
-        fontSize:"24px",
-        marginBottom:"16px"
-      }}
-    >
-      🛵
-    </div>
-
-    <div
-      style={{
-        fontSize:"20px",
-        fontWeight:"900",
-        marginBottom:"8px"
-      }}
-    >
-      Rider Status
-    </div>
-
-    <Button
-  type="button"
-  onClick={()=>
-    updateAvailability(
-      getRiderDisplayStatus() === "offline"
-      ? "available"
-      : "offline"
-    )
-  }
   style={{
-    marginTop:"14px",
     background:
-      getRiderDisplayStatus() === "offline"
-      ? "linear-gradient(135deg, #16a34a, #22c55e)"
-      : "linear-gradient(135deg, #dc2626, #ef4444)",
+      "linear-gradient(135deg, #0f172a, #1d4ed8)",
     color:"white",
-    fontWeight:"900"
+    border:"1px solid rgba(250,204,21,0.28)",
+    boxShadow:
+      "0 10px 24px rgba(29,78,216,0.14)",
+    padding:"18px",
+    borderRadius:"24px"
   }}
 >
-  {
-    getRiderDisplayStatus() === "offline"
-    ? "Go Online"
-    : "Go Offline"
-  }
-</Button>
 
-    <div
-      style={{
-        color:"rgba(255,255,255,0.80)",
-        fontSize:"14px",
-        fontWeight:"700",
-        lineHeight:"1.5",
-        marginBottom:"18px"
-      }}
-    >
-      Stay online to receive delivery requests from customers.
-    </div>
+  <div
+    style={{
+      width:"42px",
+      height:"42px",
+      borderRadius:"15px",
+      background:"#facc15",
+      color:"#0f172a",
+      display:"flex",
+      alignItems:"center",
+      justifyContent:"center",
+      fontSize:"20px",
+      marginBottom:"10px"
+    }}
+  >
+    🛵
+  </div>
 
-    <div
-      style={{
-        background:"rgba(255,255,255,0.12)",
-        border:"1px solid rgba(255,255,255,0.18)",
-        borderRadius:"16px",
-        padding:"14px",
-        fontWeight:"900",
-        color:"#facc15"
-      }}
-    >
-      Current Status:{" "}
-      {
-        getRiderDisplayStatus() === "busy"
-        ? "BUSY"
-        : getRiderDisplayStatus() === "offline"
-        ? "OFF-DUTY"
-        : getRiderDisplayStatus() === "suspended"
-        ? "SUSPENDED"
-        : "AVAILABLE"
-      }
-    </div>
+  <div
+    style={{
+      fontSize:"18px",
+      fontWeight:"900",
+      marginBottom:"10px"
+    }}
+  >
+    Rider Status
+  </div>
 
-  </OrderCard>
+  <Button
+    type="button"
+    onClick={()=>
+      updateAvailability(
+        getRiderDisplayStatus() === "offline"
+        ? "available"
+        : "offline"
+      )
+    }
+    style={{
+      marginTop:"0",
+      marginBottom:"10px",
+      padding:"10px 14px",
+      borderRadius:"14px",
+      background:
+        getRiderDisplayStatus() === "offline"
+        ? "linear-gradient(135deg, #16a34a, #22c55e)"
+        : "linear-gradient(135deg, #dc2626, #ef4444)",
+      color:"white",
+      fontWeight:"900"
+    }}
+  >
+    {
+      getRiderDisplayStatus() === "offline"
+      ? "Go Online"
+      : "Go Offline"
+    }
+  </Button>
 
+  <div
+    style={{
+      color:"rgba(255,255,255,0.80)",
+      fontSize:"13px",
+      fontWeight:"700",
+      lineHeight:"1.4",
+      marginBottom:"10px"
+    }}
+  >
+    Stay online to receive delivery requests.
+  </div>
+
+  <div
+    style={{
+      background:"rgba(255,255,255,0.12)",
+      border:"1px solid rgba(255,255,255,0.18)",
+      borderRadius:"14px",
+      padding:"11px",
+      fontSize:"14px",
+      fontWeight:"900",
+      color:"#facc15"
+    }}
+  >
+    Current Status:{" "}
+    {
+      getRiderDisplayStatus() === "busy"
+      ? "BUSY"
+      : getRiderDisplayStatus() === "offline"
+      ? "OFF-DUTY"
+      : getRiderDisplayStatus() === "suspended"
+      ? "SUSPENDED"
+      : "AVAILABLE"
+    }
+  </div>
+
+</OrderCard>
 </ResponsiveTwoColumn>
 
 {

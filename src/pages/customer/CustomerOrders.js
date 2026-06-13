@@ -132,29 +132,79 @@ function getDropoffPosition(order){
               }}
             >
               <Row blue>
-                <strong>Delivery Rider:</strong>{" "}
-                {o.rider?.name ? (
-                  o.rider.name
-                ) : o.status === "pending" ? (
-                  <span
-                    style={{
-                      display:"inline-flex",
-                      alignItems:"center",
-                      gap:"8px",
-                      padding:"7px 12px",
-                      borderRadius:"999px",
-                      background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
-                      color:"#facc15",
-                      fontSize:"13px",
-                      fontWeight:"900"
-                    }}
-                  >
-                    Searching for a rider...
-                  </span>
-                ) : (
-                  "No rider assigned"
-                )}
-              </Row>
+  <strong>Delivery Rider:</strong>{" "}
+
+  {o.rider?.name ? (
+
+    <div
+      style={{
+        display:"flex",
+        alignItems:"center",
+        gap:"10px",
+        marginTop:"10px"
+      }}
+    >
+
+      <img
+        src={
+          o.rider?.profileImage ||
+          "/rider.png"
+        }
+        alt="Rider"
+        style={{
+          width:"48px",
+          height:"48px",
+          borderRadius:"50%",
+          objectFit:"cover",
+          border:"3px solid #facc15"
+        }}
+      />
+
+      <div>
+        <div
+          style={{
+            fontWeight:"900",
+            color:"#0f172a"
+          }}
+        >
+          {o.rider.name}
+        </div>
+
+        <div
+          style={{
+            fontSize:"12px",
+            fontWeight:"800",
+            color:"#64748b"
+          }}
+        >
+          Assigned rider
+        </div>
+      </div>
+
+    </div>
+
+  ) : o.status === "pending" ? (
+
+    <span
+      style={{
+        display:"inline-flex",
+        alignItems:"center",
+        gap:"8px",
+        padding:"7px 12px",
+        borderRadius:"999px",
+        background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
+        color:"#facc15",
+        fontSize:"13px",
+        fontWeight:"900"
+      }}
+    >
+      Searching for a rider...
+    </span>
+
+  ) : (
+    "No rider assigned"
+  )}
+</Row>
 
               <Row><strong>Pickup:</strong> {o.pickupLocation}</Row>
               <Row><strong>Dropoff:</strong> {o.dropoffLocation}</Row>

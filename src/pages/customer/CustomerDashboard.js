@@ -1,11 +1,15 @@
 import React,{useState} from "react";
 
+import API from "../../api/api";
+
 import {
   FiTruck,
   FiPackage,
   FiBell,
   FiClock
 } from "react-icons/fi";
+
+import { FiMessageCircle } from "react-icons/fi";
 
 export default function CustomerDashboard({
   user,
@@ -16,6 +20,71 @@ export default function CustomerDashboard({
   notifications,
   setActiveSection
 }) {
+
+const [chatbotOpen,setChatbotOpen] =
+  useState(false);
+
+const [chatbotMessages,setChatbotMessages] =
+  useState([
+    {
+      sender:"bot",
+      text:"Hi 👋 I am MB Swift Assistant. How can I help you today?"
+    }
+  ]);
+
+const [chatbotText,setChatbotText] =
+  useState(""); 
+  
+  async function sendChatbotMessage(){
+
+  if(!chatbotText.trim()){
+    return;
+  }
+
+  const userMessage =
+    chatbotText.trim();
+
+  setChatbotMessages([
+    ...chatbotMessages,
+    {
+      sender:"user",
+      text:userMessage
+    }
+  ]);
+
+  setChatbotText("");
+
+  try{
+
+    const res =
+      await API.post(
+        "/chatbot/ask",
+        {
+          message:userMessage
+        }
+      );
+
+    setChatbotMessages((prev)=>[
+      ...prev,
+      {
+        sender:"bot",
+        text:res.data.reply
+      }
+    ]);
+
+  }catch(err){
+
+    setChatbotMessages((prev)=>[
+      ...prev,
+      {
+        sender:"bot",
+        text:
+          err.response?.data?.message ||
+          "Sorry, I could not respond right now."
+      }
+    ]);
+  }
+}
 
   const [customerPage,setCustomerPage] =
     useState("home");
@@ -551,6 +620,148 @@ export default function CustomerDashboard({
           </div>
         </div>
       )}
+
+{/* CUSTOMER CHATBOT */}
+<button
+  type="button"
+  onClick={()=>setChatbotOpen(!chatbotOpen)}
+  style={{
+    position:"fixed",
+    right:"22px",
+    bottom:"22px",
+    width:"58px",
+    height:"58px",
+    borderRadius:"50%",
+    border:"none",
+    background:"#1d4ed8",
+    color:"white",
+    fontSize:"26px",
+    fontWeight:"900",
+    cursor:"pointer",
+    zIndex:9999,
+    boxShadow:"0 12px 30px rgba(29,78,216,0.35)"
+  }}
+>
+  <FiMessageCircle />
+</button>
+
+{chatbotOpen && (
+  <div
+    style={{
+      position:"fixed",
+      right:"22px",
+      bottom:"90px",
+      width:"320px",
+      maxWidth:"calc(100vw - 32px)",
+      background:"#ffffff",
+      borderRadius:"22px",
+      boxShadow:"0 20px 60px rgba(15,23,42,0.25)",
+      border:"1px solid #e5e7eb",
+      overflow:"hidden",
+      zIndex:9999
+    }}
+  >
+    <div
+      style={{
+        background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
+        color:"#facc15",
+        padding:"14px",
+        fontWeight:"900"
+      }}
+    >
+      MB Swift Assistant
+    </div>
+
+    <div
+      style={{
+        padding:"14px",
+        height:"260px",
+        overflowY:"auto",
+        background:"#f8fafc"
+      }}
+    >
+      {chatbotMessages.map((msg,index)=>(
+        <div
+          key={index}
+          style={{
+            display:"flex",
+            justifyContent:
+              msg.sender === "user"
+              ? "flex-end"
+              : "flex-start",
+            marginBottom:"10px"
+          }}
+        >
+          <div
+            style={{
+              maxWidth:"80%",
+              padding:"10px 12px",
+              borderRadius:"14px",
+              background:
+                msg.sender === "user"
+                ? "#1d4ed8"
+                : "#facc15",
+              color:
+                msg.sender === "user"
+                ? "white"
+                : "#0f172a",
+              fontSize:"13px",
+              fontWeight:"800",
+              lineHeight:"1.4"
+            }}
+          >
+            {msg.text}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div
+      style={{
+        display:"flex",
+        gap:"8px",
+        padding:"12px",
+        borderTop:"1px solid #e5e7eb"
+      }}
+    >
+      <input
+        value={chatbotText}
+        onChange={(e)=>setChatbotText(e.target.value)}
+        onKeyDown={(e)=>{
+          if(e.key === "Enter"){
+            sendChatbotMessage();
+          }
+        }}
+        placeholder="Ask something..."
+        style={{
+          flex:1,
+          border:"1px solid #cbd5e1",
+          borderRadius:"14px",
+          padding:"11px",
+          outline:"none",
+          fontWeight:"700"
+        }}
+      />
+
+      <button
+        type="button"
+        onClick={sendChatbotMessage}
+        style={{
+          border:"none",
+          borderRadius:"14px",
+          padding:"0 14px",
+          background:"#facc15",
+          color:"#0f172a",
+          fontWeight:"900",
+          cursor:"pointer"
+        }}
+      >
+        Send
+      </button>
+    </div>
+  </div>
+)}
+
     </>
   );
 }
