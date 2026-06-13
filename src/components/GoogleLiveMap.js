@@ -33,7 +33,8 @@ const ghanaBounds = {
 function GoogleLiveMap({
   pickupCoords,
   dropoffCoords,
-  mode = "pickup"
+  mode = "pickup",
+  availableRiders = []
 }){
 
   const [currentLocation,setCurrentLocation] =
@@ -41,6 +42,9 @@ function GoogleLiveMap({
 
   const [directions,setDirections] =
     useState(null);
+
+  const [routeInfo,setRouteInfo] =
+     useState(null);
 
   const { isLoaded, loadError } =
     useJsApiLoader({
@@ -119,12 +123,13 @@ function GoogleLiveMap({
 }
 
     if(
-      !origin ||
-      !destination
-    ){
-      setDirections(null);
-      return;
-    }
+  !origin ||
+  !destination
+){
+  setDirections(null);
+  setRouteInfo(null);
+  return;
+}
 
     const directionsService =
       new window.google.maps.DirectionsService();
@@ -142,6 +147,14 @@ function GoogleLiveMap({
 
           setDirections(result);
 
+const leg =
+  result.routes?.[0]?.legs?.[0];
+
+setRouteInfo({
+  duration:leg?.duration?.text || "",
+  distance:leg?.distance?.text || ""
+});
+
         }else{
 
           console.log(
@@ -150,6 +163,8 @@ function GoogleLiveMap({
           );
 
           setDirections(null);
+
+          setRouteInfo(null);
         }
       }
     );
@@ -198,19 +213,62 @@ function GoogleLiveMap({
       }}
     >
 
+      {routeInfo && (
+
+  <div
+    style={{
+      position:"absolute",
+      top:"14px",
+      left:"14px",
+      background:"#ffffff",
+      color:"#0f172a",
+      padding:"10px 14px",
+      borderRadius:"16px",
+      boxShadow:"0 10px 28px rgba(15,23,42,0.22)",
+      zIndex:10,
+      fontWeight:"900",
+      border:"1px solid #e5e7eb"
+    }}
+  >
+    <div
+      style={{
+        fontSize:"18px",
+        color:"#1d4ed8"
+      }}
+    >
+      {routeInfo.duration}
+    </div>
+
+    <div
+      style={{
+        fontSize:"12px",
+        color:"#64748b",
+        marginTop:"2px"
+      }}
+    >
+      {routeInfo.distance}
+    </div>
+  </div>
+)}
+
       <Marker
         position={currentLocation}
         label="You"
       />
 
       {
-        pickupCoords && (
-          <Marker
-            position={pickupCoords}
-            label="P"
-          />
-        )
-      }
+  availableRiders.map((rider)=>(
+    <Marker
+      key={rider._id}
+      position={{
+        lat:Number(rider.latitude),
+        lng:Number(rider.longitude)
+      }}
+      label="R"
+      title={`${rider.name} - Available`}
+    />
+  ))
+}
 
       {
         dropoffCoords && (

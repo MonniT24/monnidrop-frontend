@@ -1,6 +1,11 @@
-import React,{useRef} from "react";
+import React,{
+  useEffect,
+  useRef,
+  useState
+} from "react";
 
 import GoogleLiveMap from "../../components/GoogleLiveMap";
+import API from "../../api/api";
 
 import { FiPackage } from "react-icons/fi";
 
@@ -56,6 +61,45 @@ export default function CustomerCreateOrder({
 
  const pickupRef = useRef(null);
 const dropoffRef = useRef(null);
+
+const [availableRiders,setAvailableRiders] =
+  useState([]);
+
+useEffect(()=>{
+
+  async function fetchAvailableRiders(){
+
+    try{
+
+      const res =
+        await API.get(
+          "/rider/available-map"
+        );
+
+      setAvailableRiders(
+        res.data?.riders || []
+      );
+
+    }catch(err){
+
+      console.log(
+        "AVAILABLE RIDERS MAP ERROR:",
+        err.response?.data || err.message
+      );
+    }
+  }
+
+  fetchAvailableRiders();
+
+  const interval =
+    setInterval(
+      fetchAvailableRiders,
+      5000
+    );
+
+  return ()=>clearInterval(interval);
+
+},[]);
 
 const {
   isLoaded
@@ -132,11 +176,6 @@ const {
             all from your MB Swift dashboard.
           </p>
         </div>
-
-      <GoogleLiveMap
-  pickupCoords={pickupCoords}
-  dropoffCoords={dropoffCoords}
-/>  
 
         <OrderSection
           step="1"
@@ -280,6 +319,39 @@ const {
             </SuggestionBox>
           )}
         </OrderSection>
+
+        {dropoffCoords && (
+
+  <div
+    style={{
+      marginBottom:"18px",
+      borderRadius:"22px",
+      overflow:"hidden",
+      border:"1px solid rgba(29,78,216,0.14)",
+      boxShadow:"0 12px 28px rgba(15,23,42,0.08)"
+    }}
+  >
+
+    <div
+      style={{
+        background:"linear-gradient(135deg,#0f172a,#1d4ed8)",
+        color:"#facc15",
+        padding:"12px 16px",
+        fontWeight:"900"
+      }}
+    >
+      Delivery Route Preview
+    </div>
+
+    <GoogleLiveMap
+  pickupCoords={pickupCoords}
+  dropoffCoords={dropoffCoords}
+  mode="dropoff"
+  availableRiders={availableRiders}
+/>
+
+  </div>
+)}
 
         <OrderSection
           step="3"

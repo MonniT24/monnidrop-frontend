@@ -1,7 +1,5 @@
 import React,{useState} from "react";
 
-import API from "../../api/api";
-
 import {
   FiTruck,
   FiPackage,
@@ -35,7 +33,7 @@ const [chatbotMessages,setChatbotMessages] =
 const [chatbotText,setChatbotText] =
   useState(""); 
   
-  async function sendChatbotMessage(){
+function sendChatbotMessage(){
 
   if(!chatbotText.trim()){
     return;
@@ -44,47 +42,61 @@ const [chatbotText,setChatbotText] =
   const userMessage =
     chatbotText.trim();
 
+  const text =
+    userMessage.toLowerCase();
+
+  let botReply =
+    "I can help with orders, riders, payment, cancellation, support, and delivery tracking.";
+
+  if(text.includes("hi") || text.includes("hello")){
+    botReply =
+      "Hi 👋 I am MB Swift Assistant. How can I help you today?";
+  }
+
+  else if(text.includes("thank")){
+    botReply =
+      "You're welcome 😊";
+  }
+
+  else if(text.includes("rider")){
+    botReply =
+      "Once a rider accepts your order, you can see their photo, name, phone number, chat button, and live location on your order page.";
+  }
+
+  else if(text.includes("cancel")){
+    botReply =
+      "You can cancel an order while it is still pending before a rider accepts it.";
+  }
+
+  else if(text.includes("pay") || text.includes("momo")){
+    botReply =
+      "You can pay with Cash on Delivery or Mobile Money when available.";
+  }
+
+  else if(text.includes("track") || text.includes("where")){
+    botReply =
+      "Go to Orders to track your delivery. You will see pickup, dropoff, rider details, and live map.";
+  }
+
+  else if(text.includes("support") || text.includes("help")){
+    botReply =
+      "Go to Messages or Contact Us to reach MB Swift support.";
+  }
+
   setChatbotMessages([
     ...chatbotMessages,
     {
       sender:"user",
       text:userMessage
+    },
+    {
+      sender:"bot",
+      text:botReply
     }
   ]);
 
   setChatbotText("");
-
-  try{
-
-    const res =
-      await API.post(
-        "/chatbot/ask",
-        {
-          message:userMessage
-        }
-      );
-
-    setChatbotMessages((prev)=>[
-      ...prev,
-      {
-        sender:"bot",
-        text:res.data.reply
-      }
-    ]);
-
-  }catch(err){
-
-    setChatbotMessages((prev)=>[
-      ...prev,
-      {
-        sender:"bot",
-        text:
-          err.response?.data?.message ||
-          "Sorry, I could not respond right now."
-      }
-    ]);
-  }
-}
+} 
 
   const [customerPage,setCustomerPage] =
     useState("home");
@@ -143,7 +155,7 @@ const [chatbotText,setChatbotText] =
             "radial-gradient(circle at top right, rgba(250,204,21,0.28), transparent 30%), linear-gradient(135deg,#0f172a,#1d4ed8)",
           color:"white",
           borderRadius:isMobile ? "24px" : "28px",
-          padding:isMobile ? "22px" : "26px",
+          padding:isMobile ? "16px" : "18px",
           marginBottom:"18px",
           boxShadow:"0 12px 28px rgba(15,23,42,0.14)"
         }}
@@ -169,8 +181,8 @@ const [chatbotText,setChatbotText] =
               src="/logo.png"
               alt="MB Swift Logo"
               style={{
-                width:isMobile ? "84px" : "78px",
-                height:isMobile ? "84px" : "78px",
+                width:isMobile ? "60px" : "58px",
+                height:isMobile ? "60px" : "58px",
                 objectFit:"contain",
                 background:"white",
                 padding:"6px",
@@ -204,7 +216,7 @@ const [chatbotText,setChatbotText] =
 
               <h1
                 style={{
-                  fontSize:isMobile ? "32px" : "34px",
+                  fontSize:isMobile ? "24px" : "26px",
                   fontWeight:"900",
                   margin:"0 0 12px",
                   lineHeight:"1.08",
@@ -220,7 +232,7 @@ const [chatbotText,setChatbotText] =
                 style={{
                   maxWidth:isMobile ? "100%" : "460px",
                   color:"#dbeafe",
-                  fontSize:"15px",
+                  fontSize:"13px",
                   lineHeight:"1.55",
                   margin:isMobile ? "0 auto" : "0",
                   fontWeight:"600"
@@ -263,10 +275,10 @@ const [chatbotText,setChatbotText] =
                   style={{
                     border:"1px solid rgba(255,255,255,0.24)",
                     borderRadius:"16px",
-                    padding:"14px 18px",
+                    padding:"10px 14px",
                     background:"rgba(255,255,255,0.14)",
                     color:"white",
-                    fontSize:"15px",
+                    fontSize:"13px",
                     fontWeight:"900",
                     cursor:"pointer",
                     minWidth:isMobile ? "170px" : "auto"
@@ -281,12 +293,12 @@ const [chatbotText,setChatbotText] =
           <div
             style={{
               width:"100%",
-              maxWidth:isMobile ? "100%" : "320px",
+              maxWidth:isMobile ? "100%" : "260px",
               background:
                 "linear-gradient(135deg,rgba(255,255,255,0.24),rgba(255,255,255,0.08))",
               border:"1px solid rgba(255,255,255,0.34)",
               borderRadius:"22px",
-              padding:"18px",
+              padding:"14px",
               color:"white",
               boxShadow:"0 14px 30px rgba(0,0,0,0.18)",
               justifySelf:isMobile ? "stretch" : "end",
@@ -306,7 +318,7 @@ const [chatbotText,setChatbotText] =
 
             <div
               style={{
-                fontSize:isMobile ? "23px" : "22px",
+                fontSize:isMobile ? "18px" : "18px",
                 fontWeight:"900",
                 lineHeight:"1.15",
                 marginBottom:"12px"
@@ -323,12 +335,12 @@ const [chatbotText,setChatbotText] =
             <div
               style={{
                 display:"inline-flex",
-                padding:"9px 14px",
+                padding:"6px 12px",
                 marginBottom:"10px",
                 borderRadius:"999px",
                 background:"linear-gradient(135deg,#facc15,#f59e0b)",
                 color:"#0f172a",
-                fontSize:isMobile ? "16px" : "15px",
+                fontSize:"13px",
                 fontWeight:"900",
                 letterSpacing:"1px"
               }}
@@ -544,79 +556,115 @@ const [chatbotText,setChatbotText] =
               color:"white",
               border:"1px solid rgba(250,204,21,0.22)",
               boxShadow:"0 10px 24px rgba(29,78,216,0.16)",
-              padding:"18px",
+              padding:"12px",
               borderRadius:"20px",
               alignSelf:"start"
             }}
           >
             <h3
-              style={{
-                display:"flex",
-                alignItems:"center",
-                gap:"7px",
-                color:"white",
-                fontSize:"16px",
-                margin:"0 0 12px",
-                fontWeight:"900"
-              }}
-            >
-              <span
-                style={{
-                  width:"28px",
-                  height:"28px",
-                  borderRadius:"9px",
-                  display:"inline-flex",
-                  alignItems:"center",
-                  justifyContent:"center",
-                  background:"#facc15",
-                  color:"#0f172a",
-                  fontSize:"14px",
-                  flexShrink:0
-                }}
-              >
-                <FiPackage />
-              </span>
-              Smart Delivery Summary
-            </h3>
+  style={{
+    fontSize:"17px",
+    fontWeight:"900",
+    color:"#facc15",
+    margin:"0 0 10px"
+  }}
+>
+  🚀 Fast Delivery Across Accra
+</h3>
 
-            <InfoRow title="Use This For Payment:" text="Mobile Money enabled" />
-            <InfoRow title="MoMo Number:" text="0244095101" />
-            <InfoRow title="Default Area:" text="Accra" />
+<div
+  style={{
+    fontSize:"13px",
+    lineHeight:"1.45",
+    color:"rgba(255,255,255,0.92)",
+    fontWeight:"700",
+    marginBottom:"10px"
+  }}
+>
+  Need a rider urgently?
+  MB Swift connects you with trusted riders for
+  fast, secure and affordable deliveries.
+</div>
 
-            <div
-              style={{
-                background:"rgba(250,204,21,0.16)",
-                border:"1px solid rgba(250,204,21,0.35)",
-                color:"#fef3c7",
-                borderRadius:"18px",
-                padding:"16px",
-                lineHeight:"1.6",
-                fontWeight:"700",
-                marginTop:"12px"
-              }}
-            >
-              Tip: Use Mobile Money for faster checkout.
-              Once Paystack confirms payment, your order
-              is automatically marked as paid.
-            </div>
+<div
+  style={{
+    display:"flex",
+    gap:"10px",
+    flexWrap:"wrap",
+    marginBottom:"16px"
+  }}
+>
+  <span
+    style={{
+      background:"#facc15",
+      color:"#0f172a",
+      padding:"5px 9px",
+      borderRadius:"999px",
+      fontSize:"12px",
+      fontWeight:"900"
+    }}
+  >
+    Same Day Delivery
+  </span>
 
-            <button
-              type="button"
-              onClick={() => setActiveSection("createOrder")}
-              style={{
-                marginTop:"18px",
-                width:"100%",
-                border:"none",
-                borderRadius:"14px",
-                padding:"12px 16px",
-                background:"#facc15",
-                color:"#0f172a",
-                fontWeight:"900",
-                cursor:"pointer"
-              }}
-            >
-              Send a Package Now
-            </button>
+  <span
+    style={{
+      background:"#16a34a",
+      color:"white",
+      padding:"6px 12px",
+      borderRadius:"999px",
+      fontSize:"10px",
+      fontWeight:"900"
+    }}
+  >
+    Live Tracking
+  </span>
+
+  <span
+    style={{
+      background:"#2563eb",
+      color:"white",
+      padding:"6px 12px",
+      borderRadius:"999px",
+      fontSize:"10px",
+      fontWeight:"900"
+    }}
+  >
+    Secure Payments
+  </span>
+</div>
+
+<div
+  style={{
+    background:"rgba(250,204,21,0.15)",
+    border:"1px solid rgba(250,204,21,0.30)",
+    borderRadius:"16px",
+    padding:"12px",
+    color:"#fef3c7",
+    fontWeight:"800",
+    marginBottom:"16px"
+  }}
+>
+  🎉 First-time customers enjoy quick booking
+  and instant rider matching.
+</div>
+
+<button
+  type="button"
+  onClick={() => setActiveSection("createOrder")}
+  style={{
+    width:"100%",
+    border:"none",
+    borderRadius:"14px",
+    padding:"12px",
+    background:"#facc15",
+    color:"#0f172a",
+    fontWeight:"900",
+    cursor:"pointer"
+  }}
+>
+  Book Delivery Now
+</button>
           </div>
         </div>
       )}
