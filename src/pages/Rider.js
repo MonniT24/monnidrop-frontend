@@ -1886,6 +1886,60 @@ setEarnings(
     }
   }
 
+  async function updateAvailability(status){
+
+  try{
+
+    if(riderIsBlocked){
+
+      alert(
+        riderBlockedMessage
+      );
+
+      return;
+    }
+
+    const res =
+      await API.put(
+        "/rider/status",
+        {
+          status
+        }
+      );
+
+    setUser(
+      res.data.user || {
+        ...user,
+        status
+      }
+    );
+
+    alert(
+      status === "offline"
+      ? "You are now offline"
+      : "You are now online"
+    );
+
+    fetchMe();
+
+    fetchOrders();
+
+  }catch(err){
+
+    console.log(
+      "UPDATE RIDER AVAILABILITY ERROR:",
+      err.response?.data || err.message
+    );
+
+    alert(
+      JSON.stringify(
+        err.response?.data || err.message
+      )
+    );
+  }
+
+}
+
  // ACCEPT ORDER
 
 async function acceptOrder(orderId){
@@ -2097,10 +2151,11 @@ async function sendMessage(
 
     console.log(err);
 
-    alert(
-      err.response?.data?.message ||
-      "Failed to cancel order"
-    );
+   alert(
+  JSON.stringify(
+    err.response?.data || err.message
+  )
+);
   }
 }
 
@@ -2303,9 +2358,10 @@ const res =
       console.log(err);
 
       alert(
-        err.response?.data?.message ||
-        "Delivery failed"
-      );
+  JSON.stringify(
+    err.response?.data || err.message
+  )
+);
 
     }finally{
 
@@ -3613,6 +3669,32 @@ const res =
     >
       Rider Status
     </div>
+
+    <Button
+  type="button"
+  onClick={()=>
+    updateAvailability(
+      getRiderDisplayStatus() === "offline"
+      ? "available"
+      : "offline"
+    )
+  }
+  style={{
+    marginTop:"14px",
+    background:
+      getRiderDisplayStatus() === "offline"
+      ? "linear-gradient(135deg, #16a34a, #22c55e)"
+      : "linear-gradient(135deg, #dc2626, #ef4444)",
+    color:"white",
+    fontWeight:"900"
+  }}
+>
+  {
+    getRiderDisplayStatus() === "offline"
+    ? "Go Online"
+    : "Go Offline"
+  }
+</Button>
 
     <div
       style={{

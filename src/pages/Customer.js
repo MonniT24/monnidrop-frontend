@@ -2949,9 +2949,12 @@ const [savingCompleteProfile,
     useState(false);
 
   const [orders,setOrders] =
-    useState([]);
+  useState([]);
 
-    const [ratingModalOrder,setRatingModalOrder] =
+const [liveRiderLocation,setLiveRiderLocation] =
+  useState(null);
+
+const [ratingModalOrder,setRatingModalOrder] =
   useState(null);
 
 const [riderRating,setRiderRating] =
@@ -4052,6 +4055,30 @@ useEffect(()=>{
   return ()=>clearInterval(
     interval
   );
+
+},[]);
+
+useEffect(()=>{
+
+  socket.on(
+    "riderLocationUpdate",
+    (data)=>{
+
+      console.log(
+        "LIVE RIDER LOCATION:",
+        data
+      );
+
+      setLiveRiderLocation(data);
+    }
+  );
+
+  return ()=>{
+
+    socket.off(
+      "riderLocationUpdate"
+    );
+  };
 
 },[]);
 
@@ -6164,7 +6191,7 @@ async function sendMessage(
     orders={orders}
     sidebarOpen={sidebarOpen}
     locationCoords={locationCoords}
-    riderLocation={riderLocation}
+    riderLocation={liveRiderLocation}
     ratedOrderIds={ratedOrderIds}
     setRatingModalOrder={setRatingModalOrder}
     setRiderRating={setRiderRating}
